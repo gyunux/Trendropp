@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CelebStyle Admin - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+    <!-- fragments.html에 정의된 사이드바 조각을 여기에 삽입합니다. -->
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main class="main-content">
+        <header class="content-header">
+            <h1>대시보드</h1>
+        </header>
+
+        <div class="content-body">
+            <div class="stats-grid">
+<!--                <div class="stat-card">-->
+<!--                    <h3>총 셀럽 수</h3>-->
+<!--                    <p th:text="${totalCelebs}">120</p>-->
+<!--                </div>-->
+<!--                <div class="stat-card">-->
+<!--                    <h3>총 착장 수</h3>-->
+<!--                    <p th:text="${totalOutfits}">580</p>-->
+<!--                </div>-->
+                <div class="stat-card placeholder">
+                    <h3>방문자 수 (Today)</h3>
+                    <p>Coming Soon</p>
+                </div>
+                <div class="stat-card placeholder">
+                    <h3>신규 가입 (Today)</h3>
+                    <p>Coming Soon</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

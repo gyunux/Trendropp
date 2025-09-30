@@ -1,4 +1,4 @@
-package com.celebstyle.api.domain;
+package com.celebstyle.api.celeb;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Celeb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +29,14 @@ public class Celeb {
 
     @Column(length = 50)
     private String instagramName;
+
+    @Builder
+    public Celeb(String name,String profileImageUrl,String instagramName){
+        if(name == null || profileImageUrl == null || instagramName == null){
+            throw new IllegalArgumentException("Cannot be Empty");
+        }
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+        this.instagramName = instagramName;
+    }
 }

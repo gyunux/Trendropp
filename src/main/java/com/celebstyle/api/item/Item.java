@@ -1,5 +1,6 @@
-package com.celebstyle.api.domain;
+package com.celebstyle.api.item;
 
+import com.celebstyle.api.brand.Brand;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,21 +17,24 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Outfit {
+@NoArgsConstructor
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="outfit_id")
+    @Column(name = "item_id")
     private Long id;
 
-    @Column(nullable = false,length = 2048)
-    private String originImageUrl;
+    @Column(nullable = false)
+    private String name;
 
-    private String source;
-    private LocalDateTime sourceDate;
+    @Column(nullable = false,length = 2048)
+    private String imageUrl;
+
+    @Column(nullable = false,length = 2048)
+    private String productUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="celeb_id")
-    private Celeb celeb;
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 }

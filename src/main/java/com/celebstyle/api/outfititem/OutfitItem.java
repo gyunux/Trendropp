@@ -1,5 +1,7 @@
-package com.celebstyle.api.domain;
+package com.celebstyle.api.outfititem;
 
+import com.celebstyle.api.item.Item;
+import com.celebstyle.api.outfit.Outfit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
