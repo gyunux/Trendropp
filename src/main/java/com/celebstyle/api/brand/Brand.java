@@ -1,4 +1,4 @@
-package com.celebstyle.api.domain;
+package com.celebstyle.api.brand;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
