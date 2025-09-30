@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 사이드바 조각 -->
+<aside class="sidebar" th:fragment="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="logo">CelebStyle</a>
+    </div>
+    <nav class="sidebar-nav">
+        <ul>
+            <!-- 'active' 클래스로 현재 페이지를 표시합니다. -->
+            <li><a href="/admin/celebs" class="active">셀럽 관리</a></li>
+            <li><a href="/admin/outfits">착장 관리</a></li>
+        </ul>
+    </nav>
+</aside>
+</body>
+</html>
