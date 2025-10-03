@@ -1,84 +1,161 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('--- [Checkpoint 1] 스크립트 파일이 시작되었습니다. ---');
 
-    // 필요한 DOM 요소들을 변수에 할당
+    // --- 공통 변수 ---
+    const mainTableBody = document.querySelector('.celeb-table tbody');
+    console.log('--- [Checkpoint 2] 테이블 tbody 요소를 찾았습니다: ', mainTableBody);
+
+    // --- 새 셀럽 등록 관련 ---
+    const addModal = document.getElementById('celeb-modal');
     const addCelebBtn = document.getElementById('add-celeb-btn');
-    const modal = document.getElementById('celeb-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const cancelBtn = document.getElementById('cancel-btn');
-    const celebForm = document.getElementById('celeb-form');
+    const addForm = document.getElementById('celeb-form');
+    console.log('--- [Checkpoint 3] 새 셀럽 등록 관련 요소를 찾았습니다.');
 
-    // 모달을 여는 함수
-    const openModal = () => {
-        modal.classList.add('active');
-    };
-
-    // 모달을 닫는 함수
-    const closeModal = () => {
-        modal.classList.remove('active');
-        celebForm.reset(); // 모달이 닫힐 때 폼 내용을 초기화
-    };
-
-    // 이벤트 리스너 할당
     if (addCelebBtn) {
-        addCelebBtn.addEventListener('click', openModal);
-    }
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', closeModal);
+        addCelebBtn.addEventListener('click', () => {
+            console.log("새 셀럽 등록 버튼 클릭! 모달을 엽니다.");
+            addModal.classList.add('active');
+        });
     }
 
-    // 모달의 회색 배경을 클릭했을 때 닫히도록 설정
-    if (modal) {
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                closeModal();
+    if (addModal) {
+        addModal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-btn') || e.target.classList.contains('cancel-btn')) {
+                console.log("새 셀럽 등록 모달을 닫습니다.");
+                addModal.classList.remove('active');
+                addForm.reset();
             }
         });
     }
 
-    // 폼 제출(저장) 이벤트 처리
-    if (celebForm) {
-        celebForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // 폼의 기본 제출(페이지 새로고침) 동작을 막음
-
-            // 폼에서 데이터 추출
+    if (addForm) {
+        addForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log("새 셀럽 등록 폼 제출(저장) 이벤트 발생!");
             const formData = {
                 name: document.getElementById('celeb-name').value,
                 profileImageUrl: document.getElementById('profile-image-url').value,
-                instagramUsername: document.getElementById('instagram-name').value
+                instagramName: document.getElementById('instagram-name').value
             };
+            console.log("전송할 데이터:", formData);
 
-            // ⭐ 백엔드 개발자를 위한 API 계약서 (JSON Payload)
-            console.log('--- 백엔드로 전송될 JSON 데이터 ---');
-            console.log(JSON.stringify(formData, null, 2));
-
-            // 실제 API 호출 로직 (fetch 사용)
-            fetch('/api/v1/admin/celebs', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => {
-                    if (response.status === 201) { // 201 Created 응답을 확인
-                        return response.json();
-                    }
-                    throw new Error('셀럽 등록에 실패했습니다.');
-                })
-                .then(data => {
-                    console.log('성공:', data);
-                    alert('셀럽이 성공적으로 등록되었습니다!');
-                    closeModal();
-                    // 성공 후 목록을 새로고침하기 위해 페이지를 다시 로드
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    console.error('오류:', error);
-                    alert(error.message);
+            try {
+                const response = await fetch('/api/v1/celebs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
                 });
+                if (!response.ok) throw new Error('등록에 실패했습니다. 상태 코드: ' + response.status);
+                alert('성공적으로 등록되었습니다.');
+                window.location.reload();
+            } catch (error) {
+                console.error("새 셀럽 등록 API 호출 중 에러 발생:", error);
+                alert(error.message);
+            }
         });
     }
+
+    // --- 수정 및 삭제 관련 ---
+    const editModal = document.getElementById('edit-celeb-modal');
+    const editForm = document.getElementById('edit-celeb-form');
+    console.log('--- [Checkpoint 4] 수정 모달 요소를 찾았습니다: ', editModal);
+
+    if (mainTableBody) {
+        mainTableBody.addEventListener('click', (e) => {
+            console.log('--- [Checkpoint 5] 테이블 영역에서 클릭 이벤트가 발생했습니다! ---');
+
+            const target = e.target;
+            console.log('실제로 클릭된 요소 (e.target):', target);
+
+            // 버튼 클래스 확인
+            const isEditButton = target.classList.contains('edit-btn');
+            console.log("클릭된 요소가 '.edit-btn' 인가?", isEditButton);
+            const isDeleteButton = target.classList.contains('delete-btn');
+            console.log("클릭된 요소가 '.delete-btn' 인가?", isDeleteButton);
+
+            const row = target.closest('tr');
+            if (!row) {
+                console.log("클릭된 요소의 부모 <tr>을 찾지 못했습니다. 이벤트를 무시합니다.");
+                return;
+            }
+            console.log("클릭된 요소의 부모 <tr>을 찾았습니다. data-id:", row.dataset.id);
+
+            const celebId = row.dataset.id;
+
+            // 수정 버튼 클릭 시
+            if (isEditButton) {
+                console.log('>>> 수정 버튼 로직을 실행합니다.');
+                document.getElementById('edit-celeb-id').value = celebId;
+                document.getElementById('edit-celeb-name').value = row.querySelector('.celeb-name').textContent;
+                document.getElementById('edit-profile-image-url').value = row.querySelector('.profile-img').src;
+                document.getElementById('edit-instagram-name').value = row.querySelector('td:nth-child(3)').textContent; // Instagram 이름 가져오기
+                editModal.classList.add('active');
+            }
+
+            // 삭제 버튼 클릭 시
+            if (isDeleteButton) {
+                console.log('>>> 삭제 버튼 로직을 실행합니다.');
+                if (confirm(`정말로 이 셀럽(ID: ${celebId})을 삭제하시겠습니까?`)) {
+                    deleteCeleb(celebId);
+                }
+            }
+        });
+    } else {
+        console.error("### 심각: mainTableBody 요소를 찾지 못했습니다. HTML의 클래스 이름이나 구조를 확인하세요. ###");
+    }
+
+    // 수정 모달 닫기
+    if (editModal) {
+        editModal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-btn') || e.target.classList.contains('cancel-btn')) {
+                console.log("수정 모달을 닫습니다.");
+                editModal.classList.remove('active');
+                editForm.reset();
+            }
+        });
+    }
+
+    // 수정 폼 제출(저장) 이벤트 처리
+    if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const celebId = document.getElementById('edit-celeb-id').value;
+            console.log(`수정 폼 제출! 대상 ID: ${celebId}`);
+            const updatedData = {
+                profileImageUrl: document.getElementById('edit-profile-image-url').value,
+                instagramName: document.getElementById('edit-instagram-name').value
+            };
+            console.log("수정할 데이터:", updatedData);
+
+            try {
+                const response = await fetch(`/api/v1/celebs/${celebId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+                if (!response.ok) throw new Error('수정에 실패했습니다. 상태 코드: ' + response.status);
+                alert('성공적으로 수정되었습니다.');
+                window.location.reload();
+            } catch (error) {
+                console.error(`ID ${celebId} 셀럽 수정 API 호출 중 에러 발생:`, error);
+                alert(error.message);
+            }
+        });
+    }
+
+    // 셀럽 삭제 API 호출 함수
+    const deleteCeleb = async (celebId) => {
+        console.log(`삭제 함수 호출! 대상 ID: ${celebId}`);
+        try {
+            const response = await fetch(`/api/v1/celebs/${celebId}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('삭제에 실패했습니다. 상태 코드: ' + response.status);
+            alert('성공적으로 삭제되었습니다.');
+            window.location.reload();
+        } catch (error) {
+            console.error(`ID ${celebId} 셀럽 삭제 API 호출 중 에러 발생:`, error);
+            alert(error.message);
+        }
+    };
 });

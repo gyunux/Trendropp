@@ -39,4 +39,9 @@ public class Celeb {
         this.profileImageUrl = profileImageUrl;
         this.instagramName = instagramName;
     }
+
+    public void updateInfo(String profileImageUrl, String instagramName) {
+        this.profileImageUrl = profileImageUrl;
+        this.instagramName = instagramName;
+    }
 }

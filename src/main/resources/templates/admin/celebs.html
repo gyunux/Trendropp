@@ -23,7 +23,6 @@
             <table class="celeb-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Profile</th>
                     <th>Name</th>
                     <th>Instagram</th>
@@ -32,16 +31,15 @@
                 </thead>
                 <tbody>
                 <!-- Controller에서 넘겨준 'celebs' 리스트를 순회하며 테이블 행을 생성합니다. -->
-                <tr th:each="celeb : ${celebs}">
-                    <td th:text="${celeb.id}">1</td>
+                <tr th:each="celeb : ${celebs}" th:attr="data-id=${celeb.id}">
                     <td>
                         <img th:src="${celeb.profileImageUrl}" alt="Profile Image" class="profile-img">
                     </td>
-                    <td th:text="${celeb.name}">제니 (Jennie)</td>
-                    <td th:text="${celeb.instagramUsername}">jennierubyjane</td>
+                    <td class="celeb-name" th:text="${celeb.name}">제니 (Jennie)</td>
+                    <td class="celeb-insta" th:text="${celeb.instagramName}">jennierubyjane</td>
                     <td>
-                        <button class="btn btn-secondary btn-sm">수정</button>
-                        <button class="btn btn-danger btn-sm">삭제</button>
+                        <button class="btn btn-secondary btn-sm edit-btn">수정</button>
+                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
                     </td>
                 </tr>
                 <!-- 데이터가 없을 경우 -->
@@ -72,7 +70,7 @@
                     <input type="url" id="profile-image-url">
                 </div>
                 <div class="form-group">
-                    <label for="instagram-name">인스타그램 아이디</label>
+                    <label for="instagram-name">인스타그램 주소</label>
                     <input type="text" id="instagram-name">
                 </div>
             </div>
@@ -83,7 +81,36 @@
         </form>
     </div>
 </div>
-
+<!--셀럽 수정 모달-->
+<div id="edit-celeb-modal" class="modal-overlay">
+    <div class="modal-content">
+        <form id="edit-celeb-form">
+            <input type="hidden" id="edit-celeb-id">
+            <div class="modal-header">
+                <h2>셀럽 정보 수정</h2>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit-celeb-name">이름 (수정 불가)</label>
+                    <input type="text" id="edit-celeb-name" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="edit-profile-image-url">프로필 이미지 URL</label>
+                    <input type="url" id="edit-profile-image-url" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-instagram-name">인스타그램 주소</label>
+                    <input type="text" id="edit-instagram-name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancel-btn">취소</button>
+                <button type="submit" class="btn btn-primary">수정 완료</button>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- 분리된 JavaScript 파일을 링크합니다. -->
 <script th:src="@{/js/celeb-admin.js}"></script>
 </body>

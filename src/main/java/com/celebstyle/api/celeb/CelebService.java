@@ -2,6 +2,11 @@ package com.celebstyle.api.celeb;
 
 import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
+import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
+import com.celebstyle.api.celeb.dto.CelebView;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,5 +27,39 @@ public class CelebService {
         Celeb celeb = celebRepository.save(newCeleb);
 
         return CelebCreateResponse.fromEntity(celeb);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CelebView> findAllForAdminView(){
+        List<Celeb> celebList = celebRepository.findAll();
+        List<CelebView> celebViewList = new ArrayList<>();
+        for(Celeb celeb : celebList){
+            celebViewList.add(
+                    CelebView.builder()
+                            .id(celeb.getId())
+                            .name(celeb.getName())
+                            .profileImageUrl(celeb.getProfileImageUrl())
+                            .instagramName(celeb.getInstagramName())
+                            .build()
+            );
+        }
+        return celebViewList;
+    }
+
+    @Transactional
+    public void update(Long id, CelebUpdateRequest request) {
+        Celeb celeb = celebRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 셀럽을 찾을 수 없습니다: " + id));
+
+        celeb.updateInfo(request.getProfileImageUrl(), request.getInstagramName());
+
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!celebRepository.existsById(id)) {
+            throw new EntityNotFoundException("해당 ID의 셀럽을 찾을 수 없습니다: " + id);
+        }
+        celebRepository.deleteById(id);
     }
 }
