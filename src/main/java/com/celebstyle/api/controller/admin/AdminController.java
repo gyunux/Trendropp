@@ -1,7 +1,11 @@
 package com.celebstyle.api.controller.admin;
 
+import com.celebstyle.api.celeb.Celeb;
+import com.celebstyle.api.celeb.CelebService;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
+import com.celebstyle.api.celeb.dto.CelebView;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
 
-    // private final CelebService celebService;
-    // public AdminController(CelebService celebService) { this.celebService = celebService; }
+     private final CelebService celebService;
 
     @GetMapping
     public String adminRoot(Model model) {
@@ -27,13 +31,7 @@ public class AdminController {
     @GetMapping("/celebs")
     public String getCelebDashboard(Model model) {
         // 실제로는 Service를 통해 DB에서 데이터를 가져옵니다.
-        // List<CelebResponse> celebs = celebService.findAllCelebs();
-
-        // 지금은 프론트엔드 개발을 위한 가짜(mock) 데이터를 사용합니다.
-        List<CelebCreateResponse> celebs = List.of(
-
-        );
-
+         List<CelebView> celebs = celebService.findAllForAdminView();
         model.addAttribute("celebs", celebs);
 
         // Thymeleaf가 /resources/templates/admin/celebs.html 파일을 찾도록 합니다.
