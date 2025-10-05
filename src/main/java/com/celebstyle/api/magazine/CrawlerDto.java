@@ -1,5 +1,6 @@
 package com.celebstyle.api.magazine;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,4 +15,5 @@ public class CrawlerDto {
     private List<String> imageUrls;
     private String source;
     private String body;
+    private LocalDate articleDate;
 }
