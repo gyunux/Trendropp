@@ -1,5 +1,7 @@
 package com.celebstyle.api.controller.admin;
 
+import com.celebstyle.api.article.ArticleAdminView;
+import com.celebstyle.api.article.ArticleService;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebService;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
@@ -16,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class AdminController {
 
-     private final CelebService celebService;
-
+    private final CelebService celebService;
+    private final ArticleService articleService;
     @GetMapping
     public String adminRoot(Model model) {
         model.addAttribute("totalCelebs",null);
@@ -48,4 +50,11 @@ public class AdminController {
 //        return "admin/outfits";
 //    }
 
+    @GetMapping("/articles")
+    public String getArticleDashboard(Model model){
+        List<ArticleAdminView> articles = articleService.findAllForAdminView();
+        model.addAttribute("articles",articles);
+
+        return "admin/articles";
+    }
 }

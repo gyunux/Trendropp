@@ -6,6 +6,8 @@ import com.celebstyle.api.celeb.CelebRepository;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -128,13 +130,24 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         new WebDriverWait(driver, Duration.ofSeconds(20))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.contt")));
 
-        //기사 타이틀 가져오기
         Document doc = Jsoup.parse(driver.getPageSource());
         Element titleElement = doc.getElementsByClass("post_tit pc").first();
         String title = (titleElement != null) ? titleElement.text() : "제목 없음";
 
-        log.info("--- 필터링 체크 --- 기사 제목: \"{}\"", title);
-
+        LocalDate articleDate = null;
+        try {
+            // 1. 날짜가 포함된 <p class="date"> 요소 선택
+            Element dateElement = doc.select("p.date").first();
+            if (dateElement != null) {
+                // 2. "2025.10.02 by 하솔휘" 같은 텍스트에서 날짜 부분만 추출
+                String dateString = dateElement.ownText().trim();
+                // 3. "yyyy.MM.dd" 형식에 맞게 LocalDate 객체로 변환
+                articleDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+            }
+        } catch (Exception e) {
+            log.warn("날짜 파싱 중 에러 발생, URL: {}. 오늘 날짜로 대체합니다.", url);
+            articleDate = LocalDate.now(); // 파싱 실패 시 오늘 날짜로 저장
+        }
 
         boolean isDomesticCelebArticle = koreanCelebNames.stream()
                 .anyMatch(title::contains);
@@ -159,7 +172,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
 
         log.info("국내 연예인 기사 수집: {}", title);
         if (!title.equals("제목 없음") && !url.isEmpty() && !imageUrls.isEmpty()) {
-            return new CrawlerDto(title, url, imageUrls, getSource(), body);
+            return new CrawlerDto(title, url, imageUrls, getSource(), body,articleDate);
         }
         return null;
     }

@@ -1,8 +1,11 @@
-package com.celebstyle.api.magazine;
+package com.celebstyle.api.article;
 
-import com.celebstyle.api.article.Article;
-import com.celebstyle.api.article.ArticleRepository;
+import com.celebstyle.api.celeb.Celeb;
+import com.celebstyle.api.magazine.CrawlerDto;
+import com.celebstyle.api.magazine.MagazineCrawler;
+import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CrawlingService {
-
+public class ArticleService {
     private final MagazineCrawler magazineCrawler;
     private final ArticleRepository articleRepository;
 
+
+    //크롤링해온 데이터를 기사 엔티티에 저장
     @Transactional
     public void saveCrawledArticles(){
         try{
@@ -36,4 +40,20 @@ public class CrawlingService {
             log.error("크롤링 중 에러 발생: {}",e.getMessage());
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<ArticleAdminView> findAllForAdminView(){
+        return articleRepository.findAllByOrderByArticleDateDesc().stream()
+                .map(ArticleAdminView::fromEntity)
+                .toList();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!articleRepository.existsById(id)) {
+            throw new EntityNotFoundException("해당 ID의 셀럽을 찾을 수 없습니다: " + id);
+        }
+        articleRepository.deleteById(id);
+    }
+
 }

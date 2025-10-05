@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,9 @@ public class Article {
     @Lob
     private String body;
 
+    private boolean processed;
+
+    private LocalDate articleDate;
 
     public Article(CrawlerDto dto) {
         this.title = dto.getTitle();
@@ -42,5 +46,7 @@ public class Article {
         this.imageUrls = dto.getImageUrls();
         this.source = dto.getSource();
         this.body = dto.getBody();
+        this.processed = false;
+        this.articleDate = dto.getArticleDate();
     }
 }
