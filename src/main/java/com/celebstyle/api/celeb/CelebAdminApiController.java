@@ -3,10 +3,13 @@ package com.celebstyle.api.celeb;
 import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
+import com.celebstyle.api.celeb.dto.CelebAdminView;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/v1/celebs")
+@RequestMapping("/api/admin/celebs")
 @RequiredArgsConstructor
-public class CelebApiController {
+public class CelebAdminApiController {
     private final CelebService celebService;
 
     @PostMapping

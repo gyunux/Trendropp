@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CelebStyle - 브랜드 관리</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>브랜드 관리</h1>
+            <div class="header-actions">
+                <input type="search" id="brand-search-input" placeholder="브랜드 이름 검색...">
+                <button id="add-brand-btn" class="btn btn-primary">+ 새 브랜드 등록</button>
+            </div>
+        </header>
+
+        <div class="content-body">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>영문 이름</th>
+                    <th>한글 이름</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody id="brand-table-body">
+                <tr th:each="brand : ${brands}" th:attr="data-id=${brand.id}">
+                    <td class="brand-en-name" th:text="${brand.englishName}">English Name</td>
+                    <td class="brand-ko-name" th:text="${brand.koreanName}">Korean Name</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm edit-btn">수정</button>
+                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(brands)}">
+                    <td colspan="3" class="no-data">등록된 브랜드가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<div id="add-brand-modal" class="modal-overlay">
+    <div class="modal-content">
+        <form id="add-brand-form">
+            <div class="modal-header"><h2>새 브랜드 등록</h2><button type="button" class="close-btn">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label for="add-en-name">영문 이름</label><input type="text" id="add-en-name" required></div>
+                <div class="form-group"><label for="add-ko-name">한글 이름</label><input type="text" id="add-ko-name" required></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary cancel-btn">취소</button><button type="submit" class="btn btn-primary">저장</button></div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/brand-admin.js}"></script>
+</body>
+</html>
