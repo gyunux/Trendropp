@@ -3,7 +3,7 @@ package com.celebstyle.api.celeb;
 import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
-import com.celebstyle.api.celeb.dto.CelebView;
+import com.celebstyle.api.celeb.dto.CelebAdminView;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +30,12 @@ public class CelebService {
     }
 
     @Transactional(readOnly = true)
-    public List<CelebView> findAllForAdminView(){
+    public List<CelebAdminView> findAllForAdminView(){
         List<Celeb> celebList = celebRepository.findAll();
-        List<CelebView> celebViewList = new ArrayList<>();
+        List<CelebAdminView> celebViewList = new ArrayList<>();
         for(Celeb celeb : celebList){
             celebViewList.add(
-                    CelebView.builder()
+                    CelebAdminView.builder()
                             .id(celeb.getId())
                             .name(celeb.getName())
                             .profileImageUrl(celeb.getProfileImageUrl())

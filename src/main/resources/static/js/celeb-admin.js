@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('--- [Checkpoint 1] 스크립트 파일이 시작되었습니다. ---');
 
     // --- 공통 변수 ---
     const mainTableBody = document.querySelector('.celeb-table tbody');
-    console.log('--- [Checkpoint 2] 테이블 tbody 요소를 찾았습니다: ', mainTableBody);
+    // ▼▼▼ API 기본 URL을 상수로 관리합니다. ▼▼▼
+    const API_BASE_URL = '/api/admin/celebs';
 
     // --- 새 셀럽 등록 관련 ---
     const addModal = document.getElementById('celeb-modal');
     const addCelebBtn = document.getElementById('add-celeb-btn');
     const addForm = document.getElementById('celeb-form');
-    console.log('--- [Checkpoint 3] 새 셀럽 등록 관련 요소를 찾았습니다.');
 
     if (addCelebBtn) {
         addCelebBtn.addEventListener('click', () => {
@@ -40,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("전송할 데이터:", formData);
 
             try {
-                const response = await fetch('/api/v1/celebs', {
+                // ▼▼▼ API_BASE_URL 사용 ▼▼▼
+                const response = await fetch(API_BASE_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -58,11 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 수정 및 삭제 관련 ---
     const editModal = document.getElementById('edit-celeb-modal');
     const editForm = document.getElementById('edit-celeb-form');
-    console.log('--- [Checkpoint 4] 수정 모달 요소를 찾았습니다: ', editModal);
 
     if (mainTableBody) {
         mainTableBody.addEventListener('click', (e) => {
-            console.log('--- [Checkpoint 5] 테이블 영역에서 클릭 이벤트가 발생했습니다! ---');
 
             const target = e.target;
             console.log('실제로 클릭된 요소 (e.target):', target);
@@ -88,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('edit-celeb-id').value = celebId;
                 document.getElementById('edit-celeb-name').value = row.querySelector('.celeb-name').textContent;
                 document.getElementById('edit-profile-image-url').value = row.querySelector('.profile-img').src;
-                document.getElementById('edit-instagram-name').value = row.querySelector('td:nth-child(3)').textContent; // Instagram 이름 가져오기
+                document.getElementById('edit-instagram-name').value = row.querySelector('td:nth-child(3)').textContent;
                 editModal.classList.add('active');
             }
 
@@ -128,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("수정할 데이터:", updatedData);
 
             try {
-                const response = await fetch(`/api/v1/celebs/${celebId}`, {
+                // ▼▼▼ API_BASE_URL 사용 ▼▼▼
+                const response = await fetch(`${API_BASE_URL}/${celebId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updatedData)
@@ -147,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteCeleb = async (celebId) => {
         console.log(`삭제 함수 호출! 대상 ID: ${celebId}`);
         try {
-            const response = await fetch(`/api/v1/celebs/${celebId}`, {
+            // ▼▼▼ API_BASE_URL 사용 ▼▼▼
+            const response = await fetch(`${API_BASE_URL}/${celebId}`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('삭제에 실패했습니다. 상태 코드: ' + response.status);
