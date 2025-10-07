@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Celebrity Fashion</title>
+    <title>Celeb's Pick</title>
     <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-<header>
-    <h1>CELEB'S PICK</h1>
-</header>
-<main>
+
+<div th:replace="~{common/fragments :: sidebar}"></div>
+
+<main class="main-content">
+    <header>
+        <h1>CELEB'S PICK</h1>
+    </header>
     <div id="fashion-container" class="fashion-grid">
     </div>
 </main>
