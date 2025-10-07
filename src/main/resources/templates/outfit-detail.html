@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${outfit.title} + ' - Celeb\'s Pick'">착장 상세 정보</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/outfit-detail-page.css}">
+</head>
+<body>
+
+<div th:replace="~{common/fragments :: sidebar}"></div>
+
+<main class="main-content">
+    <div class="detail-container">
+
+        <div class="image-section">
+            <img th:src="${outfit.originImageUrl}" th:alt="${outfit.title}" class="main-outfit-image">
+        </div>
+
+        <div class="info-section">
+            <h1 class="outfit-title" th:text="${outfit.title}">251007 공항패션</h1>
+            <div class="celeb-profile">
+                <img th:src="${outfit.celeb.profileImageUrl}" alt="" class="celeb-avatar">
+                <span class="celeb-name" th:text="${outfit.celeb.name}">셀럽 이름</span>
+            </div>
+
+            <div class="metadata">
+                <span class="source-type" th:text="${outfit.sourceType.description}">출처 종류</span>
+                <span class="source-date" th:if="${outfit.sourceDate}" th:text="${#temporals.format(outfit.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
+            </div>
+
+            <hr>
+
+            <div class="items-section">
+                <h2>착용 아이템</h2>
+                <ul class="item-list">
+                    <li th:each="item : ${outfit.items}" class="item-card">
+                        <img th:src="${item.productImageUrl}" alt="" class="item-image">
+                        <div class="item-info">
+                            <p class="item-brand" th:text="${item.brandName}">Brand</p>
+                            <p class="item-name" th:text="${item.productName}">Item Name</p>
+                        </div>
+                        <a th:href="${item.productUrl}" target="_blank" class="btn-purchase">구매하러 가기</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="/js/script.js"></script>
+</body>
+</html>

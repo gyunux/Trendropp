@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CelebStyle - 커스텀 착장 만들기</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>커스텀 착장 정보 만들기</h1>
+        </header>
+
+        <div class="content-body">
+            <form id="outfit-create-form">
+                <div class="form-group">
+                    <label for="mainImageUrl">대표 이미지 URL</label>
+                    <input type="url" id="mainImageUrl" placeholder="등록할 착장 이미지의 URL을 붙여넣으세요." required>
+                </div>
+                <div class="image-preview-wrapper">
+                    <img id="image-preview" src="" alt="이미지 미리보기" class="image-preview">
+                </div>
+
+                <hr>
+                <div class="form-group">
+                    <label for="outfit-title">착장 제목</label>
+                    <input type="text" id="outfit-title" placeholder="예: 250920 인스타 업로드" required>
+                </div>
+                <div class="form-group">
+                    <label>셀럽</label>
+                    <select id="celebId" required>
+                        <option value="">-- 셀럽 선택 --</option>
+                        <option th:each="celeb : ${celebs}" th:value="${celeb.id}" th:text="${celeb.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>출처 종류</label>
+                    <select id="sourceType" required>
+                        <option th:each="type : ${sourceTypes}" th:value="${type.name()}" th:text="${type.description}" th:selected="${type.name() == 'DIRECT'}"></option>
+                    </select>
+                </div>
+
+                <hr>
+                <h4>아이템 정보</h4>
+                <div id="items-container"></div>
+                <button type="button" id="add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">착장 정보 저장</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    const allBrands = /*[[${brands}]]*/ [];
+    /* ]]> */
+</script>
+<script th:src="@{/js/outfit-custom-creator.js}"></script>
+</body>
+</html>
