@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CelebStyle - 착장 관리</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>착장 관리</h1>
+            <div class="header-actions">
+                <input type="search" id="outfit-search-input" placeholder="셀럽 이름으로 검색...">
+                <a th:href="@{/admin/outfits/new/custom}" class="btn btn-primary">+ 새 착장 만들기</a>
+            </div>
+        </header>
+
+        <div class="content-body">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>대표 이미지</th>
+                    <th>셀럽</th>
+                    <th>아이템 수</th>
+                    <th>출처</th>
+                    <th>업로드 날짜</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody id="outfit-table-body">
+                <tr th:each="outfit : ${outfits}" th:attr="data-id=${outfit.id}">
+                    <td><img th:src="${outfit.originImageUrl}" alt="Outfit" class="thumbnail-img"></td>
+                    <td class="outfit-celeb-name" th:text="${outfit.celeb.name}">셀럽 이름</td>
+                    <td th:text="${outfit.itemCount} + '개'">3개</td>
+                    <td th:text="${outfit.sourceType.description}">인스타그램</td>
+                    <td th:text="${#temporals.format(outfit.uploadDate, 'yyyy-MM-dd HH:mm')}">2025-10-06 14:02</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm edit-btn">수정</button>
+                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(outfits)}">
+                    <td colspan="6" class="no-data">등록된 착장이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<div id="edit-outfit-modal" class="modal-overlay">
+    <div class="modal-content large">
+        <form id="edit-outfit-form">
+            <input type="hidden" id="edit-outfit-id">
+            <div class="modal-header"><h2>착장 정보 수정</h2><button type="button" class="close-btn">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>셀럽</label><select id="edit-celebId" required></select></div>
+                <div class="form-group"><label>출처 종류</label><select id="edit-sourceType" required></select></div>
+                <div class="form-group"><label>출처 URL</label><input type="url" id="edit-sourceUrl" required></div>
+                <div class="form-group"><label>원본 날짜</label><input type="datetime-local" id="edit-sourceDate" required></div>
+                <div class="form-group"><label>대표 이미지 URL</label><input type="url" id="edit-mainImageUrl" required></div>
+
+                <hr>
+                <h4>아이템 정보</h4>
+                <div id="edit-items-container">
+                </div>
+                <button type="button" id="edit-add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary cancel-btn">취소</button><button type="submit" class="btn btn-primary">수정 완료</button></div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/outfit-admin.js}"></script>
+</body>
+</html>

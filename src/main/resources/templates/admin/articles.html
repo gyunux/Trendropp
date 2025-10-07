@@ -29,27 +29,25 @@
                 </thead>
                 <tbody id="article-table-body">
                 <tr th:each="article : ${articles}" th:attr="data-id=${article.id}">
-                    <td class="article-date" th:text="${#temporals.format(article.articleDate, 'yyyy-MM-dd')}">기사 날짜가 여기에 표시됩니다.</td>
+                    <td class="article-date" th:text="${#temporals.format(article.articleDate, 'yyyy-MM-dd')}"></td>
                     <td>
                         <img th:if="${article.thumbnailImageUrl != null}" th:src="${article.thumbnailImageUrl}" alt="Thumbnail" class="thumbnail-img">
                     </td>
-                    <td class="article-title" th:text="${article.title}">기사 제목이 여기에 표시됩니다.</td>
+                    <td class="article-title" th:text="${article.title}"></td>
                     <td>
                         <a th:href="${article.articleUrl}" target="_blank" class="btn-view-article">원본 기사 보기</a>
                     </td>
                     <td>
-                    <span class="status-badge"
-                          th:text="${article.isProcessed ? '처리완료' : '미처리'}"
-                          th:classappend="${article.isProcessed ? 'status-processed' : 'status-unprocessed'}">
-                    </span>
+            <span class="status-badge"
+                  th:text="${article.isProcessed ? '처리완료' : '미처리'}"
+                  th:classappend="${article.isProcessed ? 'status-processed' : 'status-unprocessed'}">
+            </span>
                     </td>
+
                     <td class="action-buttons">
                         <a th:href="@{/admin/outfits/new(articleId=${article.id})}" class="btn btn-primary btn-sm">착장 만들기</a>
                         <button class="btn btn-danger btn-sm delete-article-btn">삭제</button>
                     </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(articles)}">
-                    <td colspan="4" class="no-data">가공할 기사가 없습니다.</td>
                 </tr>
                 </tbody>
             </table>

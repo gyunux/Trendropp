@@ -2,8 +2,10 @@ package com.celebstyle.api.brand;
 
 import com.celebstyle.api.brand.dto.BrandCreateRequest;
 import com.celebstyle.api.brand.dto.BrandAdminView;
+import com.celebstyle.api.brand.dto.BrandView;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +31,12 @@ public class BrandAdminApiController {
                 .buildAndExpand(createdBrand.getId())
                 .toUri();
         return ResponseEntity.created(location).body(createdBrand);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BrandView>> getAllBrandsForSelection() {
+        List<BrandView> brands = brandService.findAllBrandsName();
+        return ResponseEntity.ok(brands);
     }
 
     @GetMapping("/{id}")

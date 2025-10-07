@@ -4,6 +4,7 @@ import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
 import com.celebstyle.api.celeb.dto.CelebAdminView;
+import com.celebstyle.api.celeb.dto.CelebView;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,16 @@ public class CelebService {
                             .instagramName(celeb.getInstagramName())
                             .build()
             );
+        }
+        return celebViewList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CelebView> findAllForCelebsName(){
+        List<Celeb> celebList = celebRepository.findAll();
+        List<CelebView> celebViewList = new ArrayList<>();
+        for(Celeb celeb : celebList){
+            celebViewList.add(new CelebView(celeb));
         }
         return celebViewList;
     }

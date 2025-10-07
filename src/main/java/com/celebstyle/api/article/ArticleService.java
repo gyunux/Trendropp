@@ -48,6 +48,11 @@ public class ArticleService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public Article findById(Long id){
+        return articleRepository.findById(id).orElseThrow();
+    }
+
     @Transactional
     public void delete(Long id) {
         if (!articleRepository.existsById(id)) {
