@@ -4,6 +4,7 @@ import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
 import com.celebstyle.api.celeb.dto.CelebAdminView;
+import com.celebstyle.api.celeb.dto.CelebView;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -36,6 +37,12 @@ public class CelebAdminApiController {
                 .toUri();
 
         return ResponseEntity.created(location).body(resp);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CelebView>> getAllCelebsForSelection() {
+        List<CelebView> celebs = celebService.findAllForCelebsName();
+        return ResponseEntity.ok(celebs);
     }
 
     @PutMapping("/{id}")
