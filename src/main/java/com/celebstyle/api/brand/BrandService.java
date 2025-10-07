@@ -2,6 +2,7 @@ package com.celebstyle.api.brand;
 
 import com.celebstyle.api.brand.dto.BrandCreateRequest;
 import com.celebstyle.api.brand.dto.BrandAdminView;
+import com.celebstyle.api.brand.dto.BrandView;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,13 @@ public class BrandService {
     public List<BrandAdminView> findAll() {
         return brandRepository.findAllByOrderByEnglishNameAsc().stream()
                 .map(BrandAdminView::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<BrandView> findAllBrandsName() {
+        return brandRepository.findAllByOrderByEnglishNameAsc().stream()
+                .map(BrandView::new)
                 .collect(Collectors.toList());
     }
 

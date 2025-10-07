@@ -9,4 +9,6 @@ public interface BrandRepository extends JpaRepository<Brand,Long> {
     boolean existsByEnglishName(String englishName);
 
     List<Brand> findAllByOrderByEnglishNameAsc();
+
+    Brand findByEnglishName(String brandName);
 }
