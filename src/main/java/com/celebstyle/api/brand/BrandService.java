@@ -1,7 +1,6 @@
 package com.celebstyle.api.brand;
 
 import com.celebstyle.api.brand.dto.BrandCreateRequest;
-import com.celebstyle.api.brand.dto.BrandAdminView;
 import com.celebstyle.api.brand.dto.BrandView;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -16,7 +15,7 @@ public class BrandService {
     private final BrandRepository brandRepository;
 
     @Transactional
-    public BrandAdminView createBrand(BrandCreateRequest request) {
+    public BrandView createBrand(BrandCreateRequest request) {
         if (brandRepository.existsByEnglishName(request.getEnglishName())) {
             throw new IllegalArgumentException("이미 존재하는 브랜드입니다: " + request.getEnglishName());
         }
@@ -26,28 +25,28 @@ public class BrandService {
                 .build();
 
         Brand savedBrand = brandRepository.save(brand);
-        return BrandAdminView.fromEntity(savedBrand);
+        return BrandView.fromEntity(savedBrand);
     }
 
     @Transactional(readOnly = true)
-    public List<BrandAdminView> findAll() {
+    public List<BrandView> findAll() {
         return brandRepository.findAllByOrderByEnglishNameAsc().stream()
-                .map(BrandAdminView::fromEntity)
+                .map(BrandView::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<BrandView> findAllBrandsName() {
         return brandRepository.findAllByOrderByEnglishNameAsc().stream()
-                .map(BrandView::new)
+                .map(BrandView::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public BrandAdminView findById(Long id) {
+    public BrandView findById(Long id) {
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("브랜드를 찾을 수 없습니다: " + id));
-        return BrandAdminView.fromEntity(brand);
+        return BrandView.fromEntity(brand);
     }
 
     @Transactional
