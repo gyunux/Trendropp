@@ -11,25 +11,24 @@
 <div th:replace="~{common/fragments :: sidebar}"></div>
 
 <main class="main-content">
-    <div class="detail-container">
+    <div class="detail-page-container">
 
-        <div class="image-section">
-            <img th:src="${outfit.originImageUrl}" th:alt="${outfit.title}" class="main-outfit-image">
-        </div>
-
-        <div class="info-section">
+        <header class="detail-header">
             <h1 class="outfit-title" th:text="${outfit.title}">251007 공항패션</h1>
             <div class="celeb-profile">
                 <img th:src="${outfit.celeb.profileImageUrl}" alt="" class="celeb-avatar">
                 <span class="celeb-name" th:text="${outfit.celeb.name}">셀럽 이름</span>
             </div>
-
             <div class="metadata">
                 <span class="source-type" th:text="${outfit.sourceType.description}">출처 종류</span>
                 <span class="source-date" th:if="${outfit.sourceDate}" th:text="${#temporals.format(outfit.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
             </div>
+        </header>
 
-            <hr>
+        <div class="detail-body">
+            <div class="image-section">
+                <img th:src="${outfit.originImageUrl}" th:alt="${outfit.title}" class="main-outfit-image">
+            </div>
 
             <div class="items-section">
                 <h2>착용 아이템</h2>
@@ -45,6 +44,7 @@
                 </ul>
             </div>
         </div>
+
     </div>
 </main>
 

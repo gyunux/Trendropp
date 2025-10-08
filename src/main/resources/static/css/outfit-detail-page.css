@@ -1,30 +1,20 @@
 /* --- 상세 페이지 레이아웃 --- */
-.detail-container {
-    display: flex;
-    gap: 50px;
-    padding: 40px;
-    max-width: 1400px;
+.detail-page-container {
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 40px;
 }
 
-.image-section {
-    flex: 1.2; /* 이미지 영역을 조금 더 넓게 */
-}
-
-.main-outfit-image {
-    width: 100%;
-    border-radius: 16px;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    object-position: top; /* 이미지를 위쪽 기준으로 보여줌 */
-}
-
-.info-section {
-    flex: 1;
+/* 상단 헤더 (제목, 셀럽 정보) */
+.detail-header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #282828;
+    padding-bottom: 30px;
 }
 
 .outfit-title {
-    font-size: 2.2em;
+    font-size: 2.5em;
     font-weight: bold;
     color: white;
     margin-top: 0;
@@ -32,10 +22,11 @@
 }
 
 .celeb-profile {
-    display: flex;
-    align-items: center;
+    display: flex; /* 자식 요소들을 가로로 배치 */
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* 아래쪽 간격을 살짝 줄임 */
 }
 
 .celeb-avatar {
@@ -51,23 +42,38 @@
 }
 
 .metadata {
-    display: flex;
-    gap: 15px;
     font-size: 0.9em;
     color: #b3b3b3;
-    margin-bottom: 25px;
 }
 
-hr {
-    border: none;
-    height: 1px;
-    background-color: #282828;
-    margin: 30px 0;
+
+/* 하단 2단 레이아웃 (이미지, 아이템 목록) */
+.detail-body {
+    display: flex;
+    gap: 50px;
 }
 
-/* --- 아이템 목록 스타일 --- */
+.image-section {
+    flex: 1.2;
+}
+
+.main-outfit-image {
+    width: 100%;
+    border-radius: 16px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    position: sticky; /* 스크롤 시 이미지가 상단에 고정되는 효과 */
+    top: 20px;
+}
+
+.items-section {
+    flex: 1;
+}
+
+/* --- 아이템 목록 스타일 (기존과 거의 동일) --- */
 .items-section h2 {
     font-size: 1.5em;
+    margin-top: 0;
     margin-bottom: 20px;
     color: white;
 }
@@ -102,30 +108,19 @@ hr {
     flex-grow: 1;
 }
 
-.item-info p {
-    margin: 0;
-    line-height: 1.4;
-}
-
-.item-brand {
-    font-size: 0.9em;
-    color: #b3b3b3;
-}
-
-.item-name {
-    font-size: 1.1em;
-    font-weight: 500;
-    color: white;
-}
+.item-info p { margin: 0; line-height: 1.4; }
+.item-brand { font-size: 0.9em; color: #b3b3b3; }
+.item-name { font-size: 1.1em; font-weight: 500; color: white; }
 
 .btn-purchase {
     text-decoration: none;
     padding: 8px 16px;
-    background-color: #1db954; /* 예시 색상 (Spotify Green) */
+    background-color: #1db954;
     color: white;
     border-radius: 20px;
     font-weight: bold;
     font-size: 0.9em;
+    white-space: nowrap; /* '구매하러 가기' 글자 줄바꿈 방지 */
     transition: background-color 0.2s;
 }
 
