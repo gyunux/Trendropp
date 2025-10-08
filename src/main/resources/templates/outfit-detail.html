@@ -34,10 +34,10 @@
                 <h2>착용 아이템</h2>
                 <ul class="item-list">
                     <li th:each="item : ${outfit.items}" class="item-card">
-                        <img th:src="${item.productImageUrl}" alt="" class="item-image">
+                        <img th:src="${item.imageUrl}" alt="" class="item-image">
                         <div class="item-info">
-                            <p class="item-brand" th:text="${item.brandName}">Brand</p>
-                            <p class="item-name" th:text="${item.productName}">Item Name</p>
+                            <p class="item-brand" th:text="${item.brand.englishName}">Brand</p>
+                            <p class="item-name" th:text="${item.name}">Item Name</p>
                         </div>
                         <a th:href="${item.productUrl}" target="_blank" class="btn-purchase">구매하러 가기</a>
                     </li>

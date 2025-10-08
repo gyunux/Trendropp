@@ -6,6 +6,7 @@ import com.celebstyle.api.item.Item;
 import com.celebstyle.api.item.ItemService;
 import com.celebstyle.api.item.dto.ItemRequest;
 import com.celebstyle.api.outfit.dto.OutfitAdminView;
+import com.celebstyle.api.outfit.dto.OutfitDetailView;
 import com.celebstyle.api.outfit.dto.SaveOutfitRequest;
 import com.celebstyle.api.outfititem.OutfitItem;
 import com.celebstyle.api.outfititem.OutfitItemRepository;
@@ -56,6 +57,12 @@ public class OutfitAdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public OutfitDetailView getOutfit(Long id){
+        Outfit outfit = outfitRepository.findById(id).orElseThrow();
+        return OutfitDetailView.fromEntity(outfit);
+    }
+
     @Transactional
     public void updateOutfit(Long outfitId, SaveOutfitRequest request) {
         Outfit outfit = outfitRepository.findById(outfitId)
@@ -71,7 +78,7 @@ public class OutfitAdminService {
         outfitItemRepository.deleteAllByOutfit(outfit);
 
         for (ItemRequest itemDto : request.getItems()) {
-            Item item = itemService.createItem(itemDto);
+            Item item = itemService.updateOrCreateItem(itemDto);
 
             OutfitItem outfitItem = new OutfitItem(outfit, item);
             outfitItemRepository.save(outfitItem);
