@@ -1,7 +1,6 @@
 package com.celebstyle.api.brand;
 
 import com.celebstyle.api.brand.dto.BrandCreateRequest;
-import com.celebstyle.api.brand.dto.BrandAdminView;
 import com.celebstyle.api.brand.dto.BrandView;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -24,8 +23,8 @@ public class BrandAdminApiController {
     private final BrandService brandService;
 
     @PostMapping
-    public ResponseEntity<BrandAdminView> createBrand(@Valid @RequestBody BrandCreateRequest request) {
-        BrandAdminView createdBrand = brandService.createBrand(request);
+    public ResponseEntity<BrandView> createBrand(@Valid @RequestBody BrandCreateRequest request) {
+        BrandView createdBrand = brandService.createBrand(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(createdBrand.getId())
@@ -40,8 +39,8 @@ public class BrandAdminApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BrandAdminView> getBrandById(@PathVariable Long id) {
-        BrandAdminView brand = brandService.findById(id);
+    public ResponseEntity<BrandView> getBrandById(@PathVariable Long id) {
+        BrandView brand = brandService.findById(id);
         return ResponseEntity.ok(brand);
     }
 

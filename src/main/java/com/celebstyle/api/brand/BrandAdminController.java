@@ -1,6 +1,6 @@
 package com.celebstyle.api.brand;
 
-import com.celebstyle.api.brand.dto.BrandAdminView;
+import com.celebstyle.api.brand.dto.BrandView;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,7 @@ public class BrandAdminController {
 
     @GetMapping
     public String getBrandDashboard(Model model){
-        List<BrandAdminView> brands = brandService.findAll();
+        List<BrandView> brands = brandService.findAll();
         model.addAttribute("brands",brands);
         return "admin/brands";
     }

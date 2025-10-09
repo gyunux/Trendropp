@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 public class OutfitAdminView {
     private Long id;
+    private String title;
     private String originImageUrl;
     private String sourceUrl;
     private LocalDateTime sourceDate;
@@ -20,6 +21,7 @@ public class OutfitAdminView {
     public static OutfitAdminView fromEntity(Outfit outfit) {
         return new OutfitAdminView(
                 outfit.getId(),
+                outfit.getTitle(),
                 outfit.getOriginImageUrl(),
                 outfit.getSourceUrl(),
                 outfit.getSourceDate(),
@@ -32,6 +34,7 @@ public class OutfitAdminView {
 
     private OutfitAdminView(
             Long id,
+            String title,
             String originImageUrl,
             String sourceUrl,
             LocalDateTime sourceDate,
@@ -41,6 +44,7 @@ public class OutfitAdminView {
             int itemCount
     ) {
         this.id = id;
+        this.title = title;
         this.originImageUrl = originImageUrl;
         this.sourceUrl = sourceUrl;
         this.sourceDate = sourceDate;

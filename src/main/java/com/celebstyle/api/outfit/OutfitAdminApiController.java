@@ -1,12 +1,14 @@
 package com.celebstyle.api.outfit;
 
 import com.celebstyle.api.outfit.dto.OutfitAdminView;
+import com.celebstyle.api.outfit.dto.OutfitDetailView;
 import com.celebstyle.api.outfit.dto.SaveOutfitRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,6 +31,12 @@ public class OutfitAdminApiController {
                 .buildAndExpand(createdOutfit.getId())
                 .toUri();
         return ResponseEntity.created(location).body(createdOutfit);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OutfitDetailView> getOutfit(@PathVariable Long id){
+        OutfitDetailView outfitDetailView = outfitService.getOutfit(id);
+        return ResponseEntity.ok(outfitDetailView);
     }
 
     @PutMapping("/{id}")

@@ -76,9 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const outfitData = await response.json();
 
             document.getElementById('edit-outfit-id').value = outfitData.id;
+            document.getElementById('edit-outfit-title').value = outfitData.title;
             editCelebSelect.value = outfitData.celeb.id;
             editSourceTypeSelect.value = outfitData.sourceType;
-            document.getElementById('edit-sourceUrl').value = outfitData.sourceUrl;
+            document.getElementById('edit-sourceUrl').value = outfitData.sourceUrl || '';
             if (outfitData.sourceDate) {
                 document.getElementById('edit-sourceDate').value = outfitData.sourceDate.slice(0, 16);
             }
@@ -95,14 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('edit-add-item-btn').addEventListener('click', () => addItemForm());
     function addItemForm(item = {}) {
+        const selectedBrandId = item.brand ? item.brand.id : null;
+
         const brandOptionsHtml = allBrands.map(brand =>
-            `<option value="${brand.id}" ${item.brand?.id === brand.id ? 'selected' : ''}>${brand.englishName}</option>`
+            `<option value="${brand.id}" ${selectedBrandId === brand.id ? 'selected' : ''}>${brand.englishName}</option>`
         ).join('');
 
         const itemFormHtml = `
             <div class="item-form-group">
-                <select class="item-brand-id" required>${brandOptionsHtml}</select>
+                <select class="item-brand-id" required>
+                    <option value="" ${selectedBrandId === null ? 'selected' : ''}>-- 브랜드 선택 안 함 --</option>
+                    ${brandOptionsHtml}
+                </select>
                 <input type="text" class="item-name" placeholder="아이템 이름" value="${item.name || ''}" required>
+                <input type="url" class="item-image-url" placeholder="아이템 이미지 URL" value="${item.imageUrl || ''}" required>
                 <input type="url" class="item-product-url" placeholder="구매 링크" value="${item.productUrl || ''}" required>
                 <button type="button" class="btn btn-danger btn-sm remove-item-btn">X</button>
             </div>
@@ -126,15 +133,21 @@ document.addEventListener('DOMContentLoaded', () => {
             items.push({
                 brandId: group.querySelector('.item-brand-id').value,
                 itemName: group.querySelector('.item-name').value,
+                itemImageUrl: group.querySelector('.item-image-url').value,
                 productUrl: group.querySelector('.item-product-url').value,
             });
         });
 
+        const sourceUrlValue = document.getElementById('edit-sourceUrl').value;
+        const sourceDateValue = document.getElementById('edit-sourceDate').value;
+
         const formData = {
+            title: document.getElementById('edit-outfit-title').value,
             celebId: editCelebSelect.value,
             sourceType: editSourceTypeSelect.value,
-            sourceUrl: document.getElementById('edit-sourceUrl').value,
-            sourceDate: document.getElementById('edit-sourceDate').value,
+            // 값이 있으면 해당 값을, 없으면(빈 문자열이면) null을 할당
+            sourceUrl: sourceUrlValue || null,
+            sourceDate: sourceDateValue || null,
             mainImageUrl: document.getElementById('edit-mainImageUrl').value,
             items: items
         };

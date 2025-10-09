@@ -23,6 +23,7 @@
                 <thead>
                 <tr>
                     <th>대표 이미지</th>
+                    <th>착장 제목</th>
                     <th>셀럽</th>
                     <th>아이템 수</th>
                     <th>출처</th>
@@ -33,6 +34,7 @@
                 <tbody id="outfit-table-body">
                 <tr th:each="outfit : ${outfits}" th:attr="data-id=${outfit.id}">
                     <td><img th:src="${outfit.originImageUrl}" alt="Outfit" class="thumbnail-img"></td>
+                    <td th:text="${outfit.title}">제니 착장</td>
                     <td class="outfit-celeb-name" th:text="${outfit.celeb.name}">셀럽 이름</td>
                     <td th:text="${outfit.itemCount} + '개'">3개</td>
                     <td th:text="${outfit.sourceType.description}">인스타그램</td>
@@ -57,10 +59,11 @@
             <input type="hidden" id="edit-outfit-id">
             <div class="modal-header"><h2>착장 정보 수정</h2><button type="button" class="close-btn">&times;</button></div>
             <div class="modal-body">
+                <div class="form-group"><label>착장 제목</label><input type="text" id="edit-outfit-title" required></div>
                 <div class="form-group"><label>셀럽</label><select id="edit-celebId" required></select></div>
                 <div class="form-group"><label>출처 종류</label><select id="edit-sourceType" required></select></div>
-                <div class="form-group"><label>출처 URL</label><input type="url" id="edit-sourceUrl" required></div>
-                <div class="form-group"><label>원본 날짜</label><input type="datetime-local" id="edit-sourceDate" required></div>
+                <div class="form-group"><label>출처 URL</label><input type="url" id="edit-sourceUrl"></div>
+                <div class="form-group"><label>원본 날짜</label><input type="datetime-local" id="edit-sourceDate"></div>
                 <div class="form-group"><label>대표 이미지 URL</label><input type="url" id="edit-mainImageUrl" required></div>
 
                 <hr>
