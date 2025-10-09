@@ -18,6 +18,8 @@ public class BrandAdminController {
     public String getBrandDashboard(Model model){
         List<BrandView> brands = brandService.findAll();
         model.addAttribute("brands",brands);
+        model.addAttribute("currentPage", "brands");
+
         return "admin/brands";
     }
 }

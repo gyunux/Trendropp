@@ -18,6 +18,8 @@ public class CelebAdminController {
     public String getCelebDashboard(Model model) {
         List<CelebAdminView> celebs = celebService.findAllForAdminView();
         model.addAttribute("celebs", celebs);
+        model.addAttribute("currentPage", "celebs");
+
         return "admin/celebs";
     }
 }
