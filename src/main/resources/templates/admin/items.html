@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 관리 - CelebStyle Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <main class="main-content layout-grid">
+        <header class="content-header">
+            <h1>제품 관리</h1>
+            <div class="header-actions">
+                <input type="search" id="item-search-input" placeholder="제품 이름 또는 브랜드 검색...">
+                <button id="add-item-btn" class="btn btn-primary">+ 새 제품 등록</button>
+            </div>
+        </header>
+
+        <div class="content-body">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>썸네일</th>
+                    <th>제품 이름</th>
+                    <th>브랜드</th>
+                    <th>구매 URL</th>
+                    <th>액션</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${items}" th:attr="data-id=${item.id},
+             data-brand-id=${item.brand != null ? item.brand.id : ''}">
+                    <td>
+                        <img th:src="${item.imageUrl}" alt="Item Thumbnail" class="thumbnail-img">
+                    </td>
+                    <td th:text="${item.name}">RTA Jonah Racing Jacket</td>
+                    <td th:text="${item.brand != null ? item.brand.englishName : '브랜드 없음'}"></td>
+                    <td class="product-url">
+                        <a th:href="${item.productUrl}" target="_blank" class="btn btn-sm btn-secondary">구매 링크</a>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm edit-btn">수정</button>
+                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(items)}">
+                    <td colspan="5" class="no-data">등록된 제품이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<!--새 제 등록-->
+<div id="add-item-modal" class="modal-overlay">
+    <div class="modal-content">
+        <form id="add-item-form">
+            <div class="modal-header">
+                <h2>새 제품 등록</h2>
+                <button type="button" id="close-add-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="add-brand-id">브랜드</label>
+                    <select id="add-brand-id" required>
+                        <option value="">-- 브랜드를 선택하세요 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="add-item-name">제 이름</label>
+                    <input type="text" id="add-item-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="add-item-image-url">이미지 URL</label>
+                    <input type="url" id="add-item-image-url" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="add-item-product-url">구매 URL</label>
+                    <input type="url" id="add-item-product-url">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancel-add-btn" class="btn btn-secondary">취소</button>
+                <button type="submit" class="btn btn-primary">등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="edit-item-modal" class="modal-overlay">
+    <div class="modal-content">
+        <form id="edit-item-form">
+            <input type="hidden" id="edit-item-id">
+            <input type="hidden" id="edit-brand-id">
+
+            <div class="modal-header">
+                <h2>제품 정보 수정</h2>
+                <button type="button" class="close-btn item-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit-item-brand-name">브랜드</label>
+                    <input type="text" id="edit-item-brand-name" >
+                </div>
+                <div class="form-group">
+                    <label for="edit-item-name">제품 이름</label>
+                    <input type="text" id="edit-item-name">
+                </div>
+                <div class="form-group">
+                    <label for="edit-item-image-url">이미지 URL</label>
+                    <input type="url" id="edit-item-image-url" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-item-product-url">구매 URL</label>
+                    <input type="url" id="edit-item-product-url">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary item-cancel-btn">취소</button>
+                <button type="submit" class="btn btn-primary">수정 완료</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/item-admin.js}"></script>
+</body>
+</html>
