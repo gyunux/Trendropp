@@ -66,10 +66,8 @@
             <div class="modal-body">
 
                 <div class="form-group">
-                    <label for="add-brand-id">브랜드</label>
-                    <select id="add-brand-id" required>
-                        <option value="">-- 브랜드를 선택하세요 --</option>
-                    </select>
+                    <label for="add-brand-name">브랜드</label>
+                    <input type="text" id="add-brand-name" list="brand-datalist" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
@@ -108,7 +106,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="edit-item-brand-name">브랜드</label>
-                    <input type="text" id="edit-item-brand-name" >
+                    <input type="text" id="edit-item-brand-name" list="brand-datalist" autocomplete="off" required>
                 </div>
                 <div class="form-group">
                     <label for="edit-item-name">제품 이름</label>
@@ -130,7 +128,8 @@
         </form>
     </div>
 </div>
-
+<datalist id="brand-datalist">
+</datalist>
 <script th:src="@{/js/item-admin.js}"></script>
 </body>
 </html>

@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. 필요한 DOM 요소 정의
     const tableBody = document.querySelector('.data-table tbody');
+    const searchInput = document.getElementById('item-search-input'); // 검색창 추가
+    const brandDatalist = document.getElementById('brand-datalist');
 
     const addItemBtn = document.getElementById('add-item-btn');
     const addItemModal = document.getElementById('add-item-modal');
@@ -16,8 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allBrands = []; // 모든 브랜드 데이터를 저장할 배열
 
-
-    // --- 2. 초기 데이터 로드 (브랜드) ---
     async function loadInitialData() {
         try {
             const brandsRes = await fetch('/api/admin/brands'); // 브랜드 목록 API 호출
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             allBrands = await brandsRes.json();
 
             // 등록 모달의 브랜드 드롭다운 채우기
-            populateBrandSelect(addBrandSelect, allBrands);
+            populateBrandDatalist(brandDatalist, allBrands);
 
         } catch (error) {
             console.error('초기 데이터 로딩 오류:', error);
@@ -34,19 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 드롭다운 요소에 옵션 채우는 헬퍼 함수
-    function populateBrandSelect(selectElement, brands, selectedId = null) {
-        // 기존 옵션 (선택 안 함)을 제외한 나머지 삭제
-        selectElement.innerHTML = '<option value="">-- 브랜드를 선택하세요 --</option>';
-
+    function populateBrandDatalist(datalistElement, brands) {
+        if (!datalistElement) return;
+        datalistElement.innerHTML = '';
         brands.forEach(brand => {
             const option = document.createElement('option');
-            option.value = brand.id;
-            option.textContent = brand.englishName;
-            if (selectedId && brand.id.toString() === selectedId.toString()) {
-                option.selected = true; // 수정 시 선택된 값 설정
-            }
-            selectElement.appendChild(option);
+            option.value = brand.englishName; // datalist는 value로 추천 목록을 보여줌
+            datalistElement.appendChild(option);
         });
     }
 
@@ -135,8 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
     addItemForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const brandName = document.getElementById('add-brand-name').value;
+        const selectedBrand = allBrands.find(b => b.englishName === brandName);
+
+        if (!selectedBrand) {
+            alert('유효한 브랜드를 선택하거나 입력해주세요.');
+            return;
+        }
+
         const data = {
-            brandId: addBrandSelect.value,
+            brandId: selectedBrand.id,
             itemName: document.getElementById('add-item-name').value,
             itemImageUrl: document.getElementById('add-item-image-url').value,
             // 구매 URL이 비어있으면 null로 전송
@@ -170,9 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const itemId = document.getElementById('edit-item-id').value;
 
+        const brandName = document.getElementById('edit-item-brand-name').value;
+        const selectedBrand = allBrands.find(b => b.englishName === brandName);
+
+        if (!selectedBrand) {
+            alert('유효한 브랜드를 선택하거나 입력해주세요.');
+            return;
+        }
+
         // 주의: 'edit-item-name'이 수정 가능하다고 가정하고 값을 가져옴
         const data = {
-            brandId: document.getElementById('edit-brand-id').value,
+            brandId: selectedBrand.id, // 찾은 브랜드의 ID를 전송
             itemName: document.getElementById('edit-item-name').value,
             itemImageUrl: document.getElementById('edit-item-image-url').value,
             productUrl: document.getElementById('edit-item-product-url').value || null
