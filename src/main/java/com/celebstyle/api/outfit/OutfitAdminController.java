@@ -28,6 +28,8 @@ public class OutfitAdminController {
     public String getBrandDashboard(Model model){
         List<OutfitAdminView> outfits = outfitService.findAll();
         model.addAttribute("outfits",outfits);
+        model.addAttribute("currentPage", "outfits");
+
         return "admin/outfits";
     }
 
