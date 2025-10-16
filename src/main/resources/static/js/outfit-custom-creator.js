@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = [];
         document.querySelectorAll('.item-form-group').forEach(itemGroup => {
             items.push({
-                brandName: itemGroup.querySelector('.item-brand-id option:checked').text,
+                brandId: itemGroup.querySelector('.item-brand-id').value, // 선택된 브랜드의 ID
                 itemName: itemGroup.querySelector('.item-name').value,
                 itemImageUrl: itemGroup.querySelector('.item-image-url').value,
                 productUrl: itemGroup.querySelector('.item-product-url').value
@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mainImageUrl: mainImageUrlInput.value,
             items: items
         };
+
 
         try {
             const response = await fetch(API_BASE_URL, {
