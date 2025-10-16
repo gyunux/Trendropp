@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 공통 변수 ---
-    const mainTableBody = document.querySelector('.celeb-table tbody');
+    const mainTableBody = document.querySelector('.data-table tbody');
     // ▼▼▼ API 기본 URL을 상수로 관리합니다. ▼▼▼
     const API_BASE_URL = '/api/admin/celebs';
 
