@@ -247,3 +247,8 @@ input[type="search"] {
 .disabled-form { opacity: 0.4; pointer-events: none; }
 .item-form-group { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: center; margin-bottom: 10px; }
 .item-form-group label { display: none; }
+
+.sidebar-header {
+    /* 헤더 아래쪽에 20px 정도의 여백을 줍니다 */
+    margin-bottom: 20px;
+}

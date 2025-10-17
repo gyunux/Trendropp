@@ -8,13 +8,15 @@
 </head>
 <body>
 
-<div th:replace="~{common/fragments :: sidebar}"></div>
+<div th:replace="~{common/layout :: sidebar}"></div>
 
 <main class="main-content">
     <div class="detail-page-container">
 
         <header class="detail-header">
             <h1 class="outfit-title" th:text="${outfit.title}">251007 공항패션</h1>
+            <a href="/admin/celebs" class="admin-button">관리자 페이지</a>
+
             <div class="celeb-profile">
                 <img th:src="${outfit.celeb.profileImageUrl}" alt="" class="celeb-avatar">
                 <span class="celeb-name" th:text="${outfit.celeb.name}">셀럽 이름</span>
