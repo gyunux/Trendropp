@@ -142,3 +142,40 @@ body {
     color: #b3b3b3;
     margin: 0 0 10px 0;
 }
+
+.main-content header {
+    position: relative; /* [핵심] 자식 요소(버튼)를 자유롭게 배치하기 위한 기준점 */
+    text-align: center;   /* 내부 텍스트(h1)를 가운데 정렬 */
+    margin: 40px 0;
+}
+
+/* 헤더 안의 h1 태그 스타일 수정 */
+.main-content header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: white;
+    letter-spacing: 2px;
+}
+
+/* 관리자 버튼 스타일 */
+.admin-button {
+    /* [핵심] 헤더 영역을 기준으로 오른쪽 끝에 배치 */
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%); /* 세로 중앙 정렬 */
+
+    /* 눈에 잘 띄는 세련된 색상으로 변경 */
+    border-right: 1px solid #282828;
+    color: white;
+
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 50px; /* 둥근 알약 모양 버튼 */
+    font-weight: bold;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+.admin-button:hover {
+    background-color: #282828; /* 사이드바 호버와 동일한 색상 */
+}

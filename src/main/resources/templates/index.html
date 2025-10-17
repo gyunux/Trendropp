@@ -7,11 +7,12 @@
 </head>
 <body>
 
-<div th:replace="~{common/fragments :: sidebar}"></div>
+<div th:replace="~{common/layout :: sidebar}"></div>
 
 <main class="main-content">
     <header>
         <h1>CELEB'S PICK</h1>
+        <a href="/admin/celebs" class="admin-button">관리자 페이지</a>
     </header>
     <div id="fashion-container" class="fashion-grid">
     </div>
