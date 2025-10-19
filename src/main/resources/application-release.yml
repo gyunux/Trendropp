@@ -1,6 +1,10 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://my-app-database.cd4ocysaaoyu.ap-northeast-2.rds.amazonaws.com:3306/mydatabase?allowPublicKeyRetrieval=true&useSSL=false
     username: admin
     password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
