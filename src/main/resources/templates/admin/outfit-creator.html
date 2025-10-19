@@ -15,6 +15,11 @@
             <p><strong>원본 기사:</strong> <span th:text="${article.title}"></span></p>
         </header>
 
+        <div class="article-summary form-group">
+            <label for="summary">AI 요약 (수정 가능)</label>
+            <textarea id="summary" rows="8" th:text="${article?.summary}"></textarea>
+        </div>
+
         <div class="creator-layout">
             <div class="image-picker-panel">
                 <h3>1. 이 기사의 대표 착장 이미지를 한 장 선택하세요.</h3>

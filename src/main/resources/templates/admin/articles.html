@@ -39,13 +39,13 @@
                     </td>
                     <td>
             <span class="status-badge"
-                  th:text="${article.isProcessed ? '처리완료' : '미처리'}"
+                  th:text="${article.isProcessed ? '콘텐츠 생성 완료' : '콘텐츠 미생성'}"
                   th:classappend="${article.isProcessed ? 'status-processed' : 'status-unprocessed'}">
             </span>
                     </td>
 
                     <td class="action-buttons">
-                        <a th:href="@{/admin/outfits/new(articleId=${article.id})}" class="btn btn-primary btn-sm">착장 만들기</a>
+                        <a th:href="@{/admin/outfits/new(articleId=${article.id})}" class="btn btn-primary btn-sm">콘텐츠 만들기</a>
                         <button class="btn btn-danger btn-sm delete-article-btn">삭제</button>
                     </td>
                 </tr>
