@@ -20,6 +20,7 @@ public class OutfitDetailView {
 
     private CelebForOutfitDetail celeb;
     private List<ItemDetailView> items;
+    private String summary;
 
     private OutfitDetailView(
             Long id,
@@ -28,7 +29,8 @@ public class OutfitDetailView {
             SourceType sourceType,
             LocalDateTime sourceDate,
             CelebForOutfitDetail celeb,
-            List<ItemDetailView> items
+            List<ItemDetailView> items,
+            String summary
     ) {
         this.id = id;
         this.title = title;
@@ -37,6 +39,7 @@ public class OutfitDetailView {
         this.sourceDate = sourceDate;
         this.celeb = celeb;
         this.items = items;
+        this.summary = summary;
     }
 
     public static OutfitDetailView fromEntity(Outfit outfit) {
@@ -51,7 +54,8 @@ public class OutfitDetailView {
                 outfit.getSourceType(),
                 outfit.getSourceDate(),
                 new CelebForOutfitDetail(outfit.getCeleb()),
-                itemDtos
+                itemDtos,
+                outfit.getSummary()
         );
     }
 }

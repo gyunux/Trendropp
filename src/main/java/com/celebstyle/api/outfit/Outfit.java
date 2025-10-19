@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
@@ -63,15 +64,20 @@ public class Outfit {
 
     private boolean deleted;
 
+    @Lob
+    private String summary;
+
     @Builder
     public Outfit(String title,
                   String originImageUrl,
+                  String summary,
                   String sourceUrl,
                   LocalDateTime sourceDate,
                   SourceType sourceType,
                   Celeb celeb){
         this.title = title;
         this.originImageUrl = originImageUrl;
+        this.summary = summary;
         this.sourceUrl = sourceUrl;
         this.sourceDate = sourceDate;
         this.sourceType = sourceType;
