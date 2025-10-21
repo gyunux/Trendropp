@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = [];
         document.querySelectorAll('.item-form-group').forEach(itemGroup => {
             items.push({
-                brandName: itemGroup.querySelector('.item-brand-id option:checked').text, // brandId 대신 brandName
+                brandId: itemGroup.querySelector('.item-brand-id').value,
                 itemName: itemGroup.querySelector('.item-name').value,
                 itemImageUrl: itemGroup.querySelector('.item-image-url').value,
                 productUrl: itemGroup.querySelector('.item-product-url').value
@@ -91,7 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
             sourceUrl: document.querySelector('.article-title a')?.href || '', // 원본 기사 링크 가져오기 (필요시 수정)
             sourceDate: null, // 날짜 정보가 있다면 추가
             mainImageUrl: mainImageUrlInput.value,
-            items: items
+            items: items,
+            summary: document.getElementById('summary').value
         };
 
         try {

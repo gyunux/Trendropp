@@ -2,6 +2,7 @@ package com.celebstyle.api.article;
 
 import com.celebstyle.api.magazine.CrawlerDto;
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,6 +41,9 @@ public class Article {
 
     private LocalDate articleDate;
 
+    @Lob
+    private String summary;
+
     public Article(CrawlerDto dto) {
         this.title = dto.getTitle();
         this.articleUrl = dto.getArticleUrl();
@@ -48,5 +52,10 @@ public class Article {
         this.body = dto.getBody();
         this.processed = false;
         this.articleDate = dto.getArticleDate();
+        this.summary = dto.getSummary();
+    }
+
+    public void markAsProcessed() {
+        this.processed = true;
     }
 }

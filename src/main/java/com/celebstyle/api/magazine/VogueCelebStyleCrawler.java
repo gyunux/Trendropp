@@ -3,6 +3,7 @@ package com.celebstyle.api.magazine;
 
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
+import com.celebstyle.api.magazine.service.AiService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
 import java.time.Duration;
@@ -13,7 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,15 +32,13 @@ import org.springframework.util.StringUtils;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class VogueCelebStyleCrawler implements MagazineCrawler {
     private static final String VOGUE_CELEB_STYLE_URL = "https://www.vogue.co.kr/fashion/celebrity-style/";
     private static final String SOURCE_NAME = "Vogue Celeb Style";
     private final CelebRepository celebRepository;
+    private final AiService aiService;
 
-
-    public VogueCelebStyleCrawler(CelebRepository celebRepository) {
-        this.celebRepository = celebRepository;
-    }
 
     @Override
     public List<CrawlerDto> crawl() throws IOException {
@@ -78,11 +77,35 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                     if (news != null) {
                         newsList.add(news);
                     }
-                    Thread.sleep(1000); // 페이지 간 요청 간격
                 } catch (Exception e) {
                     log.error("Error Crawling detail page: {}, {}", url, e.getMessage());
                 }
             }
+            log.info("AI 요약 서비스 시작: 수집된 유효 기사 {}개", newsList.size());
+
+            for (CrawlerDto news : newsList) {
+                try {
+                    // AI에게 보낼 본문 전체를 변수에 저장
+                    String fullBodyForAI = news.getBody().substring(0, Math.min(news.getBody().length(), 4000));
+
+                    try (java.io.PrintWriter out = new java.io.PrintWriter("debug_body.txt")) {
+                        out.println("--- TITLE ---");
+                        out.println(news.getTitle());
+                        out.println("\n--- BODY ---");
+                        out.println(fullBodyForAI);
+                    }
+
+                    // 이제 AI에게 요약 요청
+                    String summary = aiService.getSummary(news.getTitle(), fullBodyForAI);
+                    news.setSummary(summary);
+                    log.info("요약 완료: {}", news.getTitle());
+
+                } catch (Exception e) {
+                    log.error("AI 요약 중 오류 발생 (기사: {}): {}", news.getTitle(), e.getMessage());
+                    news.setSummary("AI 요약 실패");
+                }
+            }
+            log.info("AI 요약 서비스 완료.");
 
         } finally {
             log.info("크롤링 완료. WebDriver를 종료합니다.");
@@ -101,7 +124,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.list_group li a")));
 
-        for(int i = 0;i < 50; i++){
+        for(int i = 0;i < 2; i++){
             Document doc = Jsoup.parse(driver.getPageSource(),VOGUE_CELEB_STYLE_URL);
             Elements linkElements = doc.select("div.list_group li > a");
             linkElements.stream()
@@ -110,12 +133,14 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                     .forEach(urlSet::add);
 
             js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-            log.info("스크롤 다운 실행...");
 
             try {
-                Thread.sleep(2000); // 2초 대기
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                new WebDriverWait(driver, Duration.ofSeconds(5))
+                        .until(ExpectedConditions.visibilityOfElementLocated(
+                                By.cssSelector("div.list_group li:last-child a")
+                        ));
+            } catch (Exception e) {
+                log.warn("새로운 콘텐츠 로딩 지연...");
             }
 
         }
@@ -165,14 +190,14 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
             }
             imageUrls.add(imgUrl);
         }
-        System.out.println(imageUrls.size());
+        log.info(String.valueOf(imageUrls.size()));
 
         Elements bodies = doc.select("div.contt p:not(.relate_group p)");
-        String body = bodies.toString();
+        String body = bodies.text();
 
         log.info("국내 연예인 기사 수집: {}", title);
         if (!title.equals("제목 없음") && !url.isEmpty() && !imageUrls.isEmpty()) {
-            return new CrawlerDto(title, url, imageUrls, getSource(), body,articleDate);
+            return new CrawlerDto(title, url, imageUrls, getSource(), body,articleDate,null);
         }
         return null;
     }

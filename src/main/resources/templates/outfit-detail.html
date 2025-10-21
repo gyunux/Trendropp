@@ -47,6 +47,10 @@
             </div>
         </div>
 
+        <div th:if="${outfit.summary != null and not #strings.isEmpty(outfit.summary)}" class="outfit-summary">
+            <p th:text="${outfit.summary}"></p>
+        </div>
+
     </div>
 </main>
 

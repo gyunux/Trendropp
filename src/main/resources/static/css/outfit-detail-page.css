@@ -127,3 +127,13 @@
 .btn-purchase:hover {
     background-color: #1ed760;
 }
+
+.outfit-summary {
+    margin-top: 40px; /* 위쪽 섹션과의 간격 */
+    padding: 2rem;
+    background-color: #1c1c1c;
+    border: 1px solid #282828;
+    border-radius: 12px;
+    line-height: 1.7; /* 줄 간격 */
+    color: #e0e0e0;
+}

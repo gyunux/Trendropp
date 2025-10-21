@@ -16,4 +16,5 @@ public class SaveOutfitRequest {
     private LocalDateTime sourceDate;
     private String mainImageUrl;
     private List<ItemRequest> items;
+    private String summary;
 }

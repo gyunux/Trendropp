@@ -1,5 +1,7 @@
 package com.celebstyle.api.outfit;
 
+import com.celebstyle.api.article.Article;
+import com.celebstyle.api.article.ArticleRepository;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.item.Item;
@@ -24,6 +26,7 @@ public class OutfitAdminService {
     private final CelebRepository celebRepository;
     private final ItemService itemService;
     private final OutfitItemRepository outfitItemRepository;
+    private final ArticleRepository articleRepository; // ArticleRepository 주입
 
     @Transactional
     public OutfitAdminView createOutfit(SaveOutfitRequest request){
@@ -32,6 +35,7 @@ public class OutfitAdminService {
         Outfit newOutfit = Outfit.builder()
                 .title(request.getTitle())
                 .originImageUrl(request.getMainImageUrl())
+                .summary(request.getSummary())
                 .sourceUrl(request.getSourceUrl())
                 .sourceDate(request.getSourceDate())
                 .sourceType(request.getSourceType())
@@ -45,6 +49,10 @@ public class OutfitAdminService {
 
             OutfitItem outfitItem = new OutfitItem(newOutfit, newItem);
             outfitItemRepository.save(outfitItem);
+        }
+        if (request.getSourceArticleId() != null) {
+            Article article = articleRepository.findById(request.getSourceArticleId()).orElseThrow();
+            article.markAsProcessed();
         }
 
         return OutfitAdminView.fromEntity(newOutfit);

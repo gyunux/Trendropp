@@ -3,3 +3,7 @@ server:
 spring:
   profiles:
     active: dev
+
+gemini:
+  api:
+    key: ${API_KEY}
