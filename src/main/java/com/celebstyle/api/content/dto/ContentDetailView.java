@@ -1,16 +1,16 @@
-package com.celebstyle.api.outfit.dto;
+package com.celebstyle.api.content.dto;
 
-import com.celebstyle.api.celeb.dto.CelebForOutfitDetail;
+import com.celebstyle.api.celeb.dto.CelebForContentDetail;
+import com.celebstyle.api.content.Content;
 import com.celebstyle.api.item.dto.ItemDetailView;
-import com.celebstyle.api.outfit.Outfit;
-import com.celebstyle.api.outfit.SourceType;
+import com.celebstyle.api.content.SourceType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
-public class OutfitDetailView {
+public class ContentDetailView {
 
     private Long id;
     private String title;
@@ -18,17 +18,17 @@ public class OutfitDetailView {
     private SourceType sourceType;
     private LocalDateTime sourceDate;
 
-    private CelebForOutfitDetail celeb;
+    private CelebForContentDetail celeb;
     private List<ItemDetailView> items;
     private String summary;
 
-    private OutfitDetailView(
+    private ContentDetailView(
             Long id,
             String title,
             String originImageUrl,
             SourceType sourceType,
             LocalDateTime sourceDate,
-            CelebForOutfitDetail celeb,
+            CelebForContentDetail celeb,
             List<ItemDetailView> items,
             String summary
     ) {
@@ -42,20 +42,20 @@ public class OutfitDetailView {
         this.summary = summary;
     }
 
-    public static OutfitDetailView fromEntity(Outfit outfit) {
-        List<ItemDetailView> itemDtos = outfit.getOutfitItems().stream()
-                .map(outfitItem -> ItemDetailView.fromEntity(outfitItem.getItem()))
+    public static ContentDetailView fromEntity(Content content) {
+        List<ItemDetailView> itemDtos = content.getContentItems().stream()
+                .map(contentItem -> ItemDetailView.fromEntity(contentItem.getItem()))
                 .collect(Collectors.toList());
 
-        return new OutfitDetailView(
-                outfit.getId(),
-                outfit.getTitle(),
-                outfit.getOriginImageUrl(),
-                outfit.getSourceType(),
-                outfit.getSourceDate(),
-                new CelebForOutfitDetail(outfit.getCeleb()),
+        return new ContentDetailView(
+                content.getId(),
+                content.getTitle(),
+                content.getOriginImageUrl(),
+                content.getSourceType(),
+                content.getSourceDate(),
+                new CelebForContentDetail(content.getCeleb()),
                 itemDtos,
-                outfit.getSummary()
+                content.getSummary()
         );
     }
 }

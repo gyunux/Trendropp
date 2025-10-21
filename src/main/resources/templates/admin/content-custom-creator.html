@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>CelebStyle - 커스텀 착장 만들기</title>
+    <title>CelebStyle - 커스텀 콘텐츠 만들기</title>
     <link rel="stylesheet" th:href="@{/css/admin-style.css}">
 </head>
 <body>
@@ -11,14 +11,14 @@
 
     <main class="main-content">
         <header class="content-header">
-            <h1>커스텀 착장 정보 만들기</h1>
+            <h1>커스텀 콘텐츠 정보 만들기</h1>
         </header>
 
         <div class="content-body">
-            <form id="outfit-create-form">
+            <form id="content-create-form">
                 <div class="form-group">
                     <label for="mainImageUrl">대표 이미지 URL</label>
-                    <input type="url" id="mainImageUrl" placeholder="등록할 착장 이미지의 URL을 붙여넣으세요." required>
+                    <input type="url" id="mainImageUrl" placeholder="등록할 콘텐츠 이미지의 URL을 붙여넣으세요." required>
                 </div>
                 <div class="image-preview-wrapper">
                     <img id="image-preview" src="" alt="이미지 미리보기" class="image-preview">
@@ -26,8 +26,8 @@
 
                 <hr>
                 <div class="form-group">
-                    <label for="outfit-title">착장 제목</label>
-                    <input type="text" id="outfit-title" placeholder="예: 250920 인스타 업로드" required>
+                    <label for="content-title">콘텐츠 제목</label>
+                    <input type="text" id="content-title" placeholder="예: 250920 인스타 업로드" required>
                 </div>
                 <div class="form-group">
                     <label>셀럽</label>
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="form-actions" style="margin-top: 2rem;">
-                    <button type="submit" class="btn btn-primary">착장 정보 저장</button>
+                    <button type="submit" class="btn btn-primary">콘텐츠 정보 저장</button>
                 </div>
             </form>
         </div>
@@ -64,6 +64,6 @@
     const allBrands = /*[[${brands}]]*/ [];
     /* ]]> */
 </script>
-<script th:src="@{/js/outfit-custom-creator.js}"></script>
+<script th:src="@{/js/content-custom-creator.js}"></script>
 </body>
 </html>

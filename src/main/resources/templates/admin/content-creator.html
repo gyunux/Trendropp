@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>CelebStyle - 착장 만들기</title>
+    <title>CelebStyle - 콘텐츠 만들기</title>
     <link rel="stylesheet" th:href="@{/css/admin-style.css}">
 </head>
 <body>
@@ -11,7 +11,7 @@
 
     <main class="main-content">
         <header class="content-header">
-            <h1>착장 정보 만들기</h1>
+            <h1>콘텐츠 정보 만들기</h1>
             <p><strong>원본 기사:</strong> <span th:text="${article.title}"></span></p>
         </header>
 
@@ -22,15 +22,15 @@
 
         <div class="creator-layout">
             <div class="image-picker-panel">
-                <h3>1. 이 기사의 대표 착장 이미지를 한 장 선택하세요.</h3>
+                <h3>1. 이 기사의 대표 콘텐츠 이미지를 한 장 선택하세요.</h3>
                 <div class="image-list">
                     <img th:each="imgUrl : ${article.imageUrls}" th:src="${imgUrl}" alt="기사 이미지" class="selectable-image">
                 </div>
             </div>
 
             <div id="form-panel" class="form-panel disabled-form">
-                <h3>2. 착장 정보를 입력하세요.</h3>
-                <form id="outfit-create-form">
+                <h3>2. 콘텐츠 정보를 입력하세요.</h3>
+                <form id="content-create-form">
                     <input type="hidden" id="sourceArticleId" th:value="${article.id}">
                     <input type="hidden" id="mainImageUrl"> <div class="form-group">
                     <label>셀럽</label>
@@ -40,8 +40,8 @@
                     </select>
                 </div>
                     <div class="form-group">
-                        <label for="outfit-title">착장 제목</label>
-                        <input type="text" id="outfit-title" placeholder="예: 250920 인스타 업로드" required>
+                        <label for="content-title">콘텐츠 제목</label>
+                        <input type="text" id="content-title" placeholder="예: 250920 인스타 업로드" required>
                     </div>
                     <div class="form-group">
                         <label>출처 종류</label>
@@ -57,7 +57,7 @@
                     <button type="button" id="add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">착장 정보 저장</button>
+                        <button type="submit" class="btn btn-primary">콘텐츠 정보 저장</button>
                     </div>
                 </form>
             </div>
@@ -70,6 +70,6 @@
     const allBrands = /*[[${brands}]]*/ [];
     /* ]]> */
 </script>
-<script th:src="@{/js/outfit-creator.js}"></script>
+<script th:src="@{/js/content-creator.js}"></script>
 </body>
 </html>

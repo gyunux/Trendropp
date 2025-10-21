@@ -1,4 +1,4 @@
-package com.celebstyle.api.outfit;
+package com.celebstyle.api.content;
 
 import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.ArticleService;
@@ -6,7 +6,7 @@ import com.celebstyle.api.brand.BrandService;
 import com.celebstyle.api.brand.dto.BrandView;
 import com.celebstyle.api.celeb.CelebService;
 import com.celebstyle.api.celeb.dto.CelebView;
-import com.celebstyle.api.outfit.dto.OutfitAdminView;
+import com.celebstyle.api.content.dto.ContentAdminView;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,36 +16,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/admin/outfits")
+@RequestMapping("/admin/contents")
 @RequiredArgsConstructor
-public class OutfitAdminController {
-    private final OutfitAdminService outfitService;
+public class ContentAdminController {
+    private final ContentAdminService contentService;
     private final ArticleService articleService;
     private final CelebService celebService;
     private final BrandService brandService;
 
     @GetMapping
     public String getBrandDashboard(Model model){
-        List<OutfitAdminView> outfits = outfitService.findAll();
-        model.addAttribute("outfits",outfits);
-        model.addAttribute("currentPage", "outfits");
+        List<ContentAdminView> contents = contentService.findAll();
+        model.addAttribute("contents",contents);
+        model.addAttribute("currentPage", "contents");
 
-        return "admin/outfits";
+        return "admin/contents";
     }
 
     @GetMapping("/new")
-    public String showOutfitCreateForm(@RequestParam Long articleId, Model model) {
+    public String showContentCreateForm(@RequestParam Long articleId, Model model) {
         Article article = articleService.findById(articleId);
         model.addAttribute("article", article);
 
         addCommonAttributesToModel(model);
-        return "admin/outfit-creator";
+        return "admin/content-creator";
     }
 
     @GetMapping("/new/custom")
-    public String showOutfitCreateCustomForm(Model model) {
+    public String showContentCreateCustomForm(Model model) {
         addCommonAttributesToModel(model);
-        return "admin/outfit-custom-creator";
+        return "admin/content-custom-creator";
     }
 
     private void addCommonAttributesToModel(Model model) {

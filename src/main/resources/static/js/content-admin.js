@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.getElementById('outfit-table-body');
-    const API_BASE_URL = '/api/admin/outfits';
+    const tableBody = document.getElementById('content-table-body');
+    const API_BASE_URL = '/api/admin/contents';
 
     let allCelebs = [];
     let allBrands = [];
     const allSourceTypes = [
-        { value: 'MAGAZINE', text: '매거진' },
         { value: 'INSTAGRAM', text: '인스타그램' },
         { value: 'AIRPORT_FASHION', text: '공항패션' },
         { value: 'OFFICIAL_EVENT', text: '공식행사' },
@@ -13,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { value: 'ETC', text: '기타' }
     ];
 
-    const editModal = document.getElementById('edit-outfit-modal');
-    const editForm = document.getElementById('edit-outfit-form');
+    const editModal = document.getElementById('edit-content-modal');
+    const editForm = document.getElementById('edit-content-form');
     const editCelebSelect = document.getElementById('edit-celebId');
     const editSourceTypeSelect = document.getElementById('edit-sourceType');
     const itemsContainer = document.getElementById('edit-items-container');
@@ -50,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const searchInput = document.getElementById('outfit-search-input');
+    const searchInput = document.getElementById('content-search-input');
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         tableBody.querySelectorAll('tr').forEach(row => {
-            const celebName = row.querySelector('.outfit-celeb-name')?.textContent.toLowerCase() || '';
+            const celebName = row.querySelector('.content-celeb-name')?.textContent.toLowerCase() || '';
             row.style.display = celebName.includes(searchTerm) ? '' : 'none';
         });
     });
@@ -62,31 +61,33 @@ document.addEventListener('DOMContentLoaded', () => {
     tableBody.addEventListener('click', (e) => {
         const row = e.target.closest('tr');
         if (!row) return;
-        const outfitId = row.dataset.id;
-        if (e.target.matches('.edit-btn')) openEditModal(outfitId);
+        const contentId = row.dataset.id;
+        if (e.target.matches('.edit-btn')) openEditModal(contentId);
         if (e.target.matches('.delete-btn')) {
-            if (confirm(`착장(ID: ${outfitId})을 정말로 삭제하시겠습니까?`)) deleteOutfit(outfitId);
+            if (confirm(`착장(ID: ${contentId})을 정말로 삭제하시겠습니까?`)) deleteContent(contentId);
         }
     });
 
-    async function openEditModal(outfitId) {
+    async function openEditModal(contentId) {
         try {
-            const response = await fetch(`${API_BASE_URL}/${outfitId}`);
+            const response = await fetch(`${API_BASE_URL}/${contentId}`);
             if (!response.ok) throw new Error('착장 정보를 불러오는 데 실패했습니다.');
-            const outfitData = await response.json();
+            const contentIdData = await response.json();
 
-            document.getElementById('edit-outfit-id').value = outfitData.id;
-            document.getElementById('edit-outfit-title').value = outfitData.title;
-            editCelebSelect.value = outfitData.celeb.id;
-            editSourceTypeSelect.value = outfitData.sourceType;
-            document.getElementById('edit-sourceUrl').value = outfitData.sourceUrl || '';
-            if (outfitData.sourceDate) {
-                document.getElementById('edit-sourceDate').value = outfitData.sourceDate.slice(0, 16);
+            document.getElementById('edit-content-id').value = contentIdData.id;
+            document.getElementById('edit-content-title').value = contentIdData.title;
+            document.getElementById('edit-summary').value = contentIdData.summary || '';
+
+            editCelebSelect.value = contentIdData.celeb.id;
+            editSourceTypeSelect.value = contentIdData.sourceType;
+            document.getElementById('edit-sourceUrl').value = contentIdData.sourceUrl || '';
+            if (contentIdData.sourceDate) {
+                document.getElementById('edit-sourceDate').value = contentIdData.sourceDate.slice(0, 16);
             }
-            document.getElementById('edit-mainImageUrl').value = outfitData.originImageUrl;
+            document.getElementById('edit-mainImageUrl').value = contentIdData.originImageUrl;
 
             itemsContainer.innerHTML = '';
-            outfitData.items.forEach(item => addItemForm(item));
+            contentIdData.items.forEach(item => addItemForm(item));
 
             editModal.classList.add('active');
         } catch (error) {
@@ -127,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const outfitId = document.getElementById('edit-outfit-id').value;
+        const contentId = document.getElementById('edit-content-id').value;
         const items = [];
         itemsContainer.querySelectorAll('.item-form-group').forEach(group => {
             items.push({
@@ -142,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const sourceDateValue = document.getElementById('edit-sourceDate').value;
 
         const formData = {
-            title: document.getElementById('edit-outfit-title').value,
+            title: document.getElementById('edit-content-title').value,
+            summary: document.getElementById('edit-summary').value,
             celebId: editCelebSelect.value,
             sourceType: editSourceTypeSelect.value,
             // 값이 있으면 해당 값을, 없으면(빈 문자열이면) null을 할당
@@ -153,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch(`${API_BASE_URL}/${outfitId}`, {
+            const response = await fetch(`${API_BASE_URL}/${contentId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -166,9 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function deleteOutfit(outfitId) {
+    async function deleteContent(contentId) {
         try {
-            const response = await fetch(`${API_BASE_URL}/${outfitId}`, { method: 'DELETE' });
+            const response = await fetch(`${API_BASE_URL}/${contentId}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('삭제 실패');
             alert('성공적으로 삭제되었습니다.');
             window.location.reload();

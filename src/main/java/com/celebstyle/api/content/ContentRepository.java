@@ -1,8 +1,8 @@
-package com.celebstyle.api.outfit;
+package com.celebstyle.api.content;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OutfitRepository extends JpaRepository<Outfit,Long> {
+public interface ContentRepository extends JpaRepository<Content,Long> {
 }

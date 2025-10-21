@@ -13,7 +13,7 @@
     padding-bottom: 30px;
 }
 
-.outfit-title {
+.content-title {
     font-size: 2.5em;
     font-weight: bold;
     color: white;
@@ -57,7 +57,7 @@
     flex: 1.2;
 }
 
-.main-outfit-image {
+.main-content-image {
     width: 100%;
     border-radius: 16px;
     aspect-ratio: 3 / 4;
@@ -128,7 +128,7 @@
     background-color: #1ed760;
 }
 
-.outfit-summary {
+.content-summary {
     margin-top: 40px; /* 위쪽 섹션과의 간격 */
     padding: 2rem;
     background-color: #1c1c1c;

@@ -4,7 +4,7 @@ import com.celebstyle.api.brand.Brand;
 import com.celebstyle.api.brand.BrandRepository;
 import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.item.dto.ItemRequest;
-import com.celebstyle.api.outfititem.OutfitItemRepository;
+import com.celebstyle.api.contentitem.ContentItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final BrandRepository brandRepository;
-    private final OutfitItemRepository outfitItemRepository;
+    private final ContentItemRepository contentItemRepository;
     //내부 사용
     @Transactional
     public Item createItem(ItemRequest request) {
@@ -94,7 +94,7 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("아이템을 찾을 수 없습니다: " + id));
 
-        outfitItemRepository.deleteByItem(item);
+        contentItemRepository.deleteByItem(item);
 
         itemRepository.delete(item);
     }

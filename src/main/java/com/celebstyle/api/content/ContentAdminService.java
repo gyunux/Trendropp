@@ -1,4 +1,4 @@
-package com.celebstyle.api.outfit;
+package com.celebstyle.api.content;
 
 import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.ArticleRepository;
@@ -7,11 +7,11 @@ import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.item.Item;
 import com.celebstyle.api.item.ItemService;
 import com.celebstyle.api.item.dto.ItemRequest;
-import com.celebstyle.api.outfit.dto.OutfitAdminView;
-import com.celebstyle.api.outfit.dto.OutfitDetailView;
-import com.celebstyle.api.outfit.dto.SaveOutfitRequest;
-import com.celebstyle.api.outfititem.OutfitItem;
-import com.celebstyle.api.outfititem.OutfitItemRepository;
+import com.celebstyle.api.content.dto.ContentAdminView;
+import com.celebstyle.api.content.dto.ContentDetailView;
+import com.celebstyle.api.content.dto.SaveContentRequest;
+import com.celebstyle.api.contentitem.ContentItem;
+import com.celebstyle.api.contentitem.ContentItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,18 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OutfitAdminService {
-    private final OutfitRepository outfitRepository;
+public class ContentAdminService {
+    private final ContentRepository contentRepository;
     private final CelebRepository celebRepository;
     private final ItemService itemService;
-    private final OutfitItemRepository outfitItemRepository;
+    private final ContentItemRepository contentItemRepository;
     private final ArticleRepository articleRepository; // ArticleRepository 주입
 
     @Transactional
-    public OutfitAdminView createOutfit(SaveOutfitRequest request){
+    public ContentAdminView createContent(SaveContentRequest request){
         Celeb celeb = celebRepository.findById(request.getCelebId()).orElseThrow();
 
-        Outfit newOutfit = Outfit.builder()
+        Content newContent = Content.builder()
                 .title(request.getTitle())
                 .originImageUrl(request.getMainImageUrl())
                 .summary(request.getSummary())
@@ -41,65 +41,66 @@ public class OutfitAdminService {
                 .sourceType(request.getSourceType())
                 .celeb(celeb)
                 .build();
-        outfitRepository.save(newOutfit);
+        contentRepository.save(newContent);
 
         for (ItemRequest itemDto : request.getItems()) {
 
             Item newItem = itemService.createItem(itemDto);
 
-            OutfitItem outfitItem = new OutfitItem(newOutfit, newItem);
-            outfitItemRepository.save(outfitItem);
+            ContentItem contentItem = new ContentItem(newContent, newItem);
+            contentItemRepository.save(contentItem);
         }
         if (request.getSourceArticleId() != null) {
             Article article = articleRepository.findById(request.getSourceArticleId()).orElseThrow();
             article.markAsProcessed();
         }
 
-        return OutfitAdminView.fromEntity(newOutfit);
+        return ContentAdminView.fromEntity(newContent);
     }
 
     @Transactional(readOnly = true)
-    public List<OutfitAdminView> findAll() {
-        return outfitRepository.findAll().stream()
-                .map(OutfitAdminView::fromEntity)
+    public List<ContentAdminView> findAll() {
+        return contentRepository.findAll().stream()
+                .map(ContentAdminView::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public OutfitDetailView getOutfit(Long id){
-        Outfit outfit = outfitRepository.findById(id).orElseThrow();
-        return OutfitDetailView.fromEntity(outfit);
+    public ContentDetailView getContent(Long id){
+        Content content = contentRepository.findById(id).orElseThrow();
+        return ContentDetailView.fromEntity(content);
     }
 
     @Transactional
-    public void updateOutfit(Long outfitId, SaveOutfitRequest request) {
-        Outfit outfit = outfitRepository.findById(outfitId)
+    public void updateContent(Long contentId, SaveContentRequest request) {
+        Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new EntityNotFoundException("착장을 찾을 수 없습니다."));
 
         Celeb celeb = celebRepository.findById(request.getCelebId()).orElseThrow();
-        outfit.setCeleb(celeb);
-        outfit.setOriginImageUrl(request.getMainImageUrl());
-        outfit.setSourceType(request.getSourceType());
-        outfit.setSourceUrl(request.getSourceUrl());
-        outfit.setSourceDate(request.getSourceDate());
+        content.setCeleb(celeb);
+        content.setOriginImageUrl(request.getMainImageUrl());
+        content.setSourceType(request.getSourceType());
+        content.setSourceUrl(request.getSourceUrl());
+        content.setSourceDate(request.getSourceDate());
 
-        outfitItemRepository.deleteAllByOutfit(outfit);
+        contentItemRepository.deleteAllByContent(content);
 
         for (ItemRequest itemDto : request.getItems()) {
             Item item = itemService.updateOrCreateItem(itemDto);
 
-            OutfitItem outfitItem = new OutfitItem(outfit, item);
-            outfitItemRepository.save(outfitItem);
+            ContentItem contentItem = new ContentItem(content, item);
+            contentItemRepository.save(contentItem);
         }
     }
 
     @Transactional
-    public void deleteOutfit(Long id) {
-        if (!outfitRepository.existsById(id)) {
+    public void deleteContent(Long id) {
+        if (!contentRepository.existsById(id)) {
             throw new EntityNotFoundException("착장정보를 찾을 수 없습니다: " + id);
         }
-        Outfit outfit = outfitRepository.findById(id).orElseThrow();
-        outfit.setDeleted(true);
+        contentRepository.deleteById(id);
+//        Content content = contentRepository.findById(id).orElseThrow();
+//        content.setDeleted(true);
     }
 
 }

@@ -1,7 +1,7 @@
-package com.celebstyle.api.outfititem;
+package com.celebstyle.api.contentitem;
 
+import com.celebstyle.api.content.Content;
 import com.celebstyle.api.item.Item;
-import com.celebstyle.api.outfit.Outfit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OutfitItem {
+public class ContentItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "outfit_item_id")
@@ -28,15 +27,15 @@ public class OutfitItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outfit_id")
-    private Outfit outfit;
+    private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
     @Builder
-    public OutfitItem(Outfit outfit,Item item){
-        this.outfit = outfit;
+    public ContentItem(Content content, Item item){
+        this.content = content;
         this.item = item;
     }
 }
