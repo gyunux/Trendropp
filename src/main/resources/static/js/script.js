@@ -17,45 +17,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * 공개용 착장(Outfit) 데이터를 API로 불러와 화면에 카드 형태로 표시하는 함수
+     * 공개용 착장(content) 데이터를 API로 불러와 화면에 카드 형태로 표시하는 함수
      */
-    async function loadOutfits() {
+    async function loadContents() {
         const container = document.getElementById('fashion-container');
         if (!container) return; // fashion-container가 없는 페이지면 실행 안 함
 
         try {
             // API 경로를 일관성 있게 '/api/public/...'으로 수정
-            const response = await fetch('/api/public/outfits');
+            const response = await fetch('/api/public/contents');
             if (!response.ok) throw new Error('데이터를 불러오는 데 실패했습니다.');
 
-            const outfits = await response.json();
+            const contents = await response.json();
 
             container.innerHTML = ''; // 기존 콘텐츠 비우기
-            outfits.forEach(outfit => {
+            contents.forEach(content => {
                 const card = document.createElement('a');
                 card.className = 'fashion-card';
-                card.href = `/outfits/${outfit.id}`; // 상세 페이지 링크
+                card.href = `/contents/${content.id}`; // 상세 페이지 링크
 
                 // ▼▼▼ 카드에 'title'을 포함하도록 innerHTML 수정 ▼▼▼
                 card.innerHTML = `
                     <div class="card-image">
-                        <img src="${outfit.originImageUrl}" alt="${outfit.title}">
+                        <img src="${content.originImageUrl}" alt="${content.title}">
                     </div>
                     <div class="card-content">
-                        <h3 class="outfit-title">${outfit.title}</h3>
-                        <p class="celeb-name">${outfit.celeb.name}</p>
-                        <p class="item-count">아이템 ${outfit.itemCount}개</p>
+                        <h3 class="content-title">${content.title}</h3>
+                        <p class="celeb-name">${content.celeb.name}</p>
+                        <p class="item-count">아이템 ${content.itemCount}개</p>
                     </div>
                 `;
                 container.appendChild(card);
             });
         } catch (error) {
-            console.error('Error fetching outfits:', error);
+            console.error('Error fetching contents:', error);
             container.innerHTML = '<p>콘텐츠를 불러올 수 없습니다.</p>';
         }
     }
 
     // --- 페이지 로드 시 함수 실행 ---
     setActiveSidebarLink();
-    loadOutfits();
+    loadContents();
 });

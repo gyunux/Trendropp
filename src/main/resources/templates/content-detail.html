@@ -2,9 +2,9 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${outfit.title} + ' - Celeb\'s Pick'">착장 상세 정보</title>
+    <title th:text="${content.title} + ' - Celeb\'s Pick'">착장 상세 정보</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
-    <link rel="stylesheet" th:href="@{/css/outfit-detail-page.css}">
+    <link rel="stylesheet" th:href="@{/css/content-detail-page.css}">
 </head>
 <body>
 
@@ -14,28 +14,28 @@
     <div class="detail-page-container">
 
         <header class="detail-header">
-            <h1 class="outfit-title" th:text="${outfit.title}">251007 공항패션</h1>
+            <h1 class="content-title" th:text="${content.title}">251007 공항패션</h1>
             <a href="/admin/celebs" class="admin-button">관리자 페이지</a>
 
             <div class="celeb-profile">
-                <img th:src="${outfit.celeb.profileImageUrl}" alt="" class="celeb-avatar">
-                <span class="celeb-name" th:text="${outfit.celeb.name}">셀럽 이름</span>
+                <img th:src="${content.celeb.profileImageUrl}" alt="" class="celeb-avatar">
+                <span class="celeb-name" th:text="${content.celeb.name}">셀럽 이름</span>
             </div>
             <div class="metadata">
-                <span class="source-type" th:text="${outfit.sourceType.description}">출처 종류</span>
-                <span class="source-date" th:if="${outfit.sourceDate}" th:text="${#temporals.format(outfit.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
+                <span class="source-type" th:text="${content.sourceType.description}">출처 종류</span>
+                <span class="source-date" th:if="${content.sourceDate}" th:text="${#temporals.format(content.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
             </div>
         </header>
 
         <div class="detail-body">
             <div class="image-section">
-                <img th:src="${outfit.originImageUrl}" th:alt="${outfit.title}" class="main-outfit-image">
+                <img th:src="${content.originImageUrl}" th:alt="${content.title}" class="main-content-image">
             </div>
 
             <div class="items-section">
                 <h2>착용 아이템</h2>
                 <ul class="item-list">
-                    <li th:each="item : ${outfit.items}" class="item-card">
+                    <li th:each="item : ${content.items}" class="item-card">
                         <img th:src="${item.imageUrl}" alt="" class="item-image">
                         <div class="item-info">
                             <p class="item-brand" th:text="${item.brand.englishName}">Brand</p>
@@ -47,8 +47,8 @@
             </div>
         </div>
 
-        <div th:if="${outfit.summary != null and not #strings.isEmpty(outfit.summary)}" class="outfit-summary">
-            <p th:text="${outfit.summary}"></p>
+        <div th:if="${content.summary != null and not #strings.isEmpty(content.summary)}" class="content-summary">
+            <p th:text="${content.summary}"></p>
         </div>
 
     </div>

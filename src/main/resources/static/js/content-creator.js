@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const imageList = document.querySelector('.image-list');
     const formPanel = document.getElementById('form-panel');
-    const outfitForm = document.getElementById('outfit-create-form');
+    const contentForm = document.getElementById('content-create-form');
     const mainImageUrlInput = document.getElementById('mainImageUrl');
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item-btn');
-    const API_BASE_URL = '/api/admin/outfits';
+    const API_BASE_URL = '/api/admin/contents';
 
     // --- 1. 이미지 선택 로직 ---
     imageList.addEventListener('click', (e) => {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 3. 최종 폼 제출 로직 ---
-    outfitForm.addEventListener('submit', async (e) => {
+    contentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!mainImageUrlInput.value) {
             alert('대표 이미지를 먼저 선택해주세요.');
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const formData = {
-            title: document.getElementById('outfit-title').value,
+            title: document.getElementById('content-title').value,
             celebId: document.getElementById('celebId').value,
             sourceArticleId: document.getElementById('sourceArticleId').value,
             sourceType: document.getElementById('sourceType').value,
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!response.ok) throw new Error('착장 정보 저장에 실패했습니다.');
             alert('착장 정보가 성공적으로 저장되었습니다!');
-            window.location.href = '/admin/outfits'; // 저장 후 착장 관리 페이지로 이동
+            window.location.href = '/admin/contents'; // 저장 후 착장 관리 페이지로 이동
         } catch (error) {
             alert(error.message);
         }

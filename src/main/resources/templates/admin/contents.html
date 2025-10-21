@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CelebStyle - 콘텐츠 관리</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>콘텐츠 관리</h1>
+            <div class="header-actions">
+                <input type="search" id="content-search-input" placeholder="셀럽 이름으로 검색...">
+                <a th:href="@{/admin/contents/new/custom}" class="btn btn-primary">+ 새 콘텐츠 만들기</a>
+            </div>
+        </header>
+
+        <div class="content-body">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>대표 이미지</th>
+                    <th>콘텐츠 제목</th>
+                    <th>셀럽</th>
+                    <th>아이템 수</th>
+                    <th>출처</th>
+                    <th>원본 날짜</th>
+                    <th>업로드 날짜</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody id="content-table-body">
+                <tr th:each="content : ${contents}" th:attr="data-id=${content.id}">
+                    <td><img th:src="${content.originImageUrl}" alt="Content" class="thumbnail-img"></td>
+                    <td th:text="${content.title}">제니 콘텐츠</td>
+                    <td class="content-celeb-name" th:text="${content.celeb.name}">셀럽 이름</td>
+                    <td th:text="${content.itemCount} + '개'">3개</td>
+                    <td>
+                        <a th:if="${content.sourceUrl != null and not #strings.isEmpty(content.sourceUrl)}"
+                           th:href="${content.sourceUrl}" th:text="${content.sourceType.description}" target="_blank"></a>
+                        <span th:unless="${content.sourceUrl != null and not #strings.isEmpty(content.sourceUrl)}"
+                              th:text="${content.sourceType.description}"></span>
+                    </td>
+
+                    <td th:text="${content.sourceDate != null ? #temporals.format(content.sourceDate, 'yyyy-MM-dd') : '-'}"></td>
+                    <td th:text="${#temporals.format(content.uploadDate, 'yyyy-MM-dd HH:mm')}">2025-10-06 14:02</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm edit-btn">수정</button>
+                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(contents)}">
+                    <td colspan="6" class="no-data">등록된 콘텐츠이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<div id="edit-content-modal" class="modal-overlay">
+    <div class="modal-content large">
+        <form id="edit-content-form">
+            <input type="hidden" id="edit-content-id">
+            <div class="modal-header"><h2>콘텐츠 정보 수정</h2><button type="button" class="close-btn">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>콘텐츠 제목</label><input type="text" id="edit-content-title" required></div>
+
+                <div class="article-summary form-group">
+                    <label for="edit-summary">요약 (수정 가능)</label>
+                    <textarea id="edit-summary" rows="8"></textarea>
+                </div>
+
+                <div class="form-group"><label>셀럽</label><select id="edit-celebId" required></select></div>
+                <div class="form-group"><label>출처 종류</label><select id="edit-sourceType" required></select></div>
+                <div class="form-group"><label>출처 URL</label><input type="url" id="edit-sourceUrl"></div>
+                <div class="form-group"><label>원본 날짜</label><input type="datetime-local" id="edit-sourceDate"></div>
+                <div class="form-group"><label>대표 이미지 URL</label><input type="url" id="edit-mainImageUrl" required></div>
+
+                <hr>
+                <h4>아이템 정보</h4>
+                <div id="edit-items-container">
+                </div>
+                <button type="button" id="edit-add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary cancel-btn">취소</button><button type="submit" class="btn btn-primary">수정 완료</button></div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/content-admin.js}"></script>
+</body>
+</html>

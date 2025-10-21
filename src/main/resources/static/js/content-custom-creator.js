@@ -2,12 +2,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 사용할 HTML 요소들을 미리 찾아 변수에 저장 ---
-    const outfitForm = document.getElementById('outfit-create-form');
+    const contentForm = document.getElementById('content-create-form');
     const mainImageUrlInput = document.getElementById('mainImageUrl');
     const imagePreview = document.getElementById('image-preview');
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item-btn');
-    const API_BASE_URL = '/api/admin/outfits'; // 데이터를 보낼 서버의 API 주소
+    const API_BASE_URL = '/api/admin/contents'; // 데이터를 보낼 서버의 API 주소
 
     // --- 1. 이미지 URL 입력 시 미리보기 보여주는 로직 ---
     mainImageUrlInput.addEventListener('input', (e) => {
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 4. '착장 정보 저장' 버튼 클릭 시 전체 폼 데이터를 서버로 전송하는 로직 ---
-    outfitForm.addEventListener('submit', async (e) => {
+    contentForm.addEventListener('submit', async (e) => {
         e.preventDefault(); // 폼의 기본 제출 동작(새로고침)을 막습니다.
 
         // 동적으로 추가된 아이템 폼들의 데이터를 배열에 담습니다.
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 서버로 보낼 최종 데이터(JSON)를 만듭니다.
         const formData = {
-            title: document.getElementById('outfit-title').value,
+            title: document.getElementById('content-title').value,
             celebId: document.getElementById('celebId').value,
             sourceType: document.getElementById('sourceType').value,
             sourceUrl: '', // 현재 폼에는 없으므로 빈 값
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             alert('착장 정보가 성공적으로 저장되었습니다!');
-            window.location.href = '/admin/outfits'; // 저장 후 목록 페이지로 이동
+            window.location.href = '/admin/contents'; // 저장 후 목록 페이지로 이동
 
         } catch (error) {
             console.error('Submit Error:', error); // 개발자를 위해 콘솔에 에러를 출력

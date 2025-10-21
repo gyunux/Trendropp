@@ -1,13 +1,13 @@
-package com.celebstyle.api.outfit.dto;
+package com.celebstyle.api.content.dto;
 
 import com.celebstyle.api.celeb.dto.CelebView;
-import com.celebstyle.api.outfit.Outfit;
-import com.celebstyle.api.outfit.SourceType;
+import com.celebstyle.api.content.Content;
+import com.celebstyle.api.content.SourceType;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class OutfitAdminView {
+public class ContentAdminView {
     private Long id;
     private String title;
     private String originImageUrl;
@@ -18,21 +18,21 @@ public class OutfitAdminView {
     private CelebView celeb;
     private int itemCount;
 
-    public static OutfitAdminView fromEntity(Outfit outfit) {
-        return new OutfitAdminView(
-                outfit.getId(),
-                outfit.getTitle(),
-                outfit.getOriginImageUrl(),
-                outfit.getSourceUrl(),
-                outfit.getSourceDate(),
-                outfit.getUploadDate(),
-                outfit.getSourceType(),
-                new CelebView(outfit.getCeleb()),
-                outfit.getOutfitItems().size()
+    public static ContentAdminView fromEntity(Content content) {
+        return new ContentAdminView(
+                content.getId(),
+                content.getTitle(),
+                content.getOriginImageUrl(),
+                content.getSourceUrl(),
+                content.getSourceDate(),
+                content.getUploadDate(),
+                content.getSourceType(),
+                new CelebView(content.getCeleb()),
+                content.getContentItems().size()
         );
     }
 
-    private OutfitAdminView(
+    private ContentAdminView(
             Long id,
             String title,
             String originImageUrl,
