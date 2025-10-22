@@ -1,4 +1,4 @@
-package com.celebstyle.api.celeb;
+package com.celebstyle.api.common;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -19,7 +19,7 @@ public class S3UploadService {
         this.s3Client = s3Client;
     }
 
-    public String profileUpload(MultipartFile file,String directory) throws IOException{
+    public String upload(MultipartFile file,String directory) throws IOException{
         String uniqueFileName = directory + "/"  + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()

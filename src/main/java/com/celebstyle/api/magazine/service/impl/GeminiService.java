@@ -1,13 +1,11 @@
 package com.celebstyle.api.magazine.service.impl;
 
-import com.celebstyle.api.config.GeminiProperties;
+import com.celebstyle.api.common.config.GeminiProperties;
 import com.celebstyle.api.magazine.service.AiService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

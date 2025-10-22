@@ -5,6 +5,7 @@ import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
 import com.celebstyle.api.celeb.dto.CelebAdminView;
 import com.celebstyle.api.celeb.dto.CelebView;
+import com.celebstyle.api.common.S3UploadService;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CelebService {
     @Transactional
     public CelebCreateResponse create(CelebCreateRequest request) throws IOException {
 
-        String imageUrl = s3UploadService.profileUpload(request.getProfileImage(),"celebs");
+        String imageUrl = s3UploadService.upload(request.getProfileImage(),"celebs");
 
         Celeb newCeleb = Celeb.builder()
                 .name(request.getName())

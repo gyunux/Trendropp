@@ -1,4 +1,4 @@
-package com.celebstyle.api.config;
+package com.celebstyle.api.common.config;
 
 import java.time.Duration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
