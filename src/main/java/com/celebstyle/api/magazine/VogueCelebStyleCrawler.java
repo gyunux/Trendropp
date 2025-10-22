@@ -27,6 +27,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -39,6 +40,8 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
     private final CelebRepository celebRepository;
     private final AiService aiService;
 
+    @Value("${crawler.repeat-count}")
+    private int repeatCount;
 
     @Override
     public List<CrawlerDto> crawl() throws IOException {
@@ -124,7 +127,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.list_group li a")));
 
-        for(int i = 0;i < 2; i++){
+        for(int i = 0;i < repeatCount; i++){
             Document doc = Jsoup.parse(driver.getPageSource(),VOGUE_CELEB_STYLE_URL);
             Elements linkElements = doc.select("div.list_group li > a");
             linkElements.stream()
