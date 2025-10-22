@@ -100,12 +100,16 @@
                     <input type="text" id="edit-celeb-name" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="edit-profile-image-url">프로필 이미지 URL</label>
-                    <input type="url" id="edit-profile-image-url" required>
-                </div>
-                <div class="form-group">
                     <label for="edit-instagram-name">인스타그램 주소</label>
                     <input type="text" id="edit-instagram-name">
+                </div>
+                <div class="form-group">
+                    <label>프로필 이미지 (변경 시에만 선택)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="edit-profile-image" name="profileImage" accept="image/*">
+                        <label for="edit-profile-image" class="btn btn-secondary">파일 찾기</label>
+                        <span id="edit-file-name-display" class="file-name">현재 이미지 유지</span>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

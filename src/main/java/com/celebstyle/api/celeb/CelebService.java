@@ -13,6 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -63,12 +64,19 @@ public class CelebService {
     }
 
     @Transactional
-    public void update(Long id, CelebUpdateRequest request) {
+    public void update(Long id, CelebUpdateRequest request) throws IOException {
         Celeb celeb = celebRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 셀럽을 찾을 수 없습니다: " + id));
 
-        celeb.updateInfo(request.getProfileImageUrl(), request.getInstagramName());
+        MultipartFile newProfileImage = request.getProfileImage();
 
+        // [핵심] 2. 새로운 이미지 파일이 들어왔는지 확인합니다.
+        if (newProfileImage != null && !newProfileImage.isEmpty()) {
+
+            String newImageUrl = s3UploadService.upload(newProfileImage, "celebs");
+            celeb.setProfileImageUrl(newImageUrl);
+        }
+        celeb.setInstagramName(request.getInstagramName());
     }
 
     @Transactional

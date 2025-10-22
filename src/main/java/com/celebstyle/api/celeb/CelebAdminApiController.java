@@ -50,7 +50,7 @@ public class CelebAdminApiController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCeleb(@PathVariable Long id,
-                                            @Valid @RequestBody CelebUpdateRequest request) {
+                                            @Valid @ModelAttribute CelebUpdateRequest request) throws IOException {
         celebService.update(id, request);
         return ResponseEntity.ok().build();
     }
