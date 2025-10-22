@@ -3,22 +3,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 사용할 HTML 요소들을 미리 찾아 변수에 저장 ---
     const contentForm = document.getElementById('content-create-form');
-    const mainImageUrlInput = document.getElementById('mainImageUrl');
+    const mainImageFileInput = document.getElementById('mainImageFile');
+    const fileNameDisplay = document.getElementById('file-name-display');
     const imagePreview = document.getElementById('image-preview');
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item-btn');
     const API_BASE_URL = '/api/admin/contents'; // 데이터를 보낼 서버의 API 주소
 
     // --- 1. 이미지 URL 입력 시 미리보기 보여주는 로직 ---
-    mainImageUrlInput.addEventListener('input', (e) => {
-        const imageUrl = e.target.value;
-        if (imageUrl) {
-            imagePreview.src = imageUrl;
-            imagePreview.style.display = 'block'; // 이미지가 있으면 보이게
-        } else {
-            imagePreview.style.display = 'none'; // 주소가 비면 숨기기
-        }
-    });
+    if (mainImageFileInput) {
+        mainImageFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) { // 파일 선택을 취소한 경우
+                fileNameDisplay.textContent = '선택된 파일 없음';
+                imagePreview.style.display = 'none';
+                imagePreview.src = '';
+                return;
+            }
+
+            // [추가] 1. 파일 이름 표시
+            fileNameDisplay.textContent = file.name;
+
+            // [추가] 2. 이미지 미리보기 기능
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imagePreview.src = event.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file); // 파일을 읽어서 Base64 URL로 변환
+        });
+    }
 
     // --- 2. '아이템 추가' 버튼 클릭 시 폼을 동적으로 생성하는 로직 ---
     let itemCounter = 0;
@@ -66,48 +80,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. '착장 정보 저장' 버튼 클릭 시 전체 폼 데이터를 서버로 전송하는 로직 ---
     contentForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // 폼의 기본 제출 동작(새로고침)을 막습니다.
+        e.preventDefault();
 
-        // 동적으로 추가된 아이템 폼들의 데이터를 배열에 담습니다.
-        const items = [];
-        document.querySelectorAll('.item-form-group').forEach(itemGroup => {
-            items.push({
-                brandId: itemGroup.querySelector('.item-brand-id').value,
-                itemName: itemGroup.querySelector('.item-name').value,
-                itemImageUrl: itemGroup.querySelector('.item-image-url').value,
-                productUrl: itemGroup.querySelector('.item-product-url').value
-            });
+        const formData = new FormData();
+        formData.append('title', document.getElementById('content-title').value);
+        formData.append('celebId', document.getElementById('celebId').value);
+        formData.append('sourceType', document.getElementById('sourceType').value);
+
+        // 대표 이미지 파일 추가
+        if (mainImageFileInput.files.length > 0) {
+            formData.append('mainImageFile', mainImageFileInput.files[0]);
+        }
+
+        // 아이템 정보들을 배열 형태로 추가 (items[0].brandId, items[1].brandId ...)
+        document.querySelectorAll('.item-form-group').forEach((itemGroup, index) => {
+            formData.append(`items[${index}].brandId`, itemGroup.querySelector('.item-brand-id').value);
+            formData.append(`items[${index}].itemName`, itemGroup.querySelector('.item-name').value);
+            formData.append(`items[${index}].itemImageUrl`, itemGroup.querySelector('.item-image-url').value);
+            formData.append(`items[${index}].productUrl`, itemGroup.querySelector('.item-product-url').value);
         });
 
-        // 서버로 보낼 최종 데이터(JSON)를 만듭니다.
-        const formData = {
-            title: document.getElementById('content-title').value,
-            celebId: document.getElementById('celebId').value,
-            sourceType: document.getElementById('sourceType').value,
-            sourceUrl: '', // 현재 폼에는 없으므로 빈 값
-            sourceDate: null, // 현재 폼에는 없으므로 null
-            mainImageUrl: mainImageUrlInput.value,
-            items: items
-        };
-
-        // 서버에 데이터를 전송합니다.
         try {
-            const response = await fetch(API_BASE_URL, {
+            const response = await fetch('/api/admin/contents', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: formData
             });
 
-            if (!response.ok) { // 서버에서 에러 응답이 온 경우
-                throw new Error('착장 정보 저장에 실패했습니다. 입력값을 확인해주세요.');
+            if (!response.ok) {
+                throw new Error('콘텐츠 저장에 실패했습니다. 입력값을 확인해주세요.');
             }
 
-            alert('착장 정보가 성공적으로 저장되었습니다!');
-            window.location.href = '/admin/contents'; // 저장 후 목록 페이지로 이동
+            alert('콘텐츠가 성공적으로 저장되었습니다!');
+            window.location.href = '/admin/contents';
 
         } catch (error) {
-            console.error('Submit Error:', error); // 개발자를 위해 콘솔에 에러를 출력
-            alert(error.message); // 사용자에게 에러 메시지 표시
+            console.error('Submit Error:', error);
+            alert(error.message);
         }
     });
 });

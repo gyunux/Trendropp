@@ -4,6 +4,7 @@ import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.ArticleRepository;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
+import com.celebstyle.api.common.S3UploadService;
 import com.celebstyle.api.item.Item;
 import com.celebstyle.api.item.ItemService;
 import com.celebstyle.api.item.dto.ItemRequest;
@@ -13,6 +14,7 @@ import com.celebstyle.api.content.dto.SaveContentRequest;
 import com.celebstyle.api.contentitem.ContentItem;
 import com.celebstyle.api.contentitem.ContentItemRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +29,17 @@ public class ContentAdminService {
     private final ItemService itemService;
     private final ContentItemRepository contentItemRepository;
     private final ArticleRepository articleRepository; // ArticleRepository 주입
+    private final S3UploadService s3UploadService;
 
     @Transactional
-    public ContentAdminView createContent(SaveContentRequest request){
+    public ContentAdminView createContent(SaveContentRequest request) throws IOException {
         Celeb celeb = celebRepository.findById(request.getCelebId()).orElseThrow();
+
+        String imageUrl = s3UploadService.upload(request.getMainImageFile(),"contents");
 
         Content newContent = Content.builder()
                 .title(request.getTitle())
-                .originImageUrl(request.getMainImageUrl())
+                .originImageUrl(imageUrl)
                 .summary(request.getSummary())
                 .sourceUrl(request.getSourceUrl())
                 .sourceDate(request.getSourceDate())
@@ -43,12 +48,12 @@ public class ContentAdminService {
                 .build();
         contentRepository.save(newContent);
 
-        for (ItemRequest itemDto : request.getItems()) {
-
-            Item newItem = itemService.createItem(itemDto);
-
-            ContentItem contentItem = new ContentItem(newContent, newItem);
-            contentItemRepository.save(contentItem);
+        if (request.getItems() != null) {
+            for (ItemRequest itemDto : request.getItems()) {
+                Item newItem = itemService.createItem(itemDto);
+                ContentItem contentItem = new ContentItem(newContent, newItem);
+                contentItemRepository.save(contentItem);
+            }
         }
         if (request.getSourceArticleId() != null) {
             Article article = articleRepository.findById(request.getSourceArticleId()).orElseThrow();
@@ -78,7 +83,7 @@ public class ContentAdminService {
 
         Celeb celeb = celebRepository.findById(request.getCelebId()).orElseThrow();
         content.setCeleb(celeb);
-        content.setOriginImageUrl(request.getMainImageUrl());
+//        content.setOriginImageUrl(request.getMainImageUrl());
         content.setSourceType(request.getSourceType());
         content.setSourceUrl(request.getSourceUrl());
         content.setSourceDate(request.getSourceDate());

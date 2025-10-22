@@ -379,3 +379,16 @@ input[type="search"] {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.image-preview-wrapper {
+    margin-top: 1rem;
+}
+
+/* 이미지 미리보기 스타일 */
+.image-preview {
+    display: none; /* 평소에는 숨겨둠 */
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
