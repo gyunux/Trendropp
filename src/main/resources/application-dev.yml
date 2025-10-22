@@ -14,3 +14,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+gemini:
+  api:
+    key: ${API_KEY}
+
+
+crawler:
+  repeat-count: 10
