@@ -57,9 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="text" id="item-name-${itemCounter}" class="item-name" required>
                     </div>
                     <div class="form-group">
-                        <label for="item-image-url-${itemCounter}">아이템 이미지 URL</label>
-                        <input type="url" id="item-image-url-${itemCounter}" class="item-image-url" required>
+                    <label for="item-image-file-${itemCounter}">아이템 이미지</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="item-image-file-${itemCounter}" class="item-image-file" accept="image/*" required>
+                        <label for="item-image-file-${itemCounter}" class="btn btn-secondary btn-sm">파일 찾기</label>
+                        <span class="item-file-name">선택된 파일 없음</span>
                     </div>
+                </div>
                     <div class="form-group">
                         <label for="item-product-url-${itemCounter}">구매 링크</label>
                         <input type="url" id="item-product-url-${itemCounter}" class="item-product-url" required>
@@ -75,6 +79,18 @@ document.addEventListener('DOMContentLoaded', () => {
     itemsContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-item-btn')) {
             e.target.closest('.item-form-group').remove();
+        }
+    });
+
+    itemsContainer.addEventListener('change', (e) => {
+        // 클릭된 요소가 아이템 이미지 파일 input인지 확인
+        if (e.target.classList.contains('item-image-file')) {
+            const fileNameDisplay = e.target.closest('.file-upload-wrapper').querySelector('.item-file-name');
+            if (e.target.files.length > 0) {
+                fileNameDisplay.textContent = e.target.files[0].name;
+            } else {
+                fileNameDisplay.textContent = '선택된 파일 없음';
+            }
         }
     });
 
@@ -96,8 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.item-form-group').forEach((itemGroup, index) => {
             formData.append(`items[${index}].brandId`, itemGroup.querySelector('.item-brand-id').value);
             formData.append(`items[${index}].itemName`, itemGroup.querySelector('.item-name').value);
-            formData.append(`items[${index}].itemImageUrl`, itemGroup.querySelector('.item-image-url').value);
-            formData.append(`items[${index}].productUrl`, itemGroup.querySelector('.item-product-url').value);
+            const itemImageInput = itemGroup.querySelector('.item-image-file');
+            if (itemImageInput.files.length > 0) {
+                formData.append(`items[${index}].itemImageFile`, itemImageInput.files[0]);
+            }            formData.append(`items[${index}].productUrl`, itemGroup.querySelector('.item-product-url').value);
         });
 
         try {

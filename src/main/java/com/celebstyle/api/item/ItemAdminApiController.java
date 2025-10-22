@@ -2,10 +2,12 @@ package com.celebstyle.api.item;
 
 import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.item.dto.ItemRequest;
+import java.io.IOException;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,7 +24,7 @@ public class ItemAdminApiController {
     private final ItemService itemService;
 
     @PostMapping
-    public ResponseEntity<ItemDetailView> createItem(@RequestBody ItemRequest request){
+    public ResponseEntity<ItemDetailView> createItem(@ModelAttribute ItemRequest request) throws IOException {
         ItemDetailView responseView = itemService.createItemAndGetView(request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

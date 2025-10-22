@@ -77,7 +77,7 @@ public class ContentAdminService {
     }
 
     @Transactional
-    public void updateContent(Long contentId, SaveContentRequest request) {
+    public void updateContent(Long contentId, SaveContentRequest request) throws IOException {
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new EntityNotFoundException("착장을 찾을 수 없습니다."));
 

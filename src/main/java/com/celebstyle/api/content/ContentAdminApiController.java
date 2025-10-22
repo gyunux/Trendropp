@@ -43,7 +43,8 @@ public class ContentAdminApiController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateContent(@PathVariable Long id, @Valid @RequestBody SaveContentRequest request) {
+    public ResponseEntity<Void> updateContent(@PathVariable Long id, @Valid @RequestBody SaveContentRequest request)
+            throws IOException {
         contentService.updateContent(id, request);
         return ResponseEntity.ok().build(); // 성공 시 200 OK 응답
     }
