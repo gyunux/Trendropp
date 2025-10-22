@@ -66,17 +66,21 @@
                     <input type="text" id="celeb-name" required>
                 </div>
                 <div class="form-group">
-                    <label for="profile-image-url">프로필 이미지 URL</label>
-                    <input type="url" id="profile-image-url">
-                </div>
-                <div class="form-group">
                     <label for="instagram-name">인스타그램 주소</label>
                     <input type="text" id="instagram-name">
+                </div>
+                <div class="form-group">
+                    <label>프로필 이미지</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="profile-image" name="profileImage" accept="image/*" required>
+                        <label for="profile-image" class="btn btn-secondary">파일 찾기</label>
+                        <span id="file-name-display" class="file-name">선택된 파일 없음</span>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="cancel-btn" class="btn btn-secondary">취소</button>
-                <button type="submit" class="btn btn-primary">저장</button>
+                <button type="submit" class="btn btn-primary">셀럽 등록</button>
             </div>
         </form>
     </div>

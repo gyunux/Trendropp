@@ -6,6 +6,7 @@ import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
 import com.celebstyle.api.celeb.dto.CelebAdminView;
 import com.celebstyle.api.celeb.dto.CelebView;
 import jakarta.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CelebService {
     private final CelebRepository celebRepository;
-
+    private final S3UploadService s3UploadService;
     @Transactional
-    public CelebCreateResponse create(CelebCreateRequest request){
+    public CelebCreateResponse create(CelebCreateRequest request) throws IOException {
+
+        String imageUrl = s3UploadService.profileUpload(request.getProfileImage(),"celebs");
+
         Celeb newCeleb = Celeb.builder()
                 .name(request.getName())
-                .profileImageUrl(request.getProfileImageUrl())
                 .instagramName(request.getInstagramName())
+                .profileImageUrl(imageUrl)
                 .build();
 
         Celeb celeb = celebRepository.save(newCeleb);

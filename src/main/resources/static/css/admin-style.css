@@ -353,3 +353,29 @@ input[type="search"] {
     outline: none;
     border-color: #0d6efd;
 }
+
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 진짜 <input type="file">은 화면에서 숨김 */
+.file-upload-wrapper input[type="file"] {
+    display: none;
+}
+
+/* <label>을 버튼처럼 보이게 함 */
+.file-upload-wrapper label.btn {
+    flex-shrink: 0; /* 버튼 크기가 줄어들지 않도록 고정 */
+    cursor: pointer; /* 마우스 커서를 손가락 모양으로 */
+}
+
+/* 파일 이름이 표시될 텍스트 영역 */
+.file-name {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
