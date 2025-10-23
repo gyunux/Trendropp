@@ -3,6 +3,7 @@ package com.celebstyle.api.magazine;
 
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
+import com.celebstyle.api.common.S3UploadService;
 import com.celebstyle.api.magazine.service.AiService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
@@ -23,10 +24,13 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -38,7 +42,10 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
     private static final String SOURCE_NAME = "Vogue Celeb Style";
     private final CelebRepository celebRepository;
     private final AiService aiService;
+    private final S3UploadService s3UploadService;
 
+    @Value("${crawler.repeat-count}")
+    private int repeatCount;
 
     @Override
     public List<CrawlerDto> crawl() throws IOException {
@@ -75,6 +82,18 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                 try {
                     CrawlerDto news = scrapeDetailPage(driver, url, koreanCelebNames);
                     if (news != null) {
+
+                        List<String> s3ImageUrls = new ArrayList<>();
+                        for (String originalUrl : news.getImageUrls()) {
+                            try {
+                                String s3Url = s3UploadService.uploadFromUrl(originalUrl, "articles");
+                                s3ImageUrls.add(s3Url);
+                            } catch (Exception e) {
+                                log.error("S3 개별 이미지 업로드 실패 (스킵): {}", originalUrl, e);
+                            }
+                        }
+                        news.setImageUrls(s3ImageUrls);
+
                         newsList.add(news);
                     }
                 } catch (Exception e) {
@@ -114,47 +133,85 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         return newsList;
     }
 
-    private List<String> getArticleDetailUrls(WebDriver driver) throws IOException {
+    private List<String> getArticleDetailUrls(WebDriver driver) { // IOException 제거 가능
         driver.get(VOGUE_CELEB_STYLE_URL);
-
         Set<String> urlSet = new HashSet<>();
-
         JavascriptExecutor js = (JavascriptExecutor) driver;
+        WebDriverWait initialWait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.list_group li a")));
+        try {
+            // 처음 페이지 로드 시 기다림
+            initialWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.list_group li a")));
 
-        for(int i = 0;i < 2; i++){
-            Document doc = Jsoup.parse(driver.getPageSource(),VOGUE_CELEB_STYLE_URL);
-            Elements linkElements = doc.select("div.list_group li > a");
-            linkElements.stream()
-                    .map(element -> element.attr("abs:href"))
-                    .filter(StringUtils::hasText)
-                    .forEach(urlSet::add);
+            for (int i = 0; i < repeatCount; i++) {
 
-            js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+                // 현재 페이지 URL 수집
+                Document doc = Jsoup.parse(driver.getPageSource(), VOGUE_CELEB_STYLE_URL);
+                doc.select("div.list_group li > a").stream()
+                        .map(element -> element.attr("abs:href"))
+                        .filter(StringUtils::hasText)
+                        .forEach(urlSet::add);
 
-            try {
-                new WebDriverWait(driver, Duration.ofSeconds(5))
-                        .until(ExpectedConditions.visibilityOfElementLocated(
-                                By.cssSelector("div.list_group li:last-child a")
-                        ));
-            } catch (Exception e) {
-                log.warn("새로운 콘텐츠 로딩 지연...");
+                int currentUrlCount = urlSet.size();
+
+                // 페이지 맨 아래로 스크롤
+                js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+
+                // [핵심 수정] WebDriverWait 대신 Thread.sleep 사용
+                try {
+                    // 스크롤 후 새로운 콘텐츠가 로드될 시간을 3초간 강제로 부여합니다.
+                    // 네트워크 상태나 PC 성능에 따라 이 시간을 조절해야 할 수 있습니다.
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.warn("스크롤 대기 중 인터럽트 발생");
+                    break;
+                }
+
+                if (urlSet.size() == currentUrlCount) {
+                    log.info("새로운 기사가 더 이상 로드되지 않아 스크롤을 중단합니다. ({}회 실행)", i + 1);
+                    break;
+                }
             }
-
+        } catch (Exception e) {
+            log.error("기사 목록 URL 수집 중 오류 발생", e);
+            return Collections.emptyList();
         }
+
         log.info("총 {}개의 고유한 기사 링크를 수집했습니다.", urlSet.size());
         return new ArrayList<>(urlSet);
     }
 
+
     private CrawlerDto scrapeDetailPage(WebDriver driver,String url,List<String> koreanCelebNames) throws IOException {
-
         driver.get(url);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        JavascriptExecutor js = (JavascriptExecutor) driver; // JavascriptExecutor 추가
 
-        new WebDriverWait(driver, Duration.ofSeconds(20))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.contt")));
+        try {
+            // 1. 주요 콘텐츠 영역 기다리기
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.contt")));
 
+            // [핵심 수정] 2. 페이지 내 모든 관련 이미지를 찾아서 하나씩 스크롤하여 로딩 유도
+            List<WebElement> images = driver.findElements(By.cssSelector("figure.wp-block-image img"));
+            for (WebElement img : images) {
+                try {
+                    // 이미지를 뷰포트로 스크롤 (true는 화면 상단에 맞춤)
+                    js.executeScript("arguments[0].scrollIntoView(true);", img);
+                    // 스크롤 후 이미지 로딩을 위한 아주 짧은 대기
+                    Thread.sleep(200);
+                } catch (Exception scrollEx) {
+                    log.warn("개별 이미지 스크롤 중 오류 발생 (무시): {}", scrollEx.getMessage());
+                }
+            }
+
+            // [추가] 모든 스크롤 후 최종 렌더링을 위해 잠시 대기
+            Thread.sleep(1000);
+
+        } catch (Exception e) {
+            log.error("상세 페이지 로딩 또는 이미지 스크롤 중 오류 (스킵): {}", url, e);
+            return null;
+        }
         Document doc = Jsoup.parse(driver.getPageSource());
         Element titleElement = doc.getElementsByClass("post_tit pc").first();
         String title = (titleElement != null) ? titleElement.text() : "제목 없음";
@@ -181,19 +238,21 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
             return null;
         }
 
-        List<String> imageUrls = new ArrayList<>();
+        Set<String> imageUrlSet = new HashSet<>();
         Elements images = doc.select("figure.wp-block-image img");
         for(Element img : images){
             String imgUrl = img.attr("data-src");
             if(imgUrl.isEmpty()){
                 imgUrl = img.attr("src");
             }
-            imageUrls.add(imgUrl);
+            imageUrlSet.add(imgUrl);
         }
-        log.info(String.valueOf(imageUrls.size()));
+        log.info(String.valueOf(imageUrlSet.size()));
 
         Elements bodies = doc.select("div.contt p:not(.relate_group p)");
         String body = bodies.text();
+
+        List<String> imageUrls = new ArrayList<>(imageUrlSet);
 
         log.info("국내 연예인 기사 수집: {}", title);
         if (!title.equals("제목 없음") && !url.isEmpty() && !imageUrls.isEmpty()) {

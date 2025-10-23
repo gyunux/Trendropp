@@ -17,8 +17,12 @@
         <div class="content-body">
             <form id="content-create-form">
                 <div class="form-group">
-                    <label for="mainImageUrl">대표 이미지 URL</label>
-                    <input type="url" id="mainImageUrl" placeholder="등록할 콘텐츠 이미지의 URL을 붙여넣으세요." required>
+                    <label>대표 이미지</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="mainImageFile" name="mainImageFile" accept="image/*" required>
+                        <label for="mainImageFile" class="btn btn-secondary">파일 찾기</label>
+                        <span id="file-name-display" class="file-name">선택된 파일 없음</span>
+                    </div>
                 </div>
                 <div class="image-preview-wrapper">
                     <img id="image-preview" src="" alt="이미지 미리보기" class="image-preview">

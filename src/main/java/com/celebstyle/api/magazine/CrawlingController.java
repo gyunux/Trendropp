@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CrawlingController {
     private final ArticleService articleService;
 
-    @PostMapping("/api/crawl")
+    @PostMapping("/api/myCrawl/vivienne")
     public String startCrawling(){
         articleService.saveCrawledArticles();
         return "Crawling and data saving initiated.";
