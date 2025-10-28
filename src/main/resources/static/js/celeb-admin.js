@@ -61,14 +61,57 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addForm) {
         addForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            // [진단 1] 이 로그가 콘솔에 찍히는지 확인 (이벤트 리스너가 동작하는지)
+            console.log(">>> '새 셀럽 등록' submit 이벤트 발생!");
+
+            // [진단 2] profileImageInput 변수가 올바른지 확인
+            if (!addProfileImageInput || !addProfileImageInput.files) {
+                console.error("### 오류: profileImageInput 요소를 찾을 수 없습니다!");
+                alert("파일 입력 요소를 찾을 수 없습니다. HTML ID를 확인하세요.");
+                return;
+            }
+            if (addProfileImageInput.files.length === 0) {
+                console.warn("### 경고: 프로필 이미지가 선택되지 않았습니다.");
+                // 여기서 alert를 띄우거나 return; 할 수 있습니다. (required 속성이 이미 있으므로 필수는 아님)
+            }
+
+
             const formData = new FormData();
             formData.append('name', document.getElementById('celeb-name').value);
             formData.append('instagramName', document.getElementById('instagram-name').value);
-            if (addProfileImageInput.files.length > 0) {
-                formData.append('profileImage', addProfileImageInput.files[0]);
+            formData.append('profileImage', addProfileImageInput.files[0]);
+
+            // [진단 3] FormData 내용 확인
+            console.log(">>> FormData 내용:", {
+                name: formData.get('name'),
+                instagramName: formData.get('instagramName'),
+                profileImage: formData.get('profileImage') ? formData.get('profileImage').name : '파일 없음'
+            });
+
+            try {
+                // [진단 4] Fetch 요청 직전 로그
+                console.log(">>> API 호출 시도:", API_BASE_URL);
+
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // [진단 5] Fetch 응답 확인
+                console.log(">>> API 응답 상태:", response.status);
+
+                if (!response.ok) throw new Error('등록에 실패했습니다. 상태 코드: ' + response.status);
+                alert('성공적으로 등록되었습니다.');
+                window.location.reload();
+            } catch (error) {
+                // [진단 6] Fetch 또는 그 이후 오류 확인
+                console.error(">>> '새 셀럽 등록' API 호출 중 에러 발생:", error);
+                alert(error.message);
             }
-            // ... fetch 로직 ...
         });
+    } else {
+        // [진단 0] 만약 addForm 자체가 null이라면 이 로그가 찍힘
+        console.error("### 심각: addForm (ID: celeb-form) 요소를 찾지 못했습니다! ###");
     }
 
     // 테이블 내 '수정/삭제' 버튼 클릭 이벤트

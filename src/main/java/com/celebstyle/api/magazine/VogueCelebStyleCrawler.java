@@ -75,7 +75,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                 log.warn("DB에 셀럽 정보가 없습니다. 필터링을 진행할 수 없습니다.");
                 return Collections.emptyList();
             }
-
+            log.info("셀럽 수 : {}",koreanCelebNames.size());
             List<String> detailUrls = getArticleDetailUrls(driver);
 
             for (String url : detailUrls) {
@@ -137,7 +137,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         driver.get(VOGUE_CELEB_STYLE_URL);
         Set<String> urlSet = new HashSet<>();
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        WebDriverWait initialWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait initialWait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         try {
             // 처음 페이지 로드 시 기다림
@@ -168,10 +168,6 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                     break;
                 }
 
-                if (urlSet.size() == currentUrlCount) {
-                    log.info("새로운 기사가 더 이상 로드되지 않아 스크롤을 중단합니다. ({}회 실행)", i + 1);
-                    break;
-                }
             }
         } catch (Exception e) {
             log.error("기사 목록 URL 수집 중 오류 발생", e);
@@ -247,8 +243,6 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
             }
             imageUrlSet.add(imgUrl);
         }
-        log.info(String.valueOf(imageUrlSet.size()));
-
         Elements bodies = doc.select("div.contt p:not(.relate_group p)");
         String body = bodies.text();
 

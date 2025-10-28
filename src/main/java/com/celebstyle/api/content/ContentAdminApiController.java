@@ -26,7 +26,7 @@ public class ContentAdminApiController {
     private final ContentAdminService contentService;
 
     @PostMapping
-    public ResponseEntity<ContentAdminView> createContent(@Valid @ModelAttribute SaveContentRequest request)
+    public ResponseEntity<ContentAdminView> createContent(@Valid @RequestBody SaveContentRequest request)
             throws IOException {
         ContentAdminView createdContent = contentService.createContent(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

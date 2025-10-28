@@ -3,3 +3,10 @@ server:
 spring:
   profiles:
     active: dev
+
+crawler:
+  repeat-count: 1
+
+gemini:
+  api:
+    key: ${API_KEY}

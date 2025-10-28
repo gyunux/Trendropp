@@ -5,6 +5,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -19,9 +21,14 @@ public class AppConfig {
                 .build();    }
 
     @Bean
-    public S3Client s3Client() {
+    S3Client s3Client() {
         return S3Client.builder()
                 .region(Region.AP_NORTHEAST_2) // 서울 리전
                 .build();
+    }
+
+    @Bean
+    MultipartResolver multipartResolver(){
+        return new StandardServletMultipartResolver();
     }
 }
