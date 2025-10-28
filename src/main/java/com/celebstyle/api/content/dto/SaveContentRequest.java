@@ -17,7 +17,7 @@ public class SaveContentRequest {
     private SourceType sourceType;
     private String sourceUrl;
     private LocalDateTime sourceDate;
-    private MultipartFile mainImageFile;
+    private String mainImageUrl;
     private List<ItemRequest> items;
     private String summary;
 }
