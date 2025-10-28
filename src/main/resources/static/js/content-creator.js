@@ -29,33 +29,43 @@ document.addEventListener('DOMContentLoaded', () => {
     let itemCounter = 0;
     addItemBtn.addEventListener('click', () => {
         itemCounter++;
-        // HTML로부터 전달받은 allBrands 변수를 사용해 브랜드 드롭다운 생성
         const brandOptionsHtml = allBrands.map(brand =>
             `<option value="${brand.id}">${brand.englishName}</option>`
         ).join('');
 
+        // [수정] 아이템 이미지 URL 입력창을 파일 선택 UI로 변경
         const itemFormHtml = `
-            <div class="item-form-group">
-                <h5>아이템 #${itemCounter}</h5>
+        <div class="item-form-group" data-item-id="${itemCounter}">
+            <h5>아이템 #${itemCounter}</h5>
+            <button type="button" class="btn btn-danger btn-sm remove-item-btn">삭제</button>
+            <div class="form-grid">
                 <div class="form-group">
-                    <label>브랜드</label>
-                    <select class="item-brand-id" required>${brandOptionsHtml}</select>
+                    <label for="item-brand-${itemCounter}">브랜드</label>
+                    <select id="item-brand-${itemCounter}" class="item-brand-id" required>
+                        <option value="">-- 브랜드 선택 --</option>
+                        ${brandOptionsHtml}
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>아이템 이름</label>
-                    <input type="text" class="item-name" required>
+                    <label for="item-name-${itemCounter}">아이템 이름</label>
+                    <input type="text" id="item-name-${itemCounter}" class="item-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="item-image-file-${itemCounter}">아이템 이미지</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="item-image-file-${itemCounter}" class="item-image-file" accept="image/*" required>
+                        <label for="item-image-file-${itemCounter}" class="btn btn-secondary btn-sm">파일 찾기</label>
+                        <span class="item-file-name">선택된 파일 없음</span>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>아이템 이미지 URL</label>
-                    <input type="url" class="item-image-url" required>
+                    <label for="item-product-url-${itemCounter}">구매 링크</label>
+                    <input type="url" id="item-product-url-${itemCounter}" class="item-product-url" required>
                 </div>
-                <div class="form-group">
-                    <label>구매 링크</label>
-                    <input type="url" class="item-product-url" required>
-                </div>
-                <button type="button" class="btn btn-danger btn-sm remove-item-btn">삭제</button>
             </div>
-        `;
+        </div>
+    `;
         itemsContainer.insertAdjacentHTML('beforeend', itemFormHtml);
     });
 
@@ -68,42 +78,50 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. 최종 폼 제출 로직 ---
     contentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!mainImageUrlInput.value) {
+
+        // [핵심] 사용자가 선택한 이미지의 S3 URL 가져오기
+        const selectedImageElement = document.querySelector('.selectable-image.selected'); // 이미지 선택 로직에 따라 달라질 수 있음
+        if (!selectedImageElement) {
             alert('대표 이미지를 먼저 선택해주세요.');
             return;
         }
+        const mainImageUrlValue = selectedImageElement.src; // 선택된 이미지의 src (S3 URL)
 
         const items = [];
         document.querySelectorAll('.item-form-group').forEach(itemGroup => {
             items.push({
                 brandId: itemGroup.querySelector('.item-brand-id').value,
                 itemName: itemGroup.querySelector('.item-name').value,
+                // [수정] 아이템 이미지도 URL 방식으로 가정 (필요시 파일 업로드 로직 추가)
                 itemImageUrl: itemGroup.querySelector('.item-image-url').value,
                 productUrl: itemGroup.querySelector('.item-product-url').value
             });
         });
 
+        // [수정] JSON 객체 생성
         const formData = {
             title: document.getElementById('content-title').value,
             celebId: document.getElementById('celebId').value,
-            sourceArticleId: document.getElementById('sourceArticleId').value,
+            sourceArticleId: document.getElementById('sourceArticleId').value, // hidden input 값
             sourceType: document.getElementById('sourceType').value,
-            sourceUrl: document.querySelector('.article-title a')?.href || '', // 원본 기사 링크 가져오기 (필요시 수정)
-            sourceDate: null, // 날짜 정보가 있다면 추가
-            mainImageUrl: mainImageUrlInput.value,
-            items: items,
-            summary: document.getElementById('summary').value
+            summary: document.getElementById('summary').value, // textarea 값
+
+            mainImageUrl: mainImageUrlValue, // [수정] 파일 대신 S3 URL String
+
+            items: items
+            // sourceUrl, sourceDate 등 필요시 추가
         };
 
         try {
-            const response = await fetch(API_BASE_URL, {
+            const response = await fetch(API_BASE_URL, { // API_BASE_URL = '/api/admin/contents'
                 method: 'POST',
+                // [수정] 다시 JSON 방식으로 변경
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-            if (!response.ok) throw new Error('착장 정보 저장에 실패했습니다.');
-            alert('착장 정보가 성공적으로 저장되었습니다!');
-            window.location.href = '/admin/contents'; // 저장 후 착장 관리 페이지로 이동
+            if (!response.ok) throw new Error('콘텐츠 정보 저장에 실패했습니다.');
+            alert('콘텐츠 정보가 성공적으로 저장되었습니다!');
+            window.location.href = '/admin/contents';
         } catch (error) {
             alert(error.message);
         }

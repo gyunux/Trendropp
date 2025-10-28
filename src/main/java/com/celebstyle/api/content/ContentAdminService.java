@@ -35,11 +35,10 @@ public class ContentAdminService {
     public ContentAdminView createContent(SaveContentRequest request) throws IOException {
         Celeb celeb = celebRepository.findById(request.getCelebId()).orElseThrow();
 
-        String imageUrl = s3UploadService.upload(request.getMainImageFile(),"contents");
 
         Content newContent = Content.builder()
                 .title(request.getTitle())
-                .originImageUrl(imageUrl)
+                .originImageUrl(request.getMainImageUrl())
                 .summary(request.getSummary())
                 .sourceUrl(request.getSourceUrl())
                 .sourceDate(request.getSourceDate())
