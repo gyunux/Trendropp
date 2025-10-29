@@ -1,5 +1,6 @@
-package com.celebstyle.api.article;
+package com.celebstyle.api.article.dto;
 
+import com.celebstyle.api.article.Article;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

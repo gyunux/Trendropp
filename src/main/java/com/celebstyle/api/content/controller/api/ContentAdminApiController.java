@@ -1,8 +1,9 @@
-package com.celebstyle.api.content;
+package com.celebstyle.api.content.controller.api;
 
 import com.celebstyle.api.content.dto.ContentAdminView;
 import com.celebstyle.api.content.dto.ContentDetailView;
 import com.celebstyle.api.content.dto.SaveContentRequest;
+import com.celebstyle.api.content.service.ContentAdminService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;

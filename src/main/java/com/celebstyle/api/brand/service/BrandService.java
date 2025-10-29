@@ -1,5 +1,7 @@
-package com.celebstyle.api.brand;
+package com.celebstyle.api.brand.service;
 
+import com.celebstyle.api.brand.Brand;
+import com.celebstyle.api.brand.BrandRepository;
 import com.celebstyle.api.brand.dto.BrandCreateRequest;
 import com.celebstyle.api.brand.dto.BrandView;
 import jakarta.persistence.EntityNotFoundException;

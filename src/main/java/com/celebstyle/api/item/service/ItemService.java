@@ -1,8 +1,10 @@
-package com.celebstyle.api.item;
+package com.celebstyle.api.item.service;
 
 import com.celebstyle.api.brand.Brand;
 import com.celebstyle.api.brand.BrandRepository;
 import com.celebstyle.api.common.S3UploadService;
+import com.celebstyle.api.item.Item;
+import com.celebstyle.api.item.ItemRepository;
 import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.item.dto.ItemRequest;
 import com.celebstyle.api.contentitem.ContentItemRepository;

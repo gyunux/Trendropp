@@ -1,5 +1,7 @@
-package com.celebstyle.api.article;
+package com.celebstyle.api.article.controller;
 
+import com.celebstyle.api.article.dto.ArticleAdminView;
+import com.celebstyle.api.article.service.ArticleService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

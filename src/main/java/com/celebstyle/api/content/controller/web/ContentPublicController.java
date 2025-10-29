@@ -1,6 +1,7 @@
-package com.celebstyle.api.content;
+package com.celebstyle.api.content.controller.web;
 
 import com.celebstyle.api.content.dto.ContentDetailView;
+import com.celebstyle.api.content.service.ContentPublicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

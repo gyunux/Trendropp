@@ -1,11 +1,12 @@
-package com.celebstyle.api.article;
+package com.celebstyle.api.article.service;
 
-import com.celebstyle.api.celeb.Celeb;
+import com.celebstyle.api.article.Article;
+import com.celebstyle.api.article.dto.ArticleAdminView;
+import com.celebstyle.api.article.ArticleRepository;
 import com.celebstyle.api.magazine.CrawlerDto;
 import com.celebstyle.api.magazine.MagazineCrawler;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

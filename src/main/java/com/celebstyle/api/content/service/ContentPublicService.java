@@ -1,5 +1,7 @@
-package com.celebstyle.api.content;
+package com.celebstyle.api.content.service;
 
+import com.celebstyle.api.content.Content;
+import com.celebstyle.api.content.ContentRepository;
 import com.celebstyle.api.content.dto.ContentDetailView;
 import com.celebstyle.api.content.dto.ContentPublicView;
 import java.util.List;

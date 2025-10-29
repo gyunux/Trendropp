@@ -1,5 +1,6 @@
-package com.celebstyle.api.item;
+package com.celebstyle.api.item.controller;
 
+import com.celebstyle.api.item.service.ItemService;
 import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.item.dto.ItemRequest;
 import java.io.IOException;

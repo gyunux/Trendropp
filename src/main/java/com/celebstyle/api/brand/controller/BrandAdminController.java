@@ -1,5 +1,6 @@
-package com.celebstyle.api.brand;
+package com.celebstyle.api.brand.controller;
 
+import com.celebstyle.api.brand.service.BrandService;
 import com.celebstyle.api.brand.dto.BrandView;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

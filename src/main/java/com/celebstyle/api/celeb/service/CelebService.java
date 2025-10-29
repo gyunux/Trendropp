@@ -1,5 +1,7 @@
-package com.celebstyle.api.celeb;
+package com.celebstyle.api.celeb.service;
 
+import com.celebstyle.api.celeb.Celeb;
+import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;

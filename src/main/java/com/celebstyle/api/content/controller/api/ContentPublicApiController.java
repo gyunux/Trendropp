@@ -1,6 +1,7 @@
-package com.celebstyle.api.content;
+package com.celebstyle.api.content.controller.api;
 
 import com.celebstyle.api.content.dto.ContentPublicView;
+import com.celebstyle.api.content.service.ContentPublicService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

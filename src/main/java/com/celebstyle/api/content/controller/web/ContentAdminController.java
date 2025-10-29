@@ -1,12 +1,14 @@
-package com.celebstyle.api.content;
+package com.celebstyle.api.content.controller.web;
 
 import com.celebstyle.api.article.Article;
-import com.celebstyle.api.article.ArticleService;
-import com.celebstyle.api.brand.BrandService;
+import com.celebstyle.api.article.service.ArticleService;
+import com.celebstyle.api.brand.service.BrandService;
 import com.celebstyle.api.brand.dto.BrandView;
-import com.celebstyle.api.celeb.CelebService;
+import com.celebstyle.api.celeb.service.CelebService;
 import com.celebstyle.api.celeb.dto.CelebView;
+import com.celebstyle.api.content.SourceType;
 import com.celebstyle.api.content.dto.ContentAdminView;
+import com.celebstyle.api.content.service.ContentAdminService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

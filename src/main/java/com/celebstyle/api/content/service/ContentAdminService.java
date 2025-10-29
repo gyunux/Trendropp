@@ -1,12 +1,14 @@
-package com.celebstyle.api.content;
+package com.celebstyle.api.content.service;
 
 import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.ArticleRepository;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.common.S3UploadService;
+import com.celebstyle.api.content.Content;
+import com.celebstyle.api.content.ContentRepository;
 import com.celebstyle.api.item.Item;
-import com.celebstyle.api.item.ItemService;
+import com.celebstyle.api.item.service.ItemService;
 import com.celebstyle.api.item.dto.ItemRequest;
 import com.celebstyle.api.content.dto.ContentAdminView;
 import com.celebstyle.api.content.dto.ContentDetailView;

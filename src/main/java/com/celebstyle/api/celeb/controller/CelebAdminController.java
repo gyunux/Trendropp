@@ -1,5 +1,6 @@
-package com.celebstyle.api.celeb;
+package com.celebstyle.api.celeb.controller;
 
+import com.celebstyle.api.celeb.service.CelebService;
 import com.celebstyle.api.celeb.dto.CelebAdminView;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
