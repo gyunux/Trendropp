@@ -1,12 +1,12 @@
 /* --- 기본 설정 --- */
 body {
     background-color: #121212; /* 고급스러운 검은색 배경 */
-    color: #e0e0e0;           /* 기본 글자색 */
+    color: #e0e0e0; /* 기본 글자색 */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    display: flex;            /* 사이드바와 메인 콘텐츠를 가로로 배치 */
+    display: flex; /* 사이드바와 메인 콘텐츠를 가로로 배치 */
     height: 100vh;
-    overflow: hidden;         /* 전체 페이지 스크롤 방지 */
+    overflow: hidden; /* 전체 페이지 스크롤 방지 */
 }
 
 /* --- 사이드바 --- */
@@ -61,19 +61,77 @@ body {
 
 /* --- 메인 콘텐츠 --- */
 .main-content {
-    flex-grow: 1;             /* 남은 공간을 모두 차지 */
-    padding: 0 40px;
-    overflow-y: auto;         /* 내용이 많아지면 이 영역만 스크롤 */
+    flex-grow: 1;
+    overflow-y: auto;
     height: 100vh;
     box-sizing: border-box;
 }
 
+/* [수정] 헤더 스타일: Flexbox로 변경 */
+.main-content header {
+    position: relative; /* [핵심] 제목을 중앙에 배치하기 위한 기준점 */
+    display: flex;
+    justify-content: flex-end; /* [핵심] 자식 요소들(버튼)을 오른쪽 끝으로 보냄 */
+    align-items: center;
+    margin: 40px;
+    padding-bottom: 20px;
+}
+
 .main-content header h1 {
-    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* X축으로 자신의 너비 50%만큼 이동하여 정중앙 맞춤 */
+
     font-size: 2.5em;
-    margin: 40px 0;
+    font-weight: bold;
     color: white;
     letter-spacing: 2px;
+    margin: 0;
+}
+
+/* 로그인/로그아웃 버튼들을 묶는 div */
+.header-actions {
+    display: flex;
+    gap: 10px; /* 버튼 사이 간격 */
+    z-index: 2; /* 제목과 겹치지 않도록 위로 올림 */
+}
+
+/* 버튼 공통 스타일 (admin-button 재활용) */
+.btn-login.btn-secondary {
+    padding: 10px 15px;
+    background-color: transparent; /* 배경 없음 */
+    color: white; /* 흰색 글씨 */
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    border: 1px solid #555; /* 연한 회색 테두리 */
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-login.btn-secondary:hover {
+    background-color: #333; /* 마우스 올리면 배경색 */
+}
+
+/* 회원가입 버튼 (눈에 띄는 '솔리드 버튼') */
+.btn-login.btn-primary {
+    padding: 10px 15px;
+    background-color: #ffffff; /* 흰색 배경 */
+    color: #121212; /* 검은색 글씨 */
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold; /* 더 굵게 */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-login.btn-primary:hover {
+    background-color: #e0e0e0; /* 마우스 올리면 살짝 어둡게 */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
 }
 
 /* --- 3열 카드 그리드 --- */
@@ -141,41 +199,4 @@ body {
     font-weight: normal;
     color: #b3b3b3;
     margin: 0 0 10px 0;
-}
-
-.main-content header {
-    position: relative; /* [핵심] 자식 요소(버튼)를 자유롭게 배치하기 위한 기준점 */
-    text-align: center;   /* 내부 텍스트(h1)를 가운데 정렬 */
-    margin: 40px 0;
-}
-
-/* 헤더 안의 h1 태그 스타일 수정 */
-.main-content header h1 {
-    margin: 0;
-    font-size: 2.5em;
-    color: white;
-    letter-spacing: 2px;
-}
-
-/* 관리자 버튼 스타일 */
-.admin-button {
-    /* [핵심] 헤더 영역을 기준으로 오른쪽 끝에 배치 */
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%); /* 세로 중앙 정렬 */
-
-    /* 눈에 잘 띄는 세련된 색상으로 변경 */
-    border-right: 1px solid #282828;
-    color: white;
-
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 50px; /* 둥근 알약 모양 버튼 */
-    font-weight: bold;
-    transition: background-color 0.2s;
-    flex-shrink: 0;
-}
-.admin-button:hover {
-    background-color: #282828; /* 사이드바 호버와 동일한 색상 */
 }
