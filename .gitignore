@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+/data/celebdb.mv.db
+/data/celebdb.trace.db
+/C:/temp/h2_data_export.sql
