@@ -3,15 +3,12 @@
 <body>
 <nav th:fragment="sidebar" class="sidebar">
     <div>
+        <a href="/" class="logo" th:text="${@environment.getProperty('site.name')}">TrenDropp</a>
         <ul class="main-nav">
             <li><a href="/">홈</a></li>
             <li><a href="/celebs">셀럽별 모아보기</a></li>
         </ul>
     </div>
-
-    <ul class="footer-nav">
-        <li><a href="/mypage">마이페이지</a></li>
-    </ul>
 </nav>
 </body>
 </html>

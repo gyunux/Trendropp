@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${content.title} + ' - Celeb\'s Pick'">착장 상세 정보</title>
+    <title th:text="${content.title} + ' - ' + ${@environment.getProperty('site.name')}">착장 상세 정보</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/content-detail-page.css}">
 </head>
@@ -23,7 +23,8 @@
             </div>
             <div class="metadata">
                 <span class="source-type" th:text="${content.sourceType.description}">출처 종류</span>
-                <span class="source-date" th:if="${content.sourceDate}" th:text="${#temporals.format(content.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
+                <span class="source-date" th:if="${content.sourceDate}"
+                      th:text="${#temporals.format(content.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
             </div>
         </header>
 

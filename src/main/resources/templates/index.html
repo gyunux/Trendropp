@@ -2,22 +2,24 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Celeb's Pick</title>
+    <title th:text="${@environment.getProperty('site.name')}">TrenDropp</title>
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" th:href="@{/css/auth-style.css}">
 </head>
 <body>
 
 <div th:replace="~{common/layout :: sidebar}"></div>
 
 <main class="main-content">
-    <header>
-        <h1>CELEB'S PICK</h1>
-        <a href="/admin/celebs" class="admin-button">관리자 페이지</a>
-    </header>
+    <div th:replace="~{common/header :: header(pageTitle='TrenDropp')}"></div>
+
     <div id="fashion-container" class="fashion-grid">
     </div>
 </main>
 
+<div th:replace="~{common/header :: auth-modals}"></div>
+
 <script src="/js/script.js"></script>
+<script th:src="@{/js/auth.js}"></script>
 </body>
 </html>
