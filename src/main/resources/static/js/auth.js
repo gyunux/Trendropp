@@ -53,19 +53,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const errorMsg = document.getElementById('login-error-msg');
             errorMsg.textContent = ''; // 이전 에러 메시지 초기화
 
+            // [핵심 수정] 1: JSON 객체 대신 URLSearchParams 객체 사용
+            // 이 객체는 'userId=kdk942&password=1234' 형태의 폼 데이터를 만듭니다.
+            const formData = new URLSearchParams();
+            formData.append('userId', userId); // .usernameParameter("userId")와 일치
+            formData.append('password', password);
+
             try {
-                const response = await fetch('/api/members/login', {
+                const response = await fetch('/api/members/login', { // .loginProcessingUrl()과 일치
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({userId: userId, password: password})
+                    // [핵심 수정] 2: Content-Type 헤더 삭제 (브라우저가 자동으로 'x-www-form-urlencoded'로 설정)
+                    body: formData // [핵심 수정] 3: JSON.stringify 대신 formData 객체 전달
                 });
 
-                if (!response.ok) {
+                if (!response.ok) { // 401 Unauthorized 등
                     throw new Error('아이디 또는 비밀번호가 올바르지 않습니다.');
                 }
 
+                // 200 OK (로그인 성공)
                 alert('로그인되었습니다.');
-                window.location.reload(); // 페이지 새로고침
+                window.location.reload(); // 페이지 새로고침 (로그인 상태 반영)
+
             } catch (error) {
                 errorMsg.textContent = error.message;
             }

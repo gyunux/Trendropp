@@ -15,10 +15,8 @@
         </div>
 
         <div sec:authorize="isAuthenticated()">
-            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/celebs}" class="admin-button">관리자 페이지</a>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn-logout btn-secondary">로그아웃</button>
-            </form>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/celebs}" class="btn-logout btn-secondary">관리자 페이지</a>
+            <button type="button" id="logout-btn" class="btn-logout btn-secondary">로그아웃</button>
         </div>
     </div>
 </header>
