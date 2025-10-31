@@ -6,11 +6,15 @@
 }
 
 /* 상단 헤더 (제목, 셀럽 정보) */
-.detail-header {
-    text-align: center;
-    margin-bottom: 40px;
-    border-bottom: 1px solid #282828;
-    padding-bottom: 30px;
+.detail-header-meta {
+    display: flex;
+    flex-direction: column; /* [수정] 1. 세로로 쌓도록 변경 */
+    align-items: center; /* [수정] 2. 세로로 쌓인 아이템들을 가운데 정렬 */
+    gap: 10px; /* [수정] 3. 세로 간격을 10px로 조절 (20px보다 좁게) */
+
+    padding: 0 40px;
+    margin-top: -20px;
+    margin-bottom: 30px;
 }
 
 .content-title {
@@ -22,18 +26,15 @@
 }
 
 .celeb-profile {
-    display: flex; /* 자식 요소들을 가로로 배치 */
-    align-items: center; /* 세로 중앙 정렬 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    gap: 12px;
-    margin-bottom: 10px; /* 아래쪽 간격을 살짝 줄임 */
+    display: flex;
+    align-items: center;
 }
 
 .celeb-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    object-fit: cover;
+    margin-right: 10px;
 }
 
 .celeb-name {
@@ -44,6 +45,10 @@
 .metadata {
     font-size: 0.9em;
     color: #b3b3b3;
+}
+
+.metadata span {
+    margin-left: 10px;
 }
 
 
@@ -108,9 +113,21 @@
     flex-grow: 1;
 }
 
-.item-info p { margin: 0; line-height: 1.4; }
-.item-brand { font-size: 0.9em; color: #b3b3b3; }
-.item-name { font-size: 1.1em; font-weight: 500; color: white; }
+.item-info p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.item-brand {
+    font-size: 0.9em;
+    color: #b3b3b3;
+}
+
+.item-name {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: white;
+}
 
 .btn-purchase {
     text-decoration: none;
