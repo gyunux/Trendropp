@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
+
 <nav th:fragment="sidebar" class="sidebar">
     <div>
         <a href="/" class="logo" th:text="${@environment.getProperty('site.name')}">TrenDropp</a>
@@ -9,6 +11,11 @@
             <li><a href="/celebs">셀럽별 모아보기</a></li>
         </ul>
     </div>
+
+    <ul class="footer-nav" sec:authorize="isAuthenticated()">
+        <li><a th:href="@{/mypage}">마이페이지</a></li>
+    </ul>
 </nav>
+
 </body>
 </html>
