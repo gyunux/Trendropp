@@ -1,12 +1,16 @@
 package com.celebstyle.api.member.controller;
 
+import com.celebstyle.api.member.CustomUserDetails;
+import com.celebstyle.api.member.dto.EmailChangeRequest;
 import com.celebstyle.api.member.dto.MemberSignupRequest;
 import com.celebstyle.api.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +40,16 @@ public class MemberApiController {
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean isAvailable = !memberService.isEmailDuplicated(email);
         return ResponseEntity.ok(isAvailable);
+    }
+
+    @PatchMapping("/email")
+    public ResponseEntity<Void> changeEmail(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody EmailChangeRequest request) {
+
+        Long currentMemberId = userDetails.getMember().getId();
+        memberService.changeEmail(currentMemberId, request);
+
+        return ResponseEntity.ok().build();
     }
 }
