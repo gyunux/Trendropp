@@ -84,6 +84,25 @@
             </div>
         </div>
 
+        <div id="delete-account-modal" class="modal-overlay">
+            <div class="auth-container">
+                <button type="button" class="close-btn">&times;</button>
+                <h1 class="auth-title">회원 탈퇴</h1>
+                <form id="delete-account-form" method="post">
+                    <p style="text-align: center; margin-bottom: 1.5rem;">
+                        정말로 계정을 탈퇴하시겠습니까?<br>
+                        본인 확인을 위해 비밀번호를 입력해주세요.
+                    </p>
+                    <div class="form-group">
+                        <label for="delete-password">현재 비밀번호</label>
+                        <input type="password" id="delete-password" class="form-input" required>
+                    </div>
+                    <small id="delete-form-error" class="form-helper error-message"></small>
+                    <button type="submit" class="btn btn-danger" style="margin-top: 1rem;">계정 삭제</button>
+                </form>
+            </div>
+        </div>
+
     </div>
 </main>
 

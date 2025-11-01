@@ -145,4 +145,69 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const deactivateBtn = document.getElementById('deactivate-btn');
+    const deleteModal = document.getElementById('delete-account-modal');
+    const deleteForm = document.getElementById('delete-account-form');
+    const deletePasswordInput = document.getElementById('delete-password');
+    const deleteErrorMsg = document.getElementById('delete-form-error');
+
+    // '계정 삭제' 버튼 (마이페이지 본문) 클릭 시 -> 탈퇴 모달 열기
+    if (deactivateBtn) {
+        deactivateBtn.addEventListener('click', () => {
+            // 폼 초기화
+            deleteForm.reset();
+            deleteErrorMsg.textContent = '';
+            // 모달 띄우기
+            deleteModal.classList.add('active');
+        });
+    }
+
+    // 탈퇴 모달의 닫기 버튼/배경 클릭 시 (auth.js와 중복되지만, mypage에서만 쓴다면 여기에 두는게 명확함)
+    if (deleteModal) {
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target.matches('.modal-overlay, .close-btn')) {
+                deleteModal.classList.remove('active');
+            }
+        });
+    }
+
+    // [수정] 탈퇴 모달 안의 '계정 삭제' 폼(form) 제출(submit) 시
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // 새로고침 방지
+
+            const currentPassword = deletePasswordInput.value;
+            if (!currentPassword) {
+                setHelperText(deleteErrorMsg, '비밀번호를 입력해야 합니다.', '#dc3545');
+                return;
+            }
+
+            try {
+                // 1. 회원 탈퇴(익명화) API 호출
+                const deactivateResponse = await fetch('/api/members/me', {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({currentPassword: currentPassword})
+                });
+
+                if (!deactivateResponse.ok) {
+                    const errorText = await deactivateResponse.text();
+                    throw new Error(errorText || '회원 탈퇴에 실패했습니다.');
+                }
+
+                alert('회원 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.');
+
+                // 2. 로그아웃 API 호출
+                await fetch('/api/members/logout', {method: 'POST'});
+
+                // 3. 홈으로 이동
+                window.location.href = '/';
+
+            } catch (error) {
+                // 비밀번호가 틀렸을 경우 등
+                setHelperText(deleteErrorMsg, error.message, '#dc3545');
+            }
+        });
+    }
 });

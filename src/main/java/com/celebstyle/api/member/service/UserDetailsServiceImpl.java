@@ -18,8 +18,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userId) {
-        Member member = memberRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 아이디를 찾을 수 없습니다."));
+        Member member = memberRepository.findByUserIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("아이디를 찾을 수 없거나 탈퇴한 회원입니다: " + userId));
 
         return new CustomUserDetails(member);
     }

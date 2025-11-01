@@ -89,4 +89,14 @@ public class MemberService {
             log.error("비밀번호 변경 중 오류: {}", e.getMessage());
         }
     }
+
+    @Transactional
+    public void deactivateMember(Long memberId, String currentPassword) {
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        member.deactivate();
+    }
+
 }
