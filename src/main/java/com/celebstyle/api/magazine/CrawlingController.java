@@ -1,6 +1,6 @@
 package com.celebstyle.api.magazine;
 
-import com.celebstyle.api.article.ArticleService;
+import com.celebstyle.api.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

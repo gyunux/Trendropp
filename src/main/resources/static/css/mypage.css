@@ -1,0 +1,111 @@
+/* --- 마이페이지 탭 메뉴 --- */
+.mypage-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #282828;
+    margin-bottom: 2rem;
+    padding: 0 40px;
+}
+
+.mypage-tabs a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #888; /* 비활성 탭 */
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+}
+
+.mypage-tabs a.active {
+    color: white; /* 활성 탭 */
+    border-bottom-color: #0d6efd;
+}
+
+/* --- 폼 레이아웃 컨테이너 --- */
+.mypage-forms-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2열 그리드 */
+    gap: 2rem;
+    padding: 0 40px;
+}
+
+/* 폼 스타일 (auth-style.css 재활용) */
+/* .content-body는 admin-style.css의 것을 재활용하거나,
+   auth-style.css의 .auth-container 스타일을 참조 */
+.content-body {
+    background-color: #1c1c1c;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.content-body h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #444;
+}
+
+.current-info {
+    font-size: 0.9rem;
+    color: #b3b3b3;
+    background-color: #2a2a2e;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+/* 헬퍼 텍스트 기본 스타일 */
+.form-helper {
+    font-size: 0.85rem;
+    min-height: 1.2em;
+    display: block;
+    margin-top: 5px;
+    color: #888;
+}
+
+.error-message {
+    color: #dc3545;
+}
+
+.content-body .btn-primary {
+    background-color: #7c3aed; /* 딥 퍼플 */
+    color: white;
+    font-weight: bold;
+}
+
+.content-body .btn-primary:hover {
+    background-color: #8b5cf6; /* 더 밝은 퍼플 */
+}
+
+.content-body .btn-primary:disabled {
+    background-color: #555;
+    color: #999;
+}
+
+.danger-zone {
+    background-color: #2a2a2e; /* 다른 폼보다 살짝 어두운 배경 */
+    border: 1px solid #dc3545; /* [핵심] 빨간색 테두리 */
+}
+
+.danger-zone h2 {
+    color: #dc3545; /* 제목도 빨간색 */
+    border-bottom-color: #dc3545;
+}
+
+/* 계정 삭제 버튼 스타일 */
+.btn-danger {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #dc3545; /* [핵심] 빨간색 배경 */
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37; /* 더 어두운 빨간색 */
+}

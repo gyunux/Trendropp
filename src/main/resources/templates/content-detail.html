@@ -2,9 +2,11 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${content.title} + ' - Celeb\'s Pick'">착장 상세 정보</title>
+    <title th:text="${content.title} + ' - ' + ${@environment.getProperty('site.name')}">착장 상세 정보</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/content-detail-page.css}">
+
+    <link rel="stylesheet" th:href="@{/css/auth-style.css}">
 </head>
 <body>
 
@@ -13,19 +15,19 @@
 <main class="main-content">
     <div class="detail-page-container">
 
-        <header class="detail-header">
-            <h1 class="content-title" th:text="${content.title}">251007 공항패션</h1>
-            <a href="/admin/celebs" class="admin-button">관리자 페이지</a>
+        <div th:replace="~{common/header :: header(pageTitle=${content.title})}"></div>
 
+        <div class="detail-header-meta">
             <div class="celeb-profile">
                 <img th:src="${content.celeb.profileImageUrl}" alt="" class="celeb-avatar">
                 <span class="celeb-name" th:text="${content.celeb.name}">셀럽 이름</span>
             </div>
             <div class="metadata">
                 <span class="source-type" th:text="${content.sourceType.description}">출처 종류</span>
-                <span class="source-date" th:if="${content.sourceDate}" th:text="${#temporals.format(content.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
+                <span class="source-date" th:if="${content.sourceDate}"
+                      th:text="${#temporals.format(content.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
             </div>
-        </header>
+        </div>
 
         <div class="detail-body">
             <div class="image-section">
@@ -53,7 +55,9 @@
 
     </div>
 </main>
+<div th:replace="~{common/header :: auth-modals}"></div>
 
 <script src="/js/script.js"></script>
+<script th:src="@{/js/auth.js}"></script>
 </body>
 </html>
