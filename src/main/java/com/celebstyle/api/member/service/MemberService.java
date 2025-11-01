@@ -6,6 +6,7 @@ import com.celebstyle.api.member.Role;
 import com.celebstyle.api.member.dto.EmailChangeRequest;
 import com.celebstyle.api.member.dto.MemberMyPageView;
 import com.celebstyle.api.member.dto.MemberSignupRequest;
+import com.celebstyle.api.member.dto.PasswordChangeRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -71,6 +72,21 @@ public class MemberService {
 
         } catch (IllegalArgumentException e) {
             log.error("이메일 변경 중 오류: {}", e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void changePassword(Long memberId, PasswordChangeRequest request) {
+        try {
+            Member member = memberRepository.findById(memberId).orElseThrow();
+
+            if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
+                throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+            }
+            String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+            member.updatePassword(encodedPassword);
+        } catch (IllegalArgumentException e) {
+            log.error("비밀번호 변경 중 오류: {}", e.getMessage());
         }
     }
 }

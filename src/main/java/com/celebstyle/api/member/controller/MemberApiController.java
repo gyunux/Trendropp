@@ -3,6 +3,7 @@ package com.celebstyle.api.member.controller;
 import com.celebstyle.api.member.CustomUserDetails;
 import com.celebstyle.api.member.dto.EmailChangeRequest;
 import com.celebstyle.api.member.dto.MemberSignupRequest;
+import com.celebstyle.api.member.dto.PasswordChangeRequest;
 import com.celebstyle.api.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,17 @@ public class MemberApiController {
         memberService.changeEmail(currentMemberId, request);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody PasswordChangeRequest request) {
+
+        Long currentMemberId = userDetails.getMember().getId();
+        memberService.changePassword(currentMemberId, request);
+
+        return ResponseEntity.ok().build();
+
     }
 }
