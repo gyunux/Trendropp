@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // 200 OK (로그인 성공)
-                alert('로그인되었습니다.');
                 window.location.reload(); // 페이지 새로고침 (로그인 상태 반영)
 
             } catch (error) {

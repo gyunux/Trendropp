@@ -138,9 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const errorText = await response.text();
                     throw new Error(errorText || '이메일 변경 실패');
                 }
-                alert('이메일이 성공적으로 변경되었습니다. 다시 로그인해주세요.');
-                await fetch('/api/members/logout', {method: 'POST'});
-                window.location.href = '/';
+                alert('이메일이 성공적으로 변경되었습니다.');
+                window.location.reload();
             } catch (error) {
                 setHelperText(emailFormError, error.message, '#dc3545');
             }
