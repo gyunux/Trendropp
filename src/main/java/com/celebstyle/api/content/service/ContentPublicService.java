@@ -4,10 +4,11 @@ import com.celebstyle.api.content.Content;
 import com.celebstyle.api.content.ContentRepository;
 import com.celebstyle.api.content.dto.ContentDetailView;
 import com.celebstyle.api.content.dto.ContentPublicView;
+import com.celebstyle.api.like.ContentLikeRepository;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,21 +16,37 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContentPublicService {
     private final ContentRepository contentRepository;
+    private final ContentLikeRepository contentLikeRepository;
 
     @Transactional(readOnly = true)
-    public List<ContentPublicView> findAllForPublicView() {
-        Sort sort = Sort.by(Sort.Direction.DESC, "uploadDate");
+    public List<ContentPublicView> findAllForMainPage(Long currentMemberId) {
+        Set<Long> likedContentIds = new HashSet<>();
+        if (currentMemberId != null) {
+            likedContentIds = contentLikeRepository.findLikedContentIdsByMemberId(currentMemberId);
+        }
 
-        return contentRepository.findAll(sort).stream()
-                .map(ContentPublicView::fromEntity)
-                .collect(Collectors.toList());
+        List<Content> contents = contentRepository.findAllWithCelebOrderByUploadDateDesc();
+
+        Set<Long> finalLikedContentIds = likedContentIds;
+
+        return contents.stream()
+                .map(content -> {
+                    boolean isLiked = finalLikedContentIds.contains(content.getId());
+                    return ContentPublicView.fromEntity(content, isLiked);
+                })
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public ContentDetailView getContentDetail(Long id){
-        Content content = contentRepository.findById(id).orElseThrow();
+    public ContentDetailView getContentDetail(Long contentId, Long currentMemberId) {
+        Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("콘텐츠를 찾을 수 없습니다."));
 
-        ContentDetailView contentDetailView = ContentDetailView.fromEntity(content);
-        return contentDetailView;
+        boolean isLiked = false;
+        if (currentMemberId != null) {
+            isLiked = contentLikeRepository.existsByMemberIdAndContentId(currentMemberId, contentId);
+        }
+
+        return ContentDetailView.fromEntity(content, isLiked);
     }
 }

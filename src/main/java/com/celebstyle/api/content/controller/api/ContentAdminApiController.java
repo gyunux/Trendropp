@@ -37,7 +37,7 @@ public class ContentAdminApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContentDetailView> getContent(@PathVariable Long id){
+    public ResponseEntity<ContentDetailView> getContent(@PathVariable Long id) {
         ContentDetailView contentDetailView = contentService.getContent(id);
         return ResponseEntity.ok(contentDetailView);
     }
@@ -50,7 +50,7 @@ public class ContentAdminApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContent(@PathVariable Long id){
+    public ResponseEntity<Void> deleteContent(@PathVariable Long id) {
         contentService.deleteContent(id);
         return ResponseEntity.ok().build();
     }

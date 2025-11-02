@@ -2,8 +2,8 @@ package com.celebstyle.api.content.dto;
 
 import com.celebstyle.api.celeb.dto.CelebForContentDetail;
 import com.celebstyle.api.content.Content;
-import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.content.SourceType;
+import com.celebstyle.api.item.dto.ItemDetailView;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +21,7 @@ public class ContentDetailView {
     private CelebForContentDetail celeb;
     private List<ItemDetailView> items;
     private String summary;
+    private boolean isLiked;
 
     private ContentDetailView(
             Long id,
@@ -30,7 +31,8 @@ public class ContentDetailView {
             LocalDateTime sourceDate,
             CelebForContentDetail celeb,
             List<ItemDetailView> items,
-            String summary
+            String summary,
+            boolean isLiked
     ) {
         this.id = id;
         this.title = title;
@@ -40,9 +42,10 @@ public class ContentDetailView {
         this.celeb = celeb;
         this.items = items;
         this.summary = summary;
+        this.isLiked = isLiked;
     }
 
-    public static ContentDetailView fromEntity(Content content) {
+    public static ContentDetailView fromEntity(Content content, boolean isLiked) {
         List<ItemDetailView> itemDtos = content.getContentItems().stream()
                 .map(contentItem -> ItemDetailView.fromEntity(contentItem.getItem()))
                 .collect(Collectors.toList());
@@ -55,7 +58,8 @@ public class ContentDetailView {
                 content.getSourceDate(),
                 new CelebForContentDetail(content.getCeleb()),
                 itemDtos,
-                content.getSummary()
+                content.getSummary(),
+                isLiked
         );
     }
 }

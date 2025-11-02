@@ -26,7 +26,7 @@ public class ContentItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "outfit_id")
+    @JoinColumn(name = "content_id")
     private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +34,7 @@ public class ContentItem {
     private Item item;
 
     @Builder
-    public ContentItem(Content content, Item item){
+    public ContentItem(Content content, Item item) {
         this.content = content;
         this.item = item;
     }
