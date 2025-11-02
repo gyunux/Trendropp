@@ -154,3 +154,8 @@
     line-height: 1.7; /* 줄 간격 */
     color: #e0e0e0;
 }
+
+.image-section {
+    flex: 1.2;
+    position: relative; /* [핵심 추가] 찜하기 버튼의 기준점이 됨 */
+}

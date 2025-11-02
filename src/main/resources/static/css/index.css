@@ -142,6 +142,7 @@ body {
 }
 
 .fashion-card {
+    position: relative; /* 찜하기 버튼을 이 안에 가두기 위한 기준점 */
     background-color: #1c1c1c;
     border-radius: 12px;
     overflow: hidden;
@@ -191,4 +192,61 @@ body {
 .fashion-card .item-count {
     font-size: 0.9em;
     color: #b3b3b3;
+}
+
+/* --- 찜하기(Like) 버튼 스타일 (수정) --- */
+
+/* 찜하기 버튼의 공통 스타일 (카드/상세페이지) */
+.fashion-card .like-button,
+.image-section .like-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #555;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.fashion-card:hover .like-button,
+.image-section:hover .like-button {
+    opacity: 1;
+}
+
+.fashion-card .like-button:hover,
+.image-section .like-button:hover {
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* [핵심 수정] <i> 태그를 SVG 아이콘으로 변경 */
+.like-button .icon-heart {
+    width: 20px; /* 아이콘 너비 */
+    height: 20px; /* 아이콘 높이 */
+    background-color: transparent;
+
+    /* 기본 상태 (빈 하트): 흰색 테두리 SVG */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* [핵심 수정] '찜한' 상태(.active)일 때: 꽉 찬 빨간색 SVG */
+.fashion-card .like-button.active .icon-heart,
+.image-section .like-button.active .icon-heart {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e53e3e'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+}
+
+/* [수정] 기존 ::before 가상 요소는 더 이상 필요 없으므로 제거 */
+.like-button .icon-heart::before {
+    content: none;
 }

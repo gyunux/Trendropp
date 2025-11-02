@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+>
 <head>
     <meta charset="UTF-8">
     <title th:text="${content.title} + ' - ' + ${@environment.getProperty('site.name')}">착장 상세 정보</title>
@@ -32,6 +33,11 @@
         <div class="detail-body">
             <div class="image-section">
                 <img th:src="${content.originImageUrl}" th:alt="${content.title}" class="main-content-image">
+                <button th:classappend="${content.isLiked} ? 'active' : ''"
+                        th:attr="data-content-id=${content.id}"
+                        class="like-button">
+                    <i class="icon-heart"></i>
+                </button>
             </div>
 
             <div class="items-section">
