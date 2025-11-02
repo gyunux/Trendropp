@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+>
+<body>
+
+<div th:fragment="contentCard(content)" class="fashion-card">
+
+    <a th:href="@{/contents/{id}(id=${content.id})}" class="card-link-area">
+        <div class="card-image">
+            <img th:src="${content.originImageUrl}" th:alt="${content.title}">
+        </div>
+        <div class="card-content">
+            <h3 class="content-title" th:text="${content.title}">콘텐츠 제목</h3>
+            <span class="celeb-name" th:text="${content.celeb.name}">셀럽 이름</span>
+            <span class="item-count" th:text="'아이템 ' + ${content.itemCount} + '개'">아이템 0개</span>
+        </div>
+    </a>
+
+    <button th:classappend="${content.isLiked} ? 'active' : ''"
+            th:attr="data-content-id=${content.id}"
+            class="like-button">
+        <i class="icon-heart"></i>
+    </button>
+
+</div>
+
+</body>
+</html>
