@@ -6,6 +6,11 @@ server:
 spring:
   profiles:
     active: dev
+  messages:
+    encoding: UTF-8
+    basename: messages
+    
+
 
 crawler:
   repeat-count: 1
