@@ -13,14 +13,16 @@ public class ContentPublicView {
     private String originImageUrl;
     private CelebPublicView celeb;
     private int itemCount;
+    private boolean isLiked;
 
-    public static ContentPublicView fromEntity(Content content) {
+    public static ContentPublicView fromEntity(Content content, boolean isLiked) {
         return new ContentPublicView(
                 content.getId(),
                 content.getTitle(),
                 content.getOriginImageUrl(),
                 new CelebPublicView(content.getCeleb()),
-                content.getContentItems().size()
+                content.getItemCount(),
+                isLiked
         );
     }
 }

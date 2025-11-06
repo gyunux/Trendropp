@@ -12,8 +12,16 @@
         </ul>
     </div>
 
-    <ul class="footer-nav" sec:authorize="isAuthenticated()">
-        <li><a th:href="@{/mypage}">마이페이지</a></li>
+    <ul class="footer-nav">
+        <li>
+            <a sec:authorize="isAuthenticated()" th:href="@{/likes}">찜한 콘텐츠</a>
+            <a sec:authorize="!isAuthenticated()" href="#" id="protected-likes-link" class="login-prompt">찜한 콘텐츠</a>
+        </li>
+
+        <li>
+            <a sec:authorize="isAuthenticated()" th:href="@{/mypage}">마이페이지</a>
+            <a sec:authorize="!isAuthenticated()" href="#" id="protected-mypage-link" class="login-prompt">마이페이지</a>
+        </li>
     </ul>
 </nav>
 

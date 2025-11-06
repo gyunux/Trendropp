@@ -2,7 +2,9 @@ package com.celebstyle.api.content.controller.web;
 
 import com.celebstyle.api.content.dto.ContentDetailView;
 import com.celebstyle.api.content.service.ContentPublicService;
+import com.celebstyle.api.member.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +18,14 @@ public class ContentPublicController {
     private final ContentPublicService contentPublicService;
 
     @GetMapping("/{id}")
-    public String getContent(@PathVariable Long id, Model model){
-        ContentDetailView contentDetailView = contentPublicService.getContentDetail(id);
+    public String getContent(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails,
+                             Model model) {
+
+        Long currentMemberId = null;
+        if (userDetails != null) {
+            currentMemberId = userDetails.getMember().getId(); // [핵심 2]
+        }
+        ContentDetailView contentDetailView = contentPublicService.getContentDetail(id, currentMemberId);
         model.addAttribute("content", contentDetailView);
         return "content-detail";
     }

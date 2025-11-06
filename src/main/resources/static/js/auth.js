@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
 
-    // --- 2. 모달 열기/닫기/전환 이벤트 처리 (이벤트 위임) ---
-    document.body.addEventListener('click', (e) => {
+    // --- 2. 모달 및 공통 버튼 이벤트 처리 (이벤트 위임) ---
+    // document.body에 클릭 이벤트를 한 번만 등록해서 모든 클릭을 관리
+    document.body.addEventListener('click', async (e) => {
+
         // '로그인' 버튼 (헤더)
         if (e.target.matches('#open-login-modal-btn')) {
             e.preventDefault();
@@ -39,10 +41,53 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.matches('#logout-btn')) {
             e.preventDefault();
             if (confirm('로그아웃 하시겠습니까?')) {
-                handleLogout();
+                handleLogout(); // 4번 항목에 정의된 로그아웃 함수 호출
             }
         }
-    });
+        // '찜한 콘텐츠', '마이페이지' (사이드바 - 비로그인 시)
+        if (e.target.matches('#protected-likes-link, #protected-mypage-link')) {
+            e.preventDefault(); // # 링크로 이동하는 것 방지
+            alert('로그인이 필요한 기능입니다.'); // 알림
+        }
+
+        // --- [★ 신규 추가 ★] 찜하기 버튼(.like-button) 클릭 처리 ---
+        const likeButton = e.target.closest('.like-button');
+        if (likeButton) {
+            e.preventDefault();
+
+            // 1. 로그인 상태 확인 (헤더의 '로그아웃' 버튼 유무로 판단)
+            const isLoggedIn = !!document.getElementById('logout-btn');
+
+            if (!isLoggedIn) {
+                // 로그인 안했으면 로그인 모달 띄우기
+                alert('로그인이 필요한 기능입니다.');
+                return;
+            }
+
+            // 2. 로그인 상태면 찜하기/취소 API 호출
+            const contentId = likeButton.dataset.contentId;
+            const isLiked = likeButton.classList.contains('active'); // 현재 찜한 상태인지
+            const method = isLiked ? 'DELETE' : 'POST'; // 찜했다면 'DELETE', 안했다면 'POST'
+            const apiUri = `/api/contents/${contentId}/like`;
+
+            try {
+                const response = await fetch(apiUri, {method: method});
+
+                if (!response.ok) {
+                    throw new Error('찜하기/취소에 실패했습니다.');
+                }
+
+                // 3. 성공 시 버튼 스타일 실시간 변경 (하트 채우기/비우기)
+                likeButton.classList.toggle('active');
+
+            } catch (error) {
+                console.error('Like error:', error);
+                alert(error.message);
+            }
+        }
+        // --- [찜하기 버튼 로직 끝] ---
+
+    }); // <body> 클릭 이벤트 리스너 끝
 
     // --- 3. 로그인 폼 제출 (Fetch API) ---
     if (loginForm) {
@@ -51,27 +96,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const userId = document.getElementById('login-userId').value;
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error-msg');
-            errorMsg.textContent = ''; // 이전 에러 메시지 초기화
+            errorMsg.textContent = '';
 
-            // [핵심 수정] 1: JSON 객체 대신 URLSearchParams 객체 사용
-            // 이 객체는 'userId=kdk942&password=1234' 형태의 폼 데이터를 만듭니다.
             const formData = new URLSearchParams();
-            formData.append('userId', userId); // .usernameParameter("userId")와 일치
+            formData.append('userId', userId);
             formData.append('password', password);
 
             try {
-                const response = await fetch('/api/members/login', { // .loginProcessingUrl()과 일치
+                const response = await fetch('/api/members/login', {
                     method: 'POST',
-                    // [핵심 수정] 2: Content-Type 헤더 삭제 (브라우저가 자동으로 'x-www-form-urlencoded'로 설정)
-                    body: formData // [핵심 수정] 3: JSON.stringify 대신 formData 객체 전달
+                    body: formData
                 });
 
-                if (!response.ok) { // 401 Unauthorized 등
+                if (!response.ok) {
                     throw new Error('아이디 또는 비밀번호가 올바르지 않습니다.');
                 }
 
-                // 200 OK (로그인 성공)
-                window.location.reload(); // 페이지 새로고침 (로그인 상태 반영)
+                window.location.reload(); // 페이지 새로고침
 
             } catch (error) {
                 errorMsg.textContent = error.message;
@@ -85,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/members/logout', {method: 'POST'});
             if (!response.ok) throw new Error('로그아웃 실패');
             alert('로그아웃되었습니다.');
-            window.location.reload(); // 페이지 새로고침
+            window.location.reload();
         } catch (error) {
             alert(error.message);
         }
@@ -100,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * 회원가입 폼의 모든 유효성 검사 및 제출 로직을 설정합니다.
- * (이전 코드와 동일, 'userId'로 수정된 최종본)
+ * (이 함수는 변경된 내용이 없으므로 그대로 사용합니다)
  */
 function setupSignupFormValidation(signupForm, loginModal, signupModal) {
     const userIdInput = document.getElementById('userId');
@@ -242,17 +283,12 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
             }
 
             alert('회원가입 성공!');
-            // 회원가입 성공 후, 로그인 모달을 띄워줌
             signupForm.reset();
-            // 헬퍼 텍스트들도 초기화 (선택 사항이지만 깔끔함)
             setHelperText(document.getElementById('userId-helper'), '', '#888');
             setHelperText(document.getElementById('email-helper'), '', '#888');
             setHelperText(document.getElementById('password-helper'), '6자 이상, 소문자와 숫자 필수', '#888');
 
-            // 3. 회원가입 모달은 닫고
             signupModal.classList.remove('active');
-
-            // 4. 로그인 모달을 바로 띄워줍니다.
             loginModal.classList.add('active');
 
         } catch (error) {

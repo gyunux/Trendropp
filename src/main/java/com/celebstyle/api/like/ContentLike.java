@@ -1,8 +1,7 @@
-package com.celebstyle.api.contentitem;
+package com.celebstyle.api.like;
 
 import com.celebstyle.api.content.Content;
-import com.celebstyle.api.item.Item;
-import jakarta.persistence.Column;
+import com.celebstyle.api.member.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,10 +18,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ContentItem {
+public class ContentLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "outfit_item_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,12 +29,12 @@ public class ContentItem {
     private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Builder
-    public ContentItem(Content content, Item item) {
+    public ContentLike(Content content, Member member) {
         this.content = content;
-        this.item = item;
+        this.member = member;
     }
 }

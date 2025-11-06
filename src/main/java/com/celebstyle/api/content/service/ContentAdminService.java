@@ -7,14 +7,14 @@ import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.common.S3UploadService;
 import com.celebstyle.api.content.Content;
 import com.celebstyle.api.content.ContentRepository;
-import com.celebstyle.api.item.Item;
-import com.celebstyle.api.item.service.ItemService;
-import com.celebstyle.api.item.dto.ItemRequest;
 import com.celebstyle.api.content.dto.ContentAdminView;
 import com.celebstyle.api.content.dto.ContentDetailView;
 import com.celebstyle.api.content.dto.SaveContentRequest;
 import com.celebstyle.api.contentitem.ContentItem;
 import com.celebstyle.api.contentitem.ContentItemRepository;
+import com.celebstyle.api.item.Item;
+import com.celebstyle.api.item.dto.ItemRequest;
+import com.celebstyle.api.item.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +36,6 @@ public class ContentAdminService {
     @Transactional
     public ContentAdminView createContent(SaveContentRequest request) throws IOException {
         Celeb celeb = celebRepository.findById(request.getCelebId()).orElseThrow();
-
 
         Content newContent = Content.builder()
                 .title(request.getTitle())
@@ -72,9 +71,9 @@ public class ContentAdminService {
     }
 
     @Transactional(readOnly = true)
-    public ContentDetailView getContent(Long id){
+    public ContentDetailView getContent(Long id) {
         Content content = contentRepository.findById(id).orElseThrow();
-        return ContentDetailView.fromEntity(content);
+        return ContentDetailView.fromEntity(content, false);
     }
 
     @Transactional

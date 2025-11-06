@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Getter
@@ -32,13 +33,13 @@ import org.hibernate.annotations.CreationTimestamp;
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="content_id")
+    @Column(name = "content_id")
     private Long id;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false,length = 2048)
+    @Column(nullable = false, length = 2048)
     private String originImageUrl;
 
     private String sourceUrl;
@@ -54,7 +55,7 @@ public class Content {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="celeb_id")
+    @JoinColumn(name = "celeb_id")
     private Celeb celeb;
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -62,6 +63,9 @@ public class Content {
 
     private boolean deleted;
 
+    @Formula("(select count(1) from content_item ci where ci.content_id = content_id)")
+    private int itemCount;
+    
     @Lob
     private String summary;
 
@@ -72,7 +76,7 @@ public class Content {
                    String sourceUrl,
                    LocalDateTime sourceDate,
                    SourceType sourceType,
-                   Celeb celeb){
+                   Celeb celeb) {
         this.title = title;
         this.originImageUrl = originImageUrl;
         this.summary = summary;

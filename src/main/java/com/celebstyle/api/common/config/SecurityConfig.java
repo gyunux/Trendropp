@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers(toH2Console()).permitAll()
 
                                 .requestMatchers(HttpMethod.GET).permitAll()
-                                .requestMatchers("/mypage/**").authenticated()
+                                .requestMatchers("/mypage/**", "/api/contents/**/like").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
