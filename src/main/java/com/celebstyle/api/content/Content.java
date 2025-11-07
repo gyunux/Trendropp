@@ -37,7 +37,10 @@ public class Content {
     private Long id;
 
     @Column(nullable = false)
-    private String title;
+    private String titleKo;
+
+    @Column(nullable = false)
+    private String titleEn;
 
     @Column(nullable = false, length = 2048)
     private String originImageUrl;
@@ -65,25 +68,39 @@ public class Content {
 
     @Formula("(select count(1) from content_item ci where ci.content_id = content_id)")
     private int itemCount;
-    
+
     @Lob
-    private String summary;
+    private String summaryKo;
+
+    @Lob
+    private String summaryEn;
 
     @Builder
-    public Content(String title,
+    public Content(String titleKo,
+                   String titleEn,
                    String originImageUrl,
-                   String summary,
+                   String summaryKo,
+                   String summaryEn,
                    String sourceUrl,
                    LocalDateTime sourceDate,
                    SourceType sourceType,
                    Celeb celeb) {
-        this.title = title;
+        this.titleKo = titleKo;
+        this.titleEn = titleEn;
         this.originImageUrl = originImageUrl;
-        this.summary = summary;
+        this.summaryKo = summaryKo;
+        this.summaryEn = summaryEn;
         this.sourceUrl = sourceUrl;
         this.sourceDate = sourceDate;
         this.sourceType = sourceType;
         this.celeb = celeb;
         this.deleted = false;
+    }
+
+    public void updateTranslations(String titleKo, String titleEn, String summaryKo, String summaryEn) {
+        this.titleKo = titleKo;
+        this.titleEn = titleEn;
+        this.summaryKo = summaryKo;
+        this.summaryEn = summaryEn;
     }
 }

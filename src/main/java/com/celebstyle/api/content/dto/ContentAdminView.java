@@ -9,7 +9,11 @@ import lombok.Getter;
 @Getter
 public class ContentAdminView {
     private Long id;
-    private String title;
+    // [수정] title -> titleKo, titleEn
+    private String titleKo;
+    private String titleEn;
+    private String summaryKo;
+    private String summaryEn;
     private String originImageUrl;
     private String sourceUrl;
     private LocalDateTime sourceDate;
@@ -21,20 +25,26 @@ public class ContentAdminView {
     public static ContentAdminView fromEntity(Content content) {
         return new ContentAdminView(
                 content.getId(),
-                content.getTitle(),
+                content.getTitleKo(),
+                content.getTitleEn(),
+                content.getSummaryKo(), // [추가]
+                content.getSummaryEn(),
                 content.getOriginImageUrl(),
                 content.getSourceUrl(),
                 content.getSourceDate(),
                 content.getUploadDate(),
                 content.getSourceType(),
                 new CelebView(content.getCeleb()),
-                content.getContentItems().size()
+                content.getItemCount()
         );
     }
 
     private ContentAdminView(
             Long id,
-            String title,
+            String titleKo,
+            String titleEn,
+            String summaryKo,   // [추가]
+            String summaryEn,
             String originImageUrl,
             String sourceUrl,
             LocalDateTime sourceDate,
@@ -44,7 +54,10 @@ public class ContentAdminView {
             int itemCount
     ) {
         this.id = id;
-        this.title = title;
+        this.titleKo = titleKo;
+        this.titleEn = titleEn;
+        this.summaryKo = summaryKo;
+        this.summaryEn = summaryEn;
         this.originImageUrl = originImageUrl;
         this.sourceUrl = sourceUrl;
         this.sourceDate = sourceDate;
