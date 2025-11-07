@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>CelebStyle - 콘텐츠 만들기</title>
+    <title>콘텐츠 만들기 - TrenDropp</title>
     <link rel="stylesheet" th:href="@{/css/admin-style.css}">
 </head>
 <body>
@@ -12,19 +12,27 @@
     <main class="main-content">
         <header class="content-header">
             <h1>콘텐츠 정보 만들기</h1>
-            <p><strong>원본 기사:</strong> <span th:text="${article.title}"></span></p>
+            <p><strong>원본 기사:</strong> <span th:text="${article.titleKo}"></span></p>
         </header>
 
-        <div class="article-summary form-group">
-            <label for="summary">AI 요약 (수정 가능)</label>
-            <textarea id="summary" rows="8" th:text="${article?.summary}"></textarea>
+        <div class="form-grid-2col">
+            <div class="article-summary form-group">
+                <label for="summaryKo">AI 요약 (KO)</label>
+                <textarea id="summaryKo" rows="8" th:text="${article?.summaryKo}"></textarea>
+            </div>
+            <div class="article-summary form-group">
+                <label for="summaryEn">AI 요약 (EN)</label>
+                <textarea id="summaryEn" rows="8" th:text="${article?.summaryEn}"
+                          placeholder="Enter English summary..."></textarea>
+            </div>
         </div>
 
         <div class="creator-layout">
             <div class="image-picker-panel">
                 <h3>1. 이 기사의 대표 콘텐츠 이미지를 한 장 선택하세요.</h3>
                 <div class="image-list">
-                    <img th:each="imgUrl : ${article.imageUrls}" th:src="${imgUrl}" alt="기사 이미지" class="selectable-image">
+                    <img th:each="imgUrl : ${article.imageUrls}" th:src="${imgUrl}" alt="기사 이미지"
+                         class="selectable-image">
                 </div>
             </div>
 
@@ -32,21 +40,29 @@
                 <h3>2. 콘텐츠 정보를 입력하세요.</h3>
                 <form id="content-create-form">
                     <input type="hidden" id="sourceArticleId" th:value="${article.id}">
-                    <input type="hidden" id="mainImageUrl"> <div class="form-group">
-                    <label>셀럽</label>
-                    <select id="celebId" required>
-                        <option value="">-- 셀럽 선택 --</option>
-                        <option th:each="celeb : ${celebs}" th:value="${celeb.id}" th:text="${celeb.name}"></option>
-                    </select>
-                </div>
+                    <input type="hidden" id="mainImageUrl">
+
                     <div class="form-group">
-                        <label for="content-title">콘텐츠 제목</label>
-                        <input type="text" id="content-title" placeholder="예: 250920 인스타 업로드" required>
+                        <label for="contentTitleKo">콘텐츠 제목 (KO)</label>
+                        <input type="text" id="contentTitleKo" th:value="${article?.titleKo}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentTitleEn">콘텐츠 제목 (EN)</label>
+                        <input type="text" id="contentTitleEn" th:value="${article?.titleEn}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>셀럽</label>
+                        <select id="celebId" required>
+                            <option value="">-- 셀럽 선택 --</option>
+                            <option th:each="celeb : ${celebs}" th:value="${celeb.id}" th:text="${celeb.name}"></option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>출처 종류</label>
                         <select id="sourceType" required>
-                            <option th:each="type : ${sourceTypes}" th:value="${type.name()}" th:text="${type.description}"></option>
+                            <option th:each="type : ${sourceTypes}" th:value="${type.name()}"
+                                    th:text="${type.description}"></option>
                         </select>
                     </div>
 
@@ -67,6 +83,7 @@
 
 <script th:inline="javascript">
     /* <![CDATA[ */
+    // [수정] 브랜드 목록도 관리자는 한국어 이름만 보도록 고정 (BrandService 수정 필요)
     const allBrands = /*[[${brands}]]*/ [];
     /* ]]> */
 </script>

@@ -24,18 +24,23 @@
                 <thead>
                 <tr>
                     <th>Profile</th>
-                    <th>Name</th>
+                    <th>Name (KO)</th>
+                    <th>Name (EN)</th>
                     <th>Instagram</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <!-- Controller에서 넘겨준 'celebs' 리스트를 순회하며 테이블 행을 생성합니다. -->
-                <tr th:each="celeb : ${celebs}" th:attr="data-id=${celeb.id}">
+                <tr th:each="celeb : ${celebs}"
+                    th:attr="data-id=${celeb.id},
+                     data-name-ko=${celeb.nameKo},
+                     data-name-en=${celeb.nameEn}">
                     <td>
                         <img th:src="${celeb.profileImageUrl}" alt="Profile Image" class="profile-img">
                     </td>
-                    <td class="celeb-name" th:text="${celeb.name}">제니 (Jennie)</td>
+                    <td class="celeb-name-ko" th:text="${celeb.nameKo}">김제니</td>
+                    <td class="celeb-name-en" th:text="${celeb.nameEn}">Jennie</td>
                     <td class="celeb-insta" th:text="${celeb.instagramName}">jennierubyjane</td>
                     <td>
                         <button class="btn btn-secondary btn-sm edit-btn">수정</button>
@@ -62,8 +67,12 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="celeb-name">이름</label>
-                    <input type="text" id="celeb-name" required>
+                    <label for="celeb-name-ko">이름 (KO)</label>
+                    <input type="text" id="celeb-name-ko" required>
+                </div>
+                <div class="form-group">
+                    <label for="celeb-name-en">이름 (EN)</label>
+                    <input type="text" id="celeb-name-en" required>
                 </div>
                 <div class="form-group">
                     <label for="instagram-name">인스타그램 주소</label>
@@ -95,10 +104,16 @@
                 <button type="button" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
+
                 <div class="form-group">
-                    <label for="edit-celeb-name">이름 (수정 불가)</label>
-                    <input type="text" id="edit-celeb-name" readonly>
+                    <label for="edit-celeb-name-ko">이름 (KO)</label>
+                    <input type="text" id="edit-celeb-name-ko" required>
                 </div>
+                <div class="form-group">
+                    <label for="edit-celeb-name-en">이름 (EN)</label>
+                    <input type="text" id="edit-celeb-name-en" required>
+                </div>
+
                 <div class="form-group">
                     <label for="edit-instagram-name">인스타그램 주소</label>
                     <input type="text" id="edit-instagram-name">

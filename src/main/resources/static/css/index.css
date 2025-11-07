@@ -28,7 +28,7 @@ body {
     font-size: 1.5em;
     font-weight: bold;
     text-decoration: none;
-    margin-bottom: 80px; /* [수정] 여백 80px로 적용 */
+    margin-bottom: 60px; /* [수정] 여백 80px로 적용 */
 }
 
 .sidebar .main-nav,
