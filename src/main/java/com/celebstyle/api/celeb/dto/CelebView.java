@@ -8,8 +8,8 @@ public class CelebView {
     private Long id;
     private String name;
 
-    public CelebView(Celeb celeb){
+    public CelebView(Celeb celeb) {
         this.id = celeb.getId();
-        this.name = celeb.getName();
+        this.name = celeb.getNameKo();
     }
 }

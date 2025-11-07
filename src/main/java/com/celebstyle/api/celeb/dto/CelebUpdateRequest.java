@@ -9,6 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class CelebUpdateRequest {
+    
+    @NotBlank
+    private String nameKo;
+
+    @NotBlank
+    private String nameEn;
 
     private MultipartFile profileImage;
 

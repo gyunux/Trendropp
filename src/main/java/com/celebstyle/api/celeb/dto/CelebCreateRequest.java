@@ -1,6 +1,5 @@
 package com.celebstyle.api.celeb.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -11,8 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class CelebCreateRequest {
     @NotBlank
-    @Size(min = 2,max = 50)
-    private String name;
+    @Size(min = 2, max = 50)
+    private String nameKo;
+
+    @NotBlank
+    @Size(min = 2, max = 50)
+    private String nameEn;
 
     @NotBlank
     @Size(max = 2048)
