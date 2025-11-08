@@ -6,6 +6,7 @@ import com.celebstyle.api.content.dto.ContentPublicView;
 import com.celebstyle.api.member.Member;
 import com.celebstyle.api.member.MemberRepository;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,12 +40,12 @@ public class ContentLikeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ContentPublicView> getMyLikes(Long memberId) {
+    public List<ContentPublicView> getMyLikes(Long memberId, Locale locale) {
         List<ContentLike> myLikes = contentLikeRepository.findByMemberIdWithContentAndCeleb(memberId);
 
         return myLikes.stream()
                 .map(ContentLike::getContent)
-                .map(content -> ContentPublicView.fromEntity(content, true))
+                .map(content -> ContentPublicView.fromEntity(content, true, locale))
                 .toList();
     }
 

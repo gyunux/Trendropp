@@ -4,6 +4,8 @@ package com.celebstyle.api.magazine;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.common.S3UploadService;
+import com.celebstyle.api.magazine.dto.AiTranslationResponse;
+import com.celebstyle.api.magazine.dto.CrawlerDto;
 import com.celebstyle.api.magazine.service.AiService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
@@ -27,7 +29,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,14 +69,14 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
 
         try {
             List<String> koreanCelebNames = celebRepository.findAll().stream()
-                    .map(Celeb::getName)
+                    .map(Celeb::getNameKo)
                     .toList();
 
             if (koreanCelebNames.isEmpty()) {
                 log.warn("DB에 셀럽 정보가 없습니다. 필터링을 진행할 수 없습니다.");
                 return Collections.emptyList();
             }
-            log.info("셀럽 수 : {}",koreanCelebNames.size());
+            log.info("셀럽 수 : {}", koreanCelebNames.size());
             List<String> detailUrls = getArticleDetailUrls(driver);
 
             for (String url : detailUrls) {
@@ -104,24 +105,21 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
 
             for (CrawlerDto news : newsList) {
                 try {
-                    // AI에게 보낼 본문 전체를 변수에 저장
-                    String fullBodyForAI = news.getBody().substring(0, Math.min(news.getBody().length(), 4000));
+                    String originalTitle = news.getTitleKo();
+                    String originalBody = news.getBody();
 
-                    try (java.io.PrintWriter out = new java.io.PrintWriter("debug_body.txt")) {
-                        out.println("--- TITLE ---");
-                        out.println(news.getTitle());
-                        out.println("\n--- BODY ---");
-                        out.println(fullBodyForAI);
-                    }
+                    AiTranslationResponse responses = aiService.getSummariesAndTranslations(originalTitle,
+                            originalBody);
 
-                    // 이제 AI에게 요약 요청
-                    String summary = aiService.getSummary(news.getTitle(), fullBodyForAI);
-                    news.setSummary(summary);
-                    log.info("요약 완료: {}", news.getTitle());
+                    news.setTitleKo(responses.getTitleKo());
+                    news.setTitleEn(responses.getTitleEn());
+                    news.setSummaryKo(responses.getSummaryKo());
+                    news.setSummaryEn(responses.getSummaryEn());
+
+                    log.info("AI 요약 및 번역 완료: {}", news.getTitleKo());
 
                 } catch (Exception e) {
-                    log.error("AI 요약 중 오류 발생 (기사: {}): {}", news.getTitle(), e.getMessage());
-                    news.setSummary("AI 요약 실패");
+                    log.error("AI 요약/번역 중 오류 (기사: {}): {}", news.getTitleKo(), e.getMessage());
                 }
             }
             log.info("AI 요약 서비스 완료.");
@@ -179,7 +177,8 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
     }
 
 
-    private CrawlerDto scrapeDetailPage(WebDriver driver,String url,List<String> koreanCelebNames) throws IOException {
+    private CrawlerDto scrapeDetailPage(WebDriver driver, String url, List<String> koreanCelebNames)
+            throws IOException {
         driver.get(url);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         JavascriptExecutor js = (JavascriptExecutor) driver; // JavascriptExecutor 추가
@@ -210,7 +209,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         }
         Document doc = Jsoup.parse(driver.getPageSource());
         Element titleElement = doc.getElementsByClass("post_tit pc").first();
-        String title = (titleElement != null) ? titleElement.text() : "제목 없음";
+        String originalTitle = (titleElement != null) ? titleElement.text() : "제목 없음";
 
         LocalDate articleDate = null;
         try {
@@ -228,7 +227,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         }
 
         boolean isDomesticCelebArticle = koreanCelebNames.stream()
-                .anyMatch(title::contains);
+                .anyMatch(originalTitle::contains);
 
         if (!isDomesticCelebArticle) {
             return null;
@@ -236,27 +235,34 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
 
         Set<String> imageUrlSet = new HashSet<>();
         Elements images = doc.select("figure.wp-block-image img");
-        for(Element img : images){
+        for (Element img : images) {
             String imgUrl = img.attr("data-src");
-            if(imgUrl.isEmpty()){
+            if (imgUrl.isEmpty()) {
                 imgUrl = img.attr("src");
             }
             imageUrlSet.add(imgUrl);
         }
         Elements bodies = doc.select("div.contt p:not(.relate_group p)");
-        String body = bodies.text();
+        String originalBody = bodies.text();
 
         List<String> imageUrls = new ArrayList<>(imageUrlSet);
 
-        log.info("국내 연예인 기사 수집: {}", title);
-        if (!title.equals("제목 없음") && !url.isEmpty() && !imageUrls.isEmpty()) {
-            return new CrawlerDto(title, url, imageUrls, getSource(), body,articleDate,null);
+        log.info("국내 연예인 기사 수집: {}", originalTitle);
+        if (!originalTitle.equals("제목 없음") && !url.isEmpty() && !imageUrls.isEmpty()) {
+            return new CrawlerDto(
+                    url,
+                    imageUrls,
+                    getSource(),
+                    originalBody,  // AI에 보낼 원본 본문
+                    articleDate,
+                    originalTitle  // AI에 보낼 원본 제목 (titleKo에 저장됨)
+            );
         }
         return null;
     }
 
     @Override
-    public String getSource () {
+    public String getSource() {
         return SOURCE_NAME;
     }
 }
