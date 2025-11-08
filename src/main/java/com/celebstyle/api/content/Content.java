@@ -75,6 +75,9 @@ public class Content {
     @Lob
     private String summaryEn;
 
+    @Column(nullable = false)
+    private Long viewCount = 0L;
+
     @Builder
     public Content(String titleKo,
                    String titleEn,
@@ -102,5 +105,9 @@ public class Content {
         this.titleEn = titleEn;
         this.summaryKo = summaryKo;
         this.summaryEn = summaryEn;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }
