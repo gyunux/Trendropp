@@ -23,6 +23,7 @@ public class ContentDetailView {
     private String summary;
     private boolean isLiked;
     private Long viewCount;
+    private String sourceUrl;
 
     private ContentDetailView(
             Long id,
@@ -34,7 +35,8 @@ public class ContentDetailView {
             List<ItemDetailView> items,
             String summary,
             boolean isLiked,
-            Long viewCount
+            Long viewCount,
+            String sourceUrl
     ) {
         this.id = id;
         this.title = title;
@@ -46,6 +48,7 @@ public class ContentDetailView {
         this.summary = summary;
         this.isLiked = isLiked;
         this.viewCount = viewCount;
+        this.sourceUrl = sourceUrl;
     }
 
     public static ContentDetailView fromEntity(Content content, boolean isLiked, Locale locale) {
@@ -67,7 +70,8 @@ public class ContentDetailView {
                 itemDtos,
                 isEnglish ? content.getSummaryEn() : content.getSummaryKo(),
                 isLiked,
-                content.getViewCount()
+                content.getViewCount(),
+                content.getSourceUrl()
         );
     }
 }
