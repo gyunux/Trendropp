@@ -30,6 +30,12 @@
                     <i class="icon-eye"></i>
                     <span th:text="${content.viewCount}">1234</span>
                 </span>
+                <a th:if="${content.sourceUrl != null and not #strings.isEmpty(content.sourceUrl)}"
+                   th:href="${content.sourceUrl}"
+                   target="_blank"
+                   class="btn-outline">
+                    원문보기 <i class="icon-external-link"></i>
+                </a>
             </div>
         </div>
 
