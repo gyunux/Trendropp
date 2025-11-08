@@ -7,14 +7,16 @@ import lombok.Getter;
 public class CelebAdminView {
     private Long id;
     private String profileImageUrl;
-    private String name;
+    private String nameKo;
+    private String nameEn;
     private String instagramName;
 
     @Builder
-    public CelebAdminView(Long id, String profileImageUrl, String name, String instagramName){
+    public CelebAdminView(Long id, String profileImageUrl, String nameKo, String nameEn, String instagramName) {
         this.id = id;
         this.profileImageUrl = profileImageUrl;
-        this.name = name;
+        this.nameKo = nameKo;
+        this.nameEn = nameEn;
         this.instagramName = instagramName;
     }
 }

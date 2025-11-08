@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 테이블의 데이터를 가져와 폼에 채워넣기
         document.getElementById('edit-celeb-id').value = celebId;
-        document.getElementById('edit-celeb-name').value = row.querySelector('.celeb-name').textContent;
+        document.getElementById('edit-celeb-name-ko').value = row.dataset.nameKo; // '제니'
+        document.getElementById('edit-celeb-name-en').value = row.dataset.nameEn; // 'Jennie'
         document.getElementById('edit-instagram-name').value = row.querySelector('.celeb-insta').textContent;
-
         editModal.classList.add('active');
     };
 
@@ -77,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             const formData = new FormData();
-            formData.append('name', document.getElementById('celeb-name').value);
+            formData.append('nameKo', document.getElementById('celeb-name-ko').value);
+            formData.append('nameEn', document.getElementById('celeb-name-en').value);
             formData.append('instagramName', document.getElementById('instagram-name').value);
             formData.append('profileImage', addProfileImageInput.files[0]);
 
@@ -148,7 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const celebId = document.getElementById('edit-celeb-id').value;
 
             const formData = new FormData();
-            formData.append('name', document.getElementById('edit-celeb-name').value);
+            formData.append('nameKo', document.getElementById('edit-celeb-name-ko').value);
+            formData.append('nameEn', document.getElementById('edit-celeb-name-en').value);
             formData.append('instagramName', document.getElementById('edit-instagram-name').value);
 
             if (editProfileImageInput.files.length > 0) {

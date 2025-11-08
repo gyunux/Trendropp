@@ -2,6 +2,7 @@ package com.celebstyle.api.content.dto;
 
 import com.celebstyle.api.celeb.dto.CelebPublicView;
 import com.celebstyle.api.content.Content;
+import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,12 +16,14 @@ public class ContentPublicView {
     private int itemCount;
     private boolean isLiked;
 
-    public static ContentPublicView fromEntity(Content content, boolean isLiked) {
+    public static ContentPublicView fromEntity(Content content, boolean isLiked, Locale locale) {
+        boolean isEnglish = locale.getLanguage().equals("en");
+
         return new ContentPublicView(
                 content.getId(),
-                content.getTitle(),
+                isEnglish ? content.getTitleEn() : content.getTitleKo(),
                 content.getOriginImageUrl(),
-                new CelebPublicView(content.getCeleb()),
+                new CelebPublicView(content.getCeleb(), locale),
                 content.getItemCount(),
                 isLiked
         );

@@ -23,7 +23,8 @@
                 <thead>
                 <tr>
                     <th>대표 이미지</th>
-                    <th>콘텐츠 제목</th>
+                    <th>콘텐츠 제목 (KO)</th>
+                    <th>콘텐츠 제목 (EN)</th>
                     <th>셀럽</th>
                     <th>아이템 수</th>
                     <th>출처</th>
@@ -33,27 +34,30 @@
                 </tr>
                 </thead>
                 <tbody id="content-table-body">
-                <tr th:each="content : ${contents}" th:attr="data-id=${content.id}">
+                <tr th:each="content : ${contents}"
+                    th:attr="data-id=${content.id},
+                             data-title-ko=${content.titleKo},
+                             data-title-en=${content.titleEn},
+                             data-summary-ko=${content.summaryKo},
+                             data-summary-en=${content.summaryEn}">
+
                     <td><img th:src="${content.originImageUrl}" alt="Content" class="thumbnail-img"></td>
-                    <td th:text="${content.title}">제니 콘텐츠</td>
+
+                    <td th:text="${content.titleKo}"></td>
+                    <td th:text="${content.titleEn}"></td>
                     <td class="content-celeb-name" th:text="${content.celeb.name}">셀럽 이름</td>
                     <td th:text="${content.itemCount} + '개'">3개</td>
                     <td>
-                        <a th:if="${content.sourceUrl != null and not #strings.isEmpty(content.sourceUrl)}"
-                           th:href="${content.sourceUrl}" th:text="${content.sourceType.description}" target="_blank"></a>
-                        <span th:unless="${content.sourceUrl != null and not #strings.isEmpty(content.sourceUrl)}"
-                              th:text="${content.sourceType.description}"></span>
                     </td>
-
                     <td th:text="${content.sourceDate != null ? #temporals.format(content.sourceDate, 'yyyy-MM-dd') : '-'}"></td>
-                    <td th:text="${#temporals.format(content.uploadDate, 'yyyy-MM-dd HH:mm')}">2025-10-06 14:02</td>
+                    <td th:text="${#temporals.format(content.uploadDate, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>
                         <button class="btn btn-secondary btn-sm edit-btn">수정</button>
                         <button class="btn btn-danger btn-sm delete-btn">삭제</button>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(contents)}">
-                    <td colspan="6" class="no-data">등록된 콘텐츠이 없습니다.</td>
+                    <td colspan="9" class="no-data">등록된 콘텐츠가 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
@@ -65,7 +69,9 @@
     <div class="modal-content large">
         <form id="edit-content-form">
             <input type="hidden" id="edit-content-id">
-            <div class="modal-header"><h2>콘텐츠 정보 수정</h2><button type="button" class="close-btn">&times;</button></div>
+            <div class="modal-header"><h2>콘텐츠 정보 수정</h2>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
             <div class="modal-body">
                 <div class="form-group"><label>콘텐츠 제목</label><input type="text" id="edit-content-title" required></div>
 
@@ -78,7 +84,8 @@
                 <div class="form-group"><label>출처 종류</label><select id="edit-sourceType" required></select></div>
                 <div class="form-group"><label>출처 URL</label><input type="url" id="edit-sourceUrl"></div>
                 <div class="form-group"><label>원본 날짜</label><input type="datetime-local" id="edit-sourceDate"></div>
-                <div class="form-group"><label>대표 이미지 URL</label><input type="url" id="edit-mainImageUrl" required></div>
+                <div class="form-group"><label>대표 이미지 URL</label><input type="url" id="edit-mainImageUrl" required>
+                </div>
 
                 <hr>
                 <h4>아이템 정보</h4>
@@ -86,7 +93,10 @@
                 </div>
                 <button type="button" id="edit-add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary cancel-btn">취소</button><button type="submit" class="btn btn-primary">수정 완료</button></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancel-btn">취소</button>
+                <button type="submit" class="btn btn-primary">수정 완료</button>
+            </div>
         </form>
     </div>
 </div>

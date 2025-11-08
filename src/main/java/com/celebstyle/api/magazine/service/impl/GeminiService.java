@@ -1,6 +1,7 @@
 package com.celebstyle.api.magazine.service.impl;
 
 import com.celebstyle.api.common.config.GeminiProperties;
+import com.celebstyle.api.magazine.dto.AiTranslationResponse;
 import com.celebstyle.api.magazine.service.AiService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,33 +22,53 @@ public class GeminiService implements AiService {
     private final RestTemplate restTemplate;
 
     @Override
-    public String getSummary(String title,String body){
-        if(body == null || body.isEmpty()){
-            return "본문 내용이 없어 요약할 수 없습니다";
+    public AiTranslationResponse getSummariesAndTranslations(String originalTitle, String originalBody) {
+        if (originalTitle == null || originalBody.isEmpty()) {
+            return null;
         }
 
-        String prompt = String.format(
-                """     
-                        내가 지금 주는 제목과 본문은 패션에 관한 기사야 너는 패션관련 콘텐츠 전문가야
-                        다음 기사 제목과 본문을 바탕으로 핵심 내용만 1문장으로 간결하게 요약해줘.\
-                        불필요한 수식어는 제거하고, 간결한 사실 전달에 중점을 두고.\s
-                        착용하고 있는 아이템에 대한 설명은 간결하게만 해줘.
-                        너무 딱딱한 말투로는 쓰지말고 실제 매거진 이나 패션 콘텐츠 전문가가 쓰는 말투로 사용해서 작성해줘
-                        그리고 꼭 한국어로 돌려줘야해 나는 한국인이고 한국어만 지원할거야
-                        "제목 : %s
-                        "본문 : %s"
-                        """,title,body.substring(0,Math.min(body.length(), 4000))
+        String prompt = """     
+                당신은 10년 차 패션 매거진 에디터이자 전문 번역가입니다.
+                당신의 임무는 주어진 한국어 기사 원문을 바탕으로, SEO에 최적화된 새로운 제목과 요약문을 "한국어"와 "영어"로 각각 생성하는 것입니다.
+                
+                # 지시 사항:
+                1.  제목 (title): 원문 제목을 그대로 쓰지 말고, 유저의 흥미를 유발할 수 있는 "후킹한" 키워드를 사용하여 SEO에 최적화된 새로운 제목을 생성합니다. (예: "제니 세상핫한 공항룩")
+                2.  요약 (summary): 원문 본문을 3~4 문장의 문단으로 요약합니다.
+                    스타일: 유저가 "쉽고, 감성적으로" 읽을 수 있는 어조를 사용합니다.
+                    핵심 정보 포함: 요약문 안에는 원문에서 찾을 수 있는 '핵심 스타일 키워드', '브랜드', '장소', '무드'가 자연스럽게 포함되어야 합니다.
+                3.  번역: 생성한 한국어 제목과 요약문을, 원문의 뉘앙스를 살려 자연스러운 "영어"로 번역합니다.
+                4.  출력 형식: 다른 말은 절대 하지 말고, 반드시 아래와 같은 JSON 형식으로만 응답해 주세요.
+                
+                # 출력 JSON 형식:
+                {
+                  "titleKo": "새로 생성한 한국어 제목",
+                  "summaryKo": "새로 생성한 한국어 요약문 (3-4 문장).",
+                  "titleEn": "Translated English Title",
+                  "summaryEn": "Translated English Summary (3-4 sentences)."
+                }
+                
+                # 원문 기사 제목:
+                [ [ [ %s ] ] ]
+                
+                # 원문 기사 본문:
+                [ [ [ %s ] ] ]
+                """;
+
+        String formattedPrompt = String.format(
+                prompt,
+                originalTitle,
+                originalBody.substring(0, Math.min(originalBody.length(), 4000))
         );
-        String requestBodyJson = createRequestBody(prompt);
+        String requestBodyJson = createRequestBody(formattedPrompt);
 
-        try{
+        try {
             String url = GEMINI_API_URL + geminiProperties.getKey();
-            String responseJson = restTemplate.postForObject(url,requestBodyJson,String.class);
+            String responseJson = restTemplate.postForObject(url, requestBodyJson, String.class);
 
-            return parseSummaryFromResponse(responseJson);
-        } catch(Exception e){
-            log.error("Gemini API 호출 실패 : {}",e.getMessage());
-            return "AI 요약 실패 : API 통신 오류";
+            return parseTranslationResponse(responseJson);
+        } catch (Exception e) {
+            log.error("Gemini API 호출 실패 : {}", e.getMessage());
+            return null;
         }
     }
 
@@ -58,37 +79,51 @@ public class GeminiService implements AiService {
 
         // temperature 설정을 추가한 JSON 형식
         return String.format("""
-    {
-      "contents": [
-        {
-          "parts": [
-            {
-              "text": "%s"
-            }
-          ]
-        }
-      ],
-      "generationConfig": {
-        "temperature": 0.8
-      }
-    }
-    """, escapedPrompt);
+                {
+                  "contents": [
+                    {
+                      "parts": [
+                        {
+                          "text": "%s"
+                        }
+                      ]
+                    }
+                  ],
+                  "generationConfig": {
+                    "temperature": 0.8
+                  }
+                }
+                """, escapedPrompt);
     }
 
-    private String parseSummaryFromResponse(String responseJson) throws Exception {
+    private AiTranslationResponse parseTranslationResponse(String responseJson) throws Exception {
         JsonNode root = objectMapper.readTree(responseJson);
 
-        JsonNode summaryNode = root
+        // 1. Gemini의 첫 번째 응답 텍스트를 추출
+        JsonNode textNode = root
                 .path("candidates").path(0)
                 .path("content").path("parts").path(0)
                 .path("text");
 
-        if (summaryNode.isTextual()) {
-            return summaryNode.asText().trim();
+        if (textNode.isTextual()) {
+            String innerJsonText = textNode.asText().trim();
+
+            // 2. (선택적이지만 강력히 추천) Gemini가 JSON을 ```json ... ```으로 감싸는 경우가 있음
+            if (innerJsonText.startsWith("```json")) {
+                innerJsonText = innerJsonText.substring(7, innerJsonText.length() - 3).trim();
+            }
+
+            // 3. [핵심] 추출한 텍스트(JSON)를 AiTranslationResponse DTO로 파싱
+            try {
+                return objectMapper.readValue(innerJsonText, AiTranslationResponse.class);
+            } catch (Exception e) {
+                log.error("Gemini 내부 JSON 응답 파싱 실패: {}", innerJsonText, e);
+                throw new Exception("AI가 유효하지 않은 JSON 형식을 반환했습니다.");
+            }
         }
 
         log.warn("Gemini 응답 구조 오류: {}", responseJson);
-        return "AI 요약 실패: 유효하지 않은 응답";
+        throw new Exception("AI 요약 실패: 유효하지 않은 응답 구조");
     }
 
 }

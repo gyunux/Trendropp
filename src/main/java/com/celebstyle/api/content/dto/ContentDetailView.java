@@ -6,6 +6,7 @@ import com.celebstyle.api.content.SourceType;
 import com.celebstyle.api.item.dto.ItemDetailView;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -17,7 +18,6 @@ public class ContentDetailView {
     private String originImageUrl;
     private SourceType sourceType;
     private LocalDateTime sourceDate;
-
     private CelebForContentDetail celeb;
     private List<ItemDetailView> items;
     private String summary;
@@ -45,20 +45,24 @@ public class ContentDetailView {
         this.isLiked = isLiked;
     }
 
-    public static ContentDetailView fromEntity(Content content, boolean isLiked) {
+    public static ContentDetailView fromEntity(Content content, boolean isLiked, Locale locale) {
+        boolean isEnglish = locale.getLanguage().equals("en");
+
         List<ItemDetailView> itemDtos = content.getContentItems().stream()
                 .map(contentItem -> ItemDetailView.fromEntity(contentItem.getItem()))
                 .collect(Collectors.toList());
 
+        CelebForContentDetail celebDto = new CelebForContentDetail(content.getCeleb(), locale);
+
         return new ContentDetailView(
                 content.getId(),
-                content.getTitle(),
+                isEnglish ? content.getTitleEn() : content.getTitleKo(),
                 content.getOriginImageUrl(),
                 content.getSourceType(),
                 content.getSourceDate(),
-                new CelebForContentDetail(content.getCeleb()),
+                celebDto,
                 itemDtos,
-                content.getSummary(),
+                isEnglish ? content.getSummaryEn() : content.getSummaryKo(),
                 isLiked
         );
     }

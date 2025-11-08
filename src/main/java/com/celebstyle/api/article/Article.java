@@ -1,8 +1,7 @@
 package com.celebstyle.api.article;
 
-import com.celebstyle.api.magazine.CrawlerDto;
+import com.celebstyle.api.magazine.dto.CrawlerDto;
 import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,13 +22,15 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String titleKo;
+
+    private String titleEn;
 
     private String articleUrl;
 
     //향후 별도 클래스 일대다 관계로 분리?
     @ElementCollection
-    @CollectionTable(name = "article_images",joinColumns = @JoinColumn(name = "article_img_id"))
+    @CollectionTable(name = "article_images", joinColumns = @JoinColumn(name = "article_img_id"))
     private List<String> imageUrls;
 
     private String source;
@@ -42,17 +43,22 @@ public class Article {
     private LocalDate articleDate;
 
     @Lob
-    private String summary;
+    private String summaryKo;
+
+    @Lob
+    private String summaryEn;
 
     public Article(CrawlerDto dto) {
-        this.title = dto.getTitle();
+        this.titleKo = dto.getTitleKo();
+        this.titleEn = dto.getTitleEn();
         this.articleUrl = dto.getArticleUrl();
         this.imageUrls = dto.getImageUrls();
         this.source = dto.getSource();
         this.body = dto.getBody();
         this.processed = false;
         this.articleDate = dto.getArticleDate();
-        this.summary = dto.getSummary();
+        this.summaryKo = dto.getSummaryKo();
+        this.summaryEn = dto.getSummaryEn();
     }
 
     public void markAsProcessed() {

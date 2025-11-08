@@ -7,20 +7,21 @@
     <div>
         <a href="/" class="logo" th:text="${@environment.getProperty('site.name')}">TrenDropp</a>
         <ul class="main-nav">
-            <li><a href="/">홈</a></li>
-            <li><a href="/celebs">셀럽별 모아보기</a></li>
+            <li><a href="/" th:text="#{sidebar.home}">홈</a></li>
         </ul>
     </div>
 
     <ul class="footer-nav">
         <li>
-            <a sec:authorize="isAuthenticated()" th:href="@{/likes}">찜한 콘텐츠</a>
-            <a sec:authorize="!isAuthenticated()" href="#" id="protected-likes-link" class="login-prompt">찜한 콘텐츠</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/likes}" th:text="#{sidebar.likes}">찜한 콘텐츠</a>
+            <a sec:authorize="!isAuthenticated()" href="#" id="protected-likes-link" class="login-prompt"
+               th:text="#{sidebar.likes}">찜한 콘텐츠</a>
         </li>
 
         <li>
-            <a sec:authorize="isAuthenticated()" th:href="@{/mypage}">마이페이지</a>
-            <a sec:authorize="!isAuthenticated()" href="#" id="protected-mypage-link" class="login-prompt">마이페이지</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/mypage}" th:text="#{sidebar.account}">마이페이지</a>
+            <a sec:authorize="!isAuthenticated()" href="#" id="protected-mypage-link" class="login-prompt"
+               th:text="#{sidebar.account}">마이페이지</a>
         </li>
     </ul>
 </nav>

@@ -7,10 +7,12 @@ import com.celebstyle.api.content.service.ContentAdminService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +28,7 @@ public class ContentAdminApiController {
     private final ContentAdminService contentService;
 
     @PostMapping
-    public ResponseEntity<ContentAdminView> createContent(@Valid @RequestBody SaveContentRequest request)
+    public ResponseEntity<ContentAdminView> createContent(@Valid @ModelAttribute SaveContentRequest request)
             throws IOException {
         ContentAdminView createdContent = contentService.createContent(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -37,8 +39,8 @@ public class ContentAdminApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContentDetailView> getContent(@PathVariable Long id) {
-        ContentDetailView contentDetailView = contentService.getContent(id);
+    public ResponseEntity<ContentDetailView> getContent(@PathVariable Long id, Locale locale) {
+        ContentDetailView contentDetailView = contentService.getContent(id, locale);
         return ResponseEntity.ok(contentDetailView);
     }
 

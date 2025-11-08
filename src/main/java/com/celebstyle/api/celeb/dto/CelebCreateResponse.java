@@ -7,22 +7,24 @@ import lombok.Getter;
 @Getter
 public class CelebCreateResponse {
     private Long id;
-    private String name;
+    private String nameKo;
+    private String nameEn;
     private String profileImageUrl;
     private String instagramName;
 
     @Builder
-    private CelebCreateResponse(Long id,String name,String profileImageUrl,String instagramName) {
+    private CelebCreateResponse(Long id, String nameKo, String nameEn, String profileImageUrl, String instagramName) {
         this.id = id;
-        this.name = name;
+        this.nameKo = nameKo;
         this.profileImageUrl = profileImageUrl;
         this.instagramName = instagramName;
     }
 
-    public static CelebCreateResponse fromEntity(Celeb celeb){
+    public static CelebCreateResponse fromEntity(Celeb celeb) {
         return CelebCreateResponse.builder()
                 .id(celeb.getId())
-                .name(celeb.getName())
+                .nameKo(celeb.getNameKo())
+                .nameEn(celeb.getNameEn())
                 .profileImageUrl(celeb.getProfileImageUrl())
                 .instagramName(celeb.getInstagramName())
                 .build();
