@@ -50,4 +50,12 @@ public class ContentPublicService {
 
         return ContentDetailView.fromEntity(content, isLiked, locale);
     }
+
+    @Transactional
+    public void plusViewCount(Long contentId) {
+        Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("콘텐츠를 찾을 수 없습니다."));
+
+        content.increaseViewCount();
+    }
 }
