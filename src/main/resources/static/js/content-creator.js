@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('celebId', document.getElementById('celebId').value);
             formData.append('sourceType', document.getElementById('sourceType').value);
             formData.append('sourceArticleId', document.getElementById('sourceArticleId').value);
-
+            formData.append('sourceUrl', document.getElementById('sourceUrl').value);
             // 2. 대표 이미지 (선택한 S3 "URL" String) 추가
             formData.append('mainImageUrl', mainImageUrlInput.value);
             // (백엔드 SaveContentRequest DTO는 이 필드를 String으로 받아야 함)

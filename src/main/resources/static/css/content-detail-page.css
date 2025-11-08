@@ -1,28 +1,20 @@
 /* --- 상세 페이지 레이아웃 --- */
-.detail-page-container {
+/* (이전에 .detail-page-container였던 공통 래퍼) */
+.page-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px;
+    padding: 0 40px;
+    box-sizing: border-box;
 }
 
-/* 상단 헤더 (제목, 셀럽 정보) */
+/* 상단 헤더 (셀럽 정보) */
 .detail-header-meta {
     display: flex;
-    flex-direction: column; /* [수정] 1. 세로로 쌓도록 변경 */
-    align-items: center; /* [수정] 2. 세로로 쌓인 아이템들을 가운데 정렬 */
-    gap: 10px; /* [수정] 3. 세로 간격을 10px로 조절 (20px보다 좁게) */
-
-    padding: 0 40px;
-    margin-top: -20px;
-    margin-bottom: 30px;
-}
-
-.content-title {
-    font-size: 2.5em;
-    font-weight: bold;
-    color: white;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    gap: 5px; /* [수정] 좁은 세로 간격 */
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .celeb-profile {
@@ -37,20 +29,32 @@
     margin-right: 10px;
 }
 
-.celeb-name {
-    font-size: 1.2em;
-    font-weight: 500;
-}
-
 .metadata {
+    display: flex; /* 4. [추가] 자식 요소(출처, 조회수)들을 가로로 배치 */
+    align-items: center;
+    gap: 15px; /* 5. [추가] 출처와 조회수 사이의 간격 */
+
     font-size: 0.9em;
     color: #b3b3b3;
 }
 
-.metadata span {
-    margin-left: 10px;
+.view-count {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+    color: #b3b3b3;
 }
 
+.icon-eye { /* (SVG 눈 아이콘) */
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    background-color: #b3b3b3;
+    -webkit-mask: url("data:image/svg+xml,...") no-repeat center;
+    mask: url("data:image/svg+xml,...") no-repeat center;
+    -webkit-mask-size: cover;
+    mask-size: cover;
+}
 
 /* 하단 2단 레이아웃 (이미지, 아이템 목록) */
 .detail-body {
@@ -60,22 +64,66 @@
 
 .image-section {
     flex: 1.2;
+    position: relative; /* 찜하기 버튼 기준점 */
 }
 
+/* [핵심] 상세 페이지 이미지 (고정) */
 .main-content-image {
     width: 100%;
     border-radius: 16px;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 3 / 4; /* 비율 고정 */
     object-fit: cover;
-    position: sticky; /* 스크롤 시 이미지가 상단에 고정되는 효과 */
+    position: sticky; /* 스크롤 시 상단 고정 */
     top: 20px;
 }
 
+.main-content header h1 {
+    font-size: 2.0em; /* (2.5em -> 2.0em) 또는 원하시는 1.8em 등으로 수정 */
+
+    /* (선택) 상세 페이지에서는 제목이 길어도 줄바꿈되도록 허용 */
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
+}
+
+/* [추가] 상세 페이지 전용 찜하기 버튼 */
+.image-section .like-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #555;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.image-section:hover .like-button {
+    opacity: 1;
+}
+
+.image-section .like-button:hover {
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.image-section .like-button.active .icon-heart {
+    background-image: url("data:image/svg+xml,..."); /* (빨간 하트 SVG) */
+}
+
+
+/* --- (이하 아이템 목록 스타일) --- */
 .items-section {
     flex: 1;
 }
 
-/* --- 아이템 목록 스타일 (기존과 거의 동일) --- */
 .items-section h2 {
     font-size: 1.5em;
     margin-top: 0;
@@ -137,7 +185,7 @@
     border-radius: 20px;
     font-weight: bold;
     font-size: 0.9em;
-    white-space: nowrap; /* '구매하러 가기' 글자 줄바꿈 방지 */
+    white-space: nowrap;
     transition: background-color 0.2s;
 }
 
@@ -146,16 +194,31 @@
 }
 
 .content-summary {
-    margin-top: 40px; /* 위쪽 섹션과의 간격 */
+    margin-top: 40px;
     padding: 2rem;
     background-color: #1c1c1c;
     border: 1px solid #282828;
     border-radius: 12px;
-    line-height: 1.7; /* 줄 간격 */
+    line-height: 1.7;
     color: #e0e0e0;
 }
 
-.image-section {
-    flex: 1.2;
-    position: relative; /* [핵심 추가] 찜하기 버튼의 기준점이 됨 */
+.view-count {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+    color: #b3b3b3;
 }
+
+/* [핵심] SVG 눈 아이콘 */
+.icon-eye {
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    background-color: #b3b3b3; /* 아이콘 색상 */
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='3'%3E%3C/circle%3E%3C/svg%3E") no-repeat center;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='3'%3E%3C/circle%3E%3C/svg%3E") no-repeat center;
+    -webkit-mask-size: cover;
+    mask-size: cover;
+}
+
