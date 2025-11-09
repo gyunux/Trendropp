@@ -10,9 +10,14 @@
         <ul>
             <li><a th:href="@{/admin/celebs}" th:classappend="${currentPage == 'celebs' ? 'active' : ''}">셀럽 관리</a></li>
             <li><a th:href="@{/admin/items}" th:classappend="${currentPage == 'items' ? 'active' : ''}">아이템 관리</a></li>
-            <li><a th:href="@{/admin/contents}" th:classappend="${currentPage == 'contents' ? 'active' : ''}">콘텐츠 관리</a></li>
-            <li><a th:href="@{/admin/articles}" th:classappend="${currentPage == 'articles' ? 'active' : ''}">기사 관리</a></li>
-            <li><a th:href="@{/admin/brands}" th:classappend="${currentPage == 'brands' ? 'active' : ''}">브랜드 관리</a></li>
+            <li><a th:href="@{/admin/contents}" th:classappend="${currentPage == 'contents' ? 'active' : ''}">콘텐츠 관리</a>
+            </li>
+            <li><a th:href="@{/admin/articles}" th:classappend="${currentPage == 'articles' ? 'active' : ''}">기사 관리</a>
+            </li>
+            <li><a th:href="@{/admin/brands}" th:classappend="${currentPage == 'brands' ? 'active' : ''}">브랜드 관리</a>
+            </li>
+            <li><a th:href="@{/admin/stats}" th:classappend="${currentPage == 'stats' ? 'active' : ''}">조회수 통계</a>
+            </li>
         </ul>
     </nav>
 </aside>

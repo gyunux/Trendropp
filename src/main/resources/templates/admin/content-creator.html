@@ -65,7 +65,11 @@
                                     th:text="${type.description}"></option>
                         </select>
                     </div>
-
+                    <div class="form-group">
+                        <label for="sourceUrl">출처 URL</label>
+                        <input type="url" id="sourceUrl" th:value="${article?.articleUrl}"
+                               placeholder="https://vogue.co.kr/...">
+                    </div>
                     <hr>
                     <h4>아이템 정보</h4>
                     <div id="items-container">

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head>
     <meta charset="UTF-8">
     <title th:text="${content.title} + ' - ' + ${@environment.getProperty('site.name')}"></title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
-    <link rel="stylesheet" th:href="@{/css/content-detail-page.css}">
     <link rel="stylesheet" th:href="@{/css/auth-style.css}">
+    <link rel="stylesheet" th:href="@{/css/content-detail-page.css}">
 </head>
 <body>
 
 <div th:replace="~{common/layout :: sidebar}"></div>
 
-<main class="main-content">
+<main class="main-content" th:attr="data-content-id=${content.id}">
     <div class="page-container">
 
         <div th:replace="~{common/header :: header(pageTitle=${content.title})}"></div>
@@ -26,9 +26,16 @@
                 <span class="source-type" th:text="#{${'SourceType.' + content.sourceType.name()}}">출처 종류</span>
                 <span class="source-date" th:if="${content.sourceDate}"
                       th:text="${#temporals.format(content.sourceDate, 'yyyy.MM.dd')}">2025.10.07</span>
-                <!--                <span class="view-count">-->
-                <!--                    <i class="icon-eye"></i> <span th:text="${content.viewCount}">1234</span>-->
-                <!--                </span>-->
+                <span class="view-count">
+                    <i class="icon-eye"></i>
+                    <span th:text="${content.viewCount}">1234</span>
+                </span>
+                <a th:if="${content.sourceUrl != null and not #strings.isEmpty(content.sourceUrl)}"
+                   th:href="${content.sourceUrl}"
+                   target="_blank"
+                   class="btn-outline">
+                    원문보기 <i class="icon-external-link"></i>
+                </a>
             </div>
         </div>
 
@@ -36,8 +43,7 @@
             <div class="image-section">
                 <img th:src="${content.originImageUrl}" th:alt="${content.title}" class="main-content-image">
 
-                <button sec:authorize="isAuthenticated()"
-                        th:classappend="${content.isLiked} ? 'active' : ''"
+                <button th:classappend="${content.isLiked} ? 'active' : ''"
                         th:attr="data-content-id=${content.id}"
                         class="like-button">
                     <i class="icon-heart"></i>
@@ -69,5 +75,6 @@
 
 <div th:replace="~{common/header :: auth-modals}"></div>
 <script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/view-counter.js}"></script>
 </body>
 </html>

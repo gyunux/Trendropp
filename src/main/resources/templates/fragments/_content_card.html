@@ -1,6 +1,6 @@
 <div th:fragment="contentCard(content)" class="fashion-card"
      xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 
     <a th:href="@{/contents/{id}(id=${content.id})}" class="card-link-area">
         <div class="card-image">
@@ -13,8 +13,7 @@
         </div>
     </a>
 
-    <button sec:authorize="isAuthenticated()"
-            th:classappend="${content.isLiked} ? 'active' : ''"
+    <button th:classappend="${content.isLiked} ? 'active' : ''"
             th:attr="data-content-id=${content.id}"
             class="like-button">
         <i class="icon-heart"></i>
