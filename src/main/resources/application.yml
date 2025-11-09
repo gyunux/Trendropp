@@ -3,17 +3,21 @@ site:
 
 server:
   port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
-  profiles:
-    active: dev
   messages:
     encoding: UTF-8
     basename: messages
-
-
+  thymeleaf:
+    encoding: UTF-8
 
 crawler:
-  repeat-count: 10
+  repeat-count: 5
 
 gemini:
   api:
