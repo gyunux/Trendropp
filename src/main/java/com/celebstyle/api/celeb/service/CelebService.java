@@ -79,9 +79,18 @@ public class CelebService {
         if (newProfileImage != null && !newProfileImage.isEmpty()) {
 
             String newImageUrl = s3UploadService.upload(newProfileImage, "celebs");
-            celeb.setProfileImageUrl(newImageUrl);
+            celeb.updateInfo(
+                    request.getNameKo(),
+                    request.getNameEn(),
+                    request.getInstagramName(),
+                    newImageUrl);
+            return;
         }
-        celeb.setInstagramName(request.getInstagramName());
+        celeb.updateInfo(
+                request.getNameKo(),
+                request.getNameEn(),
+                request.getInstagramName()
+        );
     }
 
     @Transactional

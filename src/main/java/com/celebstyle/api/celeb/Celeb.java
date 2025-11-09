@@ -43,10 +43,16 @@ public class Celeb {
         this.instagramName = instagramName;
     }
 
-    public void updateInfo(String nameKo, String nameEn, String profileImageUrl, String instagramName) {
+    public void updateInfo(String nameKo, String nameEn, String instagramName) {
         this.nameKo = nameKo;
         this.nameEn = nameEn;
-        this.profileImageUrl = profileImageUrl;
         this.instagramName = instagramName;
+    }
+
+    public void updateInfo(String nameKo, String nameEn, String instagramName, String profileImageUrl) {
+        this.nameKo = nameKo;
+        this.nameEn = nameEn;
+        this.instagramName = instagramName;
+        this.profileImageUrl = profileImageUrl;
     }
 }
