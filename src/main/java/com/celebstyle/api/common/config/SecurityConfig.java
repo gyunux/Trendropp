@@ -22,6 +22,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers(HttpMethod.POST, "/api/admin/myCrawl/vivienne").permitAll()
                                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
 
                                 .requestMatchers(
@@ -35,8 +36,6 @@ public class SecurityConfig {
                                         "/api/members/check-userid", "/api/members/check-email", "/api/contents/*/view",
                                         "/css/**", "/js/**", "/images/**", "/"
                                 ).permitAll()
-                                .requestMatchers(toH2Console()).permitAll()
-
                                 .requestMatchers(HttpMethod.GET).permitAll()
                                 .requestMatchers("/mypage/**", "/api/contents/*/like").authenticated()
                                 .anyRequest().authenticated()
