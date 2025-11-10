@@ -9,7 +9,8 @@
         <div class="card-content">
             <h3 class="content-title" th:text="${content.title}">콘텐츠 제목</h3>
             <span class="celeb-name" th:text="${content.celeb.name}">셀럽 이름</span>
-            <span class="item-count" th:text__="#{list.itemCount(${content.itemCount})}">아이템 0개</span>
+            <span class="item-count" th:text="'아이템 ' + ${content.itemCount} + '개'">아이템 0개</span>
+
         </div>
     </a>
 
