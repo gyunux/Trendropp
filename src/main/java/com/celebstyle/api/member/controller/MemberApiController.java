@@ -6,11 +6,14 @@ import com.celebstyle.api.member.dto.MemberDeactivateRequest;
 import com.celebstyle.api.member.dto.MemberSignupRequest;
 import com.celebstyle.api.member.dto.PasswordChangeRequest;
 import com.celebstyle.api.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -70,13 +73,19 @@ public class MemberApiController {
     @DeleteMapping("/me")
     public ResponseEntity<Void> deactivateMember(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody MemberDeactivateRequest request) {
+            @RequestBody MemberDeactivateRequest request,
+            HttpServletRequest httpServletRequest) {
 
         Long currentMemberId = userDetails.getMember().getId();
         memberService.deactivateMember(currentMemberId, request.getCurrentPassword());
 
-        // 성공 시 세션이 무효화되어야 하지만, SecurityConfig의 logout을 호출하는 것이 더 나을 수 있음
-        // 여기서는 일단 성공 응답만 보냄
+        HttpSession session = httpServletRequest.getSession(false); // 'false': 기존 세션이 없으면 새로 만들지 않음
+        if (session != null) {
+            session.invalidate(); // 세션을 무효화시킴
+        }
+
+        SecurityContextHolder.clearContext();
+
         return ResponseEntity.ok().build();
     }
 }
