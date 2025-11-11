@@ -27,6 +27,7 @@ public class MainPageController {
         List<ContentPublicView> contents = contentService.findAllForMainPage(currentMemberId, locale);
 
         model.addAttribute("contents", contents);
+        model.addAttribute("locale", locale);
         return "index";
     }
 }
