@@ -526,3 +526,40 @@ input[type="search"] {
     margin: 0 auto 20px auto; /* 가운데 정렬 */
     padding: 2rem;
 }
+
+.brand-search-group {
+    position: relative;
+}
+
+.brand-search-results {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    bottom: auto;
+    background: #2d2d2d; /* 어두운 배경 */
+    color: #fff; /* 흰색 글씨 */
+    border: 1px solid #444;
+    border-radius: 6px;
+    width: 100%;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 9999;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.brand-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.brand-option:hover {
+    background: #444; /* hover 시 살짝 밝게 */
+}
+
+.no-results {
+    padding: 8px 12px;
+    color: #ccc;
+    font-style: italic;
+}

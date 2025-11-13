@@ -52,7 +52,6 @@
                     <td th:text="${content.sourceDate != null ? #temporals.format(content.sourceDate, 'yyyy-MM-dd') : '-'}"></td>
                     <td th:text="${#temporals.format(content.uploadDate, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>
-                        <button class="btn btn-secondary btn-sm edit-btn">수정</button>
                         <button class="btn btn-danger btn-sm delete-btn">삭제</button>
                     </td>
                 </tr>
@@ -64,43 +63,6 @@
         </div>
     </main>
 </div>
-
-<div id="edit-content-modal" class="modal-overlay">
-    <div class="modal-content large">
-        <form id="edit-content-form">
-            <input type="hidden" id="edit-content-id">
-            <div class="modal-header"><h2>콘텐츠 정보 수정</h2>
-                <button type="button" class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group"><label>콘텐츠 제목</label><input type="text" id="edit-content-title" required></div>
-
-                <div class="article-summary form-group">
-                    <label for="edit-summary">요약 (수정 가능)</label>
-                    <textarea id="edit-summary" rows="8"></textarea>
-                </div>
-
-                <div class="form-group"><label>셀럽</label><select id="edit-celebId" required></select></div>
-                <div class="form-group"><label>출처 종류</label><select id="edit-sourceType" required></select></div>
-                <div class="form-group"><label>출처 URL</label><input type="url" id="edit-sourceUrl"></div>
-                <div class="form-group"><label>원본 날짜</label><input type="datetime-local" id="edit-sourceDate"></div>
-                <div class="form-group"><label>대표 이미지 URL</label><input type="url" id="edit-mainImageUrl" required>
-                </div>
-
-                <hr>
-                <h4>아이템 정보</h4>
-                <div id="edit-items-container">
-                </div>
-                <button type="button" id="edit-add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary cancel-btn">취소</button>
-                <button type="submit" class="btn btn-primary">수정 완료</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script th:src="@{/js/content-admin.js}"></script>
 </body>
 </html>

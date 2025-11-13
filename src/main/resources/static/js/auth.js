@@ -7,113 +7,122 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signup-form');
 
     // --- 2. 모달 및 공통 버튼 이벤트 처리 (이벤트 위임) ---
-    // document.body에 클릭 이벤트를 한 번만 등록해서 모든 클릭을 관리
     document.body.addEventListener('click', async (e) => {
 
-        // '로그인' 버튼 (헤더)
+        // ... (모달 열기/닫기 로직은 변경 없음) ...
         if (e.target.matches('#open-login-modal-btn')) {
             e.preventDefault();
-            loginModal.classList.add('active');
+            if (loginModal) loginModal.classList.add('active');
         }
-        // '회원가입' 버튼 (헤더)
         if (e.target.matches('#open-signup-modal-btn')) {
             e.preventDefault();
-            signupModal.classList.add('active');
+            if (signupModal) signupModal.classList.add('active');
         }
-        // '회원가입' 링크 (로그인 모달 안)
         if (e.target.matches('#show-signup-modal-link')) {
             e.preventDefault();
-            loginModal.classList.remove('active');
-            signupModal.classList.add('active');
+            if (loginModal) loginModal.classList.remove('active');
+            if (signupModal) signupModal.classList.add('active');
         }
-        // '로그인' 링크 (회원가입 모달 안)
         if (e.target.matches('#show-login-modal-link')) {
             e.preventDefault();
-            signupModal.classList.remove('active');
-            loginModal.classList.add('active');
-        }
-        // 모달 닫기 (X 버튼, 취소 버튼, 바깥 영역)
-        if (e.target.matches('.modal-overlay, .close-btn, .cancel-btn')) {
-            if (loginModal) loginModal.classList.remove('active');
             if (signupModal) signupModal.classList.remove('active');
+            if (loginModal) loginModal.classList.add('active');
         }
+        if (e.target.matches('.modal-overlay, .close-btn, .cancel-btn')) {
+            // 클릭된 요소(e.target)에서 가장 가까운 부모 .modal-overlay를 찾습니다.
+            const modalToClose = e.target.closest('.modal-overlay');
+
+            // 찾았다면, 그 모달을 닫습니다.
+            if (modalToClose) {
+                modalToClose.classList.remove('active');
+            }
+        }
+
         // '로그아웃' 버튼 (헤더)
         if (e.target.matches('#logout-btn')) {
             e.preventDefault();
-            if (confirm('로그아웃 하시겠습니까?')) {
-                handleLogout(); // 4번 항목에 정의된 로그아웃 함수 호출
-            }
-        }
-        // '찜한 콘텐츠', '마이페이지' (사이드바 - 비로그인 시)
-        if (e.target.matches('#protected-likes-link, #protected-mypage-link')) {
-            e.preventDefault(); // # 링크로 이동하는 것 방지
-            alert('로그인이 필요한 기능입니다.'); // 알림
+            handleLogout(); // [★수정됨★] 확인창 없이 즉시 로그아웃 함수 호출
         }
 
-        // --- [★ 신규 추가 ★] 찜하기 버튼(.like-button) 클릭 처리 ---
+        // ... (찜하기, 보호된 링크 로직은 토스트 방식 그대로 유지) ...
+        if (e.target.matches('#protected-likes-link, #protected-mypage-link')) {
+            e.preventDefault();
+            Swal.fire({
+                text: window.i18n.alert.loginRequired,
+                icon: 'info',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
         const likeButton = e.target.closest('.like-button');
         if (likeButton) {
             e.preventDefault();
-
-            // 1. 로그인 상태 확인 (헤더의 '로그아웃' 버튼 유무로 판단)
             const isLoggedIn = !!document.getElementById('logout-btn');
 
             if (!isLoggedIn) {
-                // 로그인 안했으면 로그인 모달 띄우기
-                alert('로그인이 필요한 기능입니다.');
+                Swal.fire({
+                    text: window.i18n.alert.loginRequired,
+                    icon: 'info',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
                 return;
             }
 
-            // 2. 로그인 상태면 찜하기/취소 API 호출
+            // ... (찜하기 API 호출 로직) ...
             const contentId = likeButton.dataset.contentId;
-            const isLiked = likeButton.classList.contains('active'); // 현재 찜한 상태인지
-            const method = isLiked ? 'DELETE' : 'POST'; // 찜했다면 'DELETE', 안했다면 'POST'
+            const isLiked = likeButton.classList.contains('active');
+            const method = isLiked ? 'DELETE' : 'POST';
             const apiUri = `/api/contents/${contentId}/like`;
 
             try {
                 const response = await fetch(apiUri, {method: method});
-
                 if (!response.ok) {
-                    throw new Error('찜하기/취소에 실패했습니다.');
+                    throw new Error(window.i18n.alert.likeFailed);
                 }
-
-                // 3. 성공 시 버튼 스타일 실시간 변경 (하트 채우기/비우기)
                 likeButton.classList.toggle('active');
-
             } catch (error) {
                 console.error('Like error:', error);
-                alert(error.message);
+                Swal.fire({
+                    text: error.message,
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }
         }
-        // --- [찜하기 버튼 로직 끝] ---
-
     }); // <body> 클릭 이벤트 리스너 끝
 
     // --- 3. 로그인 폼 제출 (Fetch API) ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
+            // ... (로그인 폼 로직은 변경 없음) ...
             e.preventDefault();
             const userId = document.getElementById('login-userId').value;
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error-msg');
             errorMsg.textContent = '';
-
             const formData = new URLSearchParams();
             formData.append('userId', userId);
             formData.append('password', password);
-
             try {
                 const response = await fetch('/api/members/login', {
                     method: 'POST',
                     body: formData
                 });
-
                 if (!response.ok) {
-                    throw new Error('아이디 또는 비밀번호가 올바르지 않습니다.');
+                    throw new Error(window.i18n.alert.loginFailed);
                 }
-
-                window.location.reload(); // 페이지 새로고침
-
+                window.location.reload();
             } catch (error) {
                 errorMsg.textContent = error.message;
             }
@@ -124,11 +133,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleLogout = async () => {
         try {
             const response = await fetch('/api/members/logout', {method: 'POST'});
-            if (!response.ok) throw new Error('로그아웃 실패');
-            alert('로그아웃되었습니다.');
-            window.location.reload();
+
+            if (!response.ok) {
+                throw new Error(window.i18n.alert.logoutFailed);
+            }
+
+            // [변경] 성공 알림(Swal.fire) 제거
+            window.location.reload(); // 알림 없이 바로 새로고침
+
         } catch (error) {
-            alert(error.message);
+            // [변경 없음] 실패 시에는 토스트 알림을 띄우는 것이 좋습니다.
+            Swal.fire({
+                text: error.message,
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
         }
     };
 
@@ -141,9 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * 회원가입 폼의 모든 유효성 검사 및 제출 로직을 설정합니다.
- * (이 함수는 변경된 내용이 없으므로 그대로 사용합니다)
  */
 function setupSignupFormValidation(signupForm, loginModal, signupModal) {
+    // ... (이 함수는 토스트 방식으로 수정된 것 외에 변경 없음) ...
     const userIdInput = document.getElementById('userId');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -183,13 +206,13 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
             const hasLength = value.length >= 6;
 
             if (value === "") {
-                setHelperText(passwordHelper, '6자 이상, 소문자와 숫자 필수', '#888');
+                setHelperText(passwordHelper, window.i18n.validation.passwordDefault, '#888');
                 validationStatus.password = false;
             } else if (hasLower && hasNumber && hasLength) {
-                setHelperText(passwordHelper, '✓ 안전한 비밀번호입니다.', '#1DB954');
+                setHelperText(passwordHelper, window.i18n.validation.passwordSecure, '#1DB954');
                 validationStatus.password = true;
             } else {
-                setHelperText(passwordHelper, '✗ 6자 이상, 소문자, 숫자를 모두 포함해야 합니다.', '#dc3545');
+                setHelperText(passwordHelper, window.i18n.validation.passwordInvalid, '#dc3545');
                 validationStatus.password = false;
             }
             updateSubmitButtonState();
@@ -200,7 +223,7 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
         userIdInput.addEventListener('blur', async (e) => {
             const userId = e.target.value.trim();
             if (userId.length < 4) {
-                setHelperText(userIdHelper, '아이디는 4자 이상이어야 합니다.', '#dc3545');
+                setHelperText(userIdHelper, window.i18n.validation.userIdLength, '#dc3545');
                 validationStatus.userId = false;
                 updateSubmitButtonState();
                 return;
@@ -209,14 +232,14 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
                 const response = await fetch(`/api/members/check-userid?userId=${encodeURIComponent(userId)}`);
                 const isAvailable = await response.json();
                 if (isAvailable) {
-                    setHelperText(userIdHelper, '✓ 사용 가능한 아이디입니다.', '#1DB954');
+                    setHelperText(userIdHelper, window.i18n.validation.userIdAvailable, '#1DB954');
                     validationStatus.userId = true;
                 } else {
-                    setHelperText(userIdHelper, '✗ 이미 사용 중인 아이디입니다.', '#dc3545');
+                    setHelperText(userIdHelper, window.i18n.validation.userIdTaken, '#dc3545');
                     validationStatus.userId = false;
                 }
             } catch (error) {
-                setHelperText(userIdHelper, '중복 확인 중 오류가 발생했습니다.', '#dc3545');
+                setHelperText(userIdHelper, window.i18n.validation.checkError, '#dc3545');
                 validationStatus.userId = false;
             }
             updateSubmitButtonState();
@@ -228,7 +251,7 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
             const email = e.target.value.trim();
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
-                setHelperText(emailHelper, '유효한 이메일 형식이 아닙니다.', '#dc3545');
+                setHelperText(emailHelper, window.i18n.validation.emailInvalid, '#dc3545');
                 validationStatus.email = false;
                 updateSubmitButtonState();
                 return;
@@ -237,14 +260,14 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
                 const response = await fetch(`/api/members/check-email?email=${encodeURIComponent(email)}`);
                 const isAvailable = await response.json();
                 if (isAvailable) {
-                    setHelperText(emailHelper, '✓ 사용 가능한 이메일입니다.', '#1DB954');
+                    setHelperText(emailHelper, window.i18n.validation.emailAvailable, '#1DB954');
                     validationStatus.email = true;
                 } else {
-                    setHelperText(emailHelper, '✗ 이미 사용 중인 이메일입니다.', '#dc3545');
+                    setHelperText(emailHelper, window.i18n.validation.emailTaken, '#dc3545');
                     validationStatus.email = false;
                 }
             } catch (error) {
-                setHelperText(emailHelper, '중복 확인 중 오류가 발생했습니다.', '#dc3545');
+                setHelperText(emailHelper, window.i18n.validation.checkError, '#dc3545');
                 validationStatus.email = false;
             }
             updateSubmitButtonState();
@@ -254,9 +277,18 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (submitButton.disabled) {
-            alert('입력 정보를 다시 확인해주세요. (예: 아이디 또는 이메일 중복)');
+            Swal.fire({
+                text: window.i18n.alert.signupCheckForm,
+                icon: 'warning',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
             return;
         }
+
         const formData = {
             userId: userIdInput.value,
             password: passwordInput.value,
@@ -275,26 +307,51 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
                 if (response.status === 400) {
                     const errors = await response.json();
                     const firstErrorMessage = errors[Object.keys(errors)[0]];
-                    alert(`입력 오류: ${firstErrorMessage}`);
+                    Swal.fire({
+                        title: window.i18n.alert.signupErrorTitle,
+                        text: `${window.i18n.alert.signupErrorPrefix}${firstErrorMessage}`,
+                        icon: 'error',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
                 } else {
-                    alert('회원가입에 실패했습니다.');
+                    Swal.fire({
+                        text: window.i18n.alert.signupFailed,
+                        icon: 'error',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
                 }
                 throw new Error('Signup failed');
             }
 
-            alert('회원가입 성공!');
+            await Swal.fire({
+                text: window.i18n.alert.signupSuccess,
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
             signupForm.reset();
             setHelperText(document.getElementById('userId-helper'), '', '#888');
             setHelperText(document.getElementById('email-helper'), '', '#888');
-            setHelperText(document.getElementById('password-helper'), '6자 이상, 소문자와 숫자 필수', '#888');
+            setHelperText(document.getElementById('password-helper'), window.i18n.validation.passwordDefault, '#888');
 
-            signupModal.classList.remove('active');
-            loginModal.classList.add('active');
+            if (signupModal) signupModal.classList.remove('active');
+            if (loginModal) loginModal.classList.add('active');
 
         } catch (error) {
             console.error("Signup submit failed:", error);
         }
     });
 
-    updateSubmitButtonState(); // 페이지 로드 시 버튼 비활성화
+    updateSubmitButtonState();
 }
