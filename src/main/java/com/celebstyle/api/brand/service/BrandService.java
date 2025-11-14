@@ -8,6 +8,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +33,13 @@ public class BrandService {
     }
 
     @Transactional(readOnly = true)
-    public List<BrandView> findAll() {
-        return brandRepository.findAllByOrderByEnglishNameAsc().stream()
-                .map(BrandView::fromEntity)
-                .collect(Collectors.toList());
+    public Page<BrandView> findAll(Pageable pageable) {
+        return brandRepository.findAll(pageable)
+                .map(brand -> new BrandView(
+                        brand.getId(),
+                        brand.getEnglishName(),
+                        brand.getKoreanName()
+                ));
     }
 
     @Transactional(readOnly = true)
