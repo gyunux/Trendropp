@@ -31,7 +31,8 @@
             <div class="image-picker-panel">
                 <h3>1. 이 기사의 대표 콘텐츠 이미지를 한 장 선택하세요.</h3>
                 <div class="image-list">
-                    <img th:each="imgUrl : ${article.imageUrls}" th:src="${imgUrl}" alt="기사 이미지"
+                    <img th:each="articleImage : ${article.articleImages}" th:src="${articleImage.imageUrl}"
+                         alt="기사 이미지"
                          class="selectable-image">
                 </div>
             </div>

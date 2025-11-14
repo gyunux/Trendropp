@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 public class GeminiService implements AiService {
 
     private static final String GEMINI_API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=";
     private final GeminiProperties geminiProperties;
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
@@ -61,17 +61,42 @@ public class GeminiService implements AiService {
                 originalTitle,
                 originalBody.substring(0, Math.min(originalBody.length(), 4000))
         );
-        String requestBodyJson = createRequestBody(formattedPrompt);
+        final int MAX_RETRIES = 5;
+        long backoffTimeMillis = 2000; // 초기 2초 대기
 
-        try {
-            String url = GEMINI_API_URL + geminiProperties.getKey();
-            String responseJson = restTemplate.postForObject(url, requestBodyJson, String.class);
+        for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
+            String requestBodyJson = createRequestBody(formattedPrompt);
 
-            return parseTranslationResponse(responseJson);
-        } catch (Exception e) {
-            log.error("Gemini API 호출 실패 : {}", e.getMessage());
-            return null;
+            try {
+                String url = GEMINI_API_URL + geminiProperties.getKey();
+                String responseJson = restTemplate.postForObject(url, requestBodyJson, String.class);
+
+                // 성공 시 즉시 결과 반환
+                return parseTranslationResponse(responseJson);
+
+            } catch (Exception e) {
+                log.warn("Gemini API 호출 실패 (시도 {}/{}): {}", attempt + 1, MAX_RETRIES, e.getMessage());
+
+                // 마지막 시도라면 실패 처리 후 null 반환
+                if (attempt == MAX_RETRIES - 1) {
+                    log.error("Gemini API 호출 최종 실패: {}", originalTitle);
+                    return null;
+                }
+
+                // 지수 백오프 계산 및 대기 (다음 재시도를 위해)
+                try {
+                    log.info("다음 재시도를 위해 {}ms 대기...", backoffTimeMillis);
+                    Thread.sleep(backoffTimeMillis);
+                    // 백오프 시간 두 배 증가 (2초 -> 4초 -> 8초 -> 16초...)
+                    backoffTimeMillis *= 2;
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt(); // 인터럽트 플래그 복원
+                    log.error("백오프 대기 중 인터럽트 발생");
+                    return null;
+                }
+            }
         }
+        return null;
     }
 
     private String createRequestBody(String prompt) {

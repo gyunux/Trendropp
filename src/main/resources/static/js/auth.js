@@ -199,16 +199,16 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
     }
 
     if (passwordInput && passwordHelper) {
-        passwordInput.addEventListener('keyup', () => {
+        passwordInput.addEventListener('input', () => {
             const value = passwordInput.value;
-            const hasLower = /[a-z]/.test(value);
+            const hasAlpha = /[a-zA-Z]/.test(value);
             const hasNumber = /\d/.test(value);
             const hasLength = value.length >= 6;
 
             if (value === "") {
                 setHelperText(passwordHelper, window.i18n.validation.passwordDefault, '#888');
                 validationStatus.password = false;
-            } else if (hasLower && hasNumber && hasLength) {
+            } else if (hasAlpha && hasNumber && hasLength) {
                 setHelperText(passwordHelper, window.i18n.validation.passwordSecure, '#1DB954');
                 validationStatus.password = true;
             } else {
@@ -332,12 +332,11 @@ function setupSignupFormValidation(signupForm, loginModal, signupModal) {
             }
 
             await Swal.fire({
-                text: window.i18n.alert.signupSuccess,
+                title: window.i18n.alert.signupSuccess,
+                text: '',
                 icon: 'success',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500
+                showConfirmButton: false, // 확인 버튼 제거
+                timer: 1500 // 1.5초 후 자동으로 닫히도록 설정
             });
 
             signupForm.reset();

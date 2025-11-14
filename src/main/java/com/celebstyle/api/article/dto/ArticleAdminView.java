@@ -15,11 +15,12 @@ public class ArticleAdminView {
     private String articleUrl;
     private boolean processed;
 
+
     public static ArticleAdminView fromEntity(Article article) {
         return new ArticleAdminView(
                 article.getId(),
                 article.getArticleDate(),
-                article.getImageUrls().getFirst(),
+                null,
                 article.getTitleKo(),
                 article.getArticleUrl(),
                 article.isProcessed());

@@ -1,15 +1,15 @@
 package com.celebstyle.api.article;
 
 import com.celebstyle.api.magazine.dto.CrawlerDto;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,11 +28,6 @@ public class Article {
 
     private String articleUrl;
 
-    //향후 별도 클래스 일대다 관계로 분리?
-    @ElementCollection
-    @CollectionTable(name = "article_images", joinColumns = @JoinColumn(name = "article_img_id"))
-    private List<String> imageUrls;
-
     private String source;
 
     @Lob
@@ -48,20 +43,28 @@ public class Article {
     @Lob
     private String summaryEn;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
+    private List<ArticleImage> articleImages = new ArrayList<>();
+
     public Article(CrawlerDto dto) {
         this.titleKo = dto.getTitleKo();
         this.titleEn = dto.getTitleEn();
         this.articleUrl = dto.getArticleUrl();
-        this.imageUrls = dto.getImageUrls();
         this.source = dto.getSource();
         this.body = dto.getBody();
         this.processed = false;
         this.articleDate = dto.getArticleDate();
         this.summaryKo = dto.getSummaryKo();
         this.summaryEn = dto.getSummaryEn();
+
     }
 
     public void markAsProcessed() {
         this.processed = true;
+    }
+
+    public void addArticleImage(ArticleImage articleImage) {
+        this.articleImages.add(articleImage);
+        articleImage.setArticle(this);
     }
 }

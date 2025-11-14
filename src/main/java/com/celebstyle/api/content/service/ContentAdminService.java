@@ -1,7 +1,7 @@
 package com.celebstyle.api.content.service;
 
 import com.celebstyle.api.article.Article;
-import com.celebstyle.api.article.ArticleRepository;
+import com.celebstyle.api.article.repository.ArticleRepository;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
 import com.celebstyle.api.content.Content;
