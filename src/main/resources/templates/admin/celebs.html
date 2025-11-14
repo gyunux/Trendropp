@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                 <!-- Controller에서 넘겨준 'celebs' 리스트를 순회하며 테이블 행을 생성합니다. -->
-                <tr th:each="celeb : ${celebs}"
+                <tr th:each="celeb : ${celebsPage.content}"
                     th:attr="data-id=${celeb.id},
                      data-name-ko=${celeb.nameKo},
                      data-name-en=${celeb.nameEn}">
@@ -48,12 +48,40 @@
                     </td>
                 </tr>
                 <!-- 데이터가 없을 경우 -->
-                <tr th:if="${#lists.isEmpty(celebs)}">
+                <tr th:if="${celebsPage.isEmpty()}">
                     <td colspan="5" class="no-data">등록된 셀럽이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+        <nav class="pagination-nav" th:if="${celebsPage.totalPages > 1}">
+            <ul class="pagination">
+                <li th:class="${celebsPage.first} ? 'disabled' : ''">
+                    <a th:href="@{/admin/celebs(page=0, size=${celebsPage.size})}" aria-label="First">&laquo;</a>
+                </li>
+
+                <li th:class="${celebsPage.first} ? 'disabled' : ''">
+                    <a th:href="@{/admin/celebs(page=${celebsPage.number - 1}, size=${celebsPage.size})}"
+                       aria-label="Previous">&lt;</a>
+                </li>
+
+                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+                    th:class="${pageNumber == celebsPage.number} ? 'active' : ''">
+                    <a th:href="@{/admin/celebs(page=${pageNumber}, size=${celebsPage.size})}"
+                       th:text="${pageNumber + 1}">1</a>
+                </li>
+
+                <li th:class="${celebsPage.last} ? 'disabled' : ''">
+                    <a th:href="@{/admin/celebs(page=${celebsPage.number + 1}, size=${celebsPage.size})}"
+                       aria-label="Next">&gt;</a>
+                </li>
+
+                <li th:class="${celebsPage.last} ? 'disabled' : ''">
+                    <a th:href="@{/admin/celebs(page=${celebsPage.totalPages - 1}, size=${celebsPage.size})}"
+                       aria-label="Last">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
     </main>
 </div>
 
