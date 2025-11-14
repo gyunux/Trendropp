@@ -37,9 +37,9 @@ public class CelebAdminController {
         } else if (totalPages > 0 && endPage == totalPages - 1) {
             startPage = Math.max(0, endPage - navSize + 1);
         }
-        model.addAttribute("celebsPage", celebsPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("celebsPage", celebsPage);
         model.addAttribute("currentPage", "celebs");
 
         return "admin/celebs";
