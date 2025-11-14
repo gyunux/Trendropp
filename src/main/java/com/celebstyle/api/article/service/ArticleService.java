@@ -1,8 +1,10 @@
 package com.celebstyle.api.article.service;
 
 import com.celebstyle.api.article.Article;
-import com.celebstyle.api.article.ArticleRepository;
+import com.celebstyle.api.article.ArticleImage;
 import com.celebstyle.api.article.dto.ArticleAdminView;
+import com.celebstyle.api.article.repository.ArticleRepository;
+import com.celebstyle.api.article.repository.ArticleRepositoryCustom;
 import com.celebstyle.api.magazine.MagazineCrawler;
 import com.celebstyle.api.magazine.dto.CrawlerDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +22,7 @@ public class ArticleService {
     private final MagazineCrawler magazineCrawler;
     private final ArticleRepository articleRepository;
 
+    private final ArticleRepositoryCustom articleRepositoryCustom;
 
     //크롤링해온 데이터를 기사 엔티티에 저장
     @Transactional
@@ -31,8 +34,12 @@ public class ArticleService {
 
             for (CrawlerDto dto : dtos) {
                 if (!articleRepository.existsByArticleUrl(dto.getArticleUrl())) {
-                    Article article = new Article(dto);
-                    articleRepository.save(article);
+                    Article newArticle = new Article(dto);
+                    for (String url : dto.getImageUrls()) {
+                        ArticleImage articleImage = new ArticleImage(url);
+                        newArticle.addArticleImage(articleImage);
+                    }
+                    articleRepository.save(newArticle);
                     newArticleCount++;
                 }
             }
@@ -44,14 +51,17 @@ public class ArticleService {
 
     @Transactional(readOnly = true)
     public List<ArticleAdminView> findAllForAdminView() {
-        return articleRepository.findAllByOrderByArticleDateDesc().stream()
-                .map(ArticleAdminView::fromEntity)
-                .toList();
+        return articleRepositoryCustom.findArticleAdminViews();
     }
 
     @Transactional(readOnly = true)
     public Article findById(Long id) {
-        return articleRepository.findById(id).orElseThrow();
+        Article article = articleRepositoryCustom.findArticleCreateView(id);
+        if (article == null) {
+            throw new EntityNotFoundException();
+        }
+
+        return article;
     }
 
     @Transactional
