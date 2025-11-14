@@ -111,15 +111,23 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                     AiTranslationResponse responses = aiService.getSummariesAndTranslations(originalTitle,
                             originalBody);
 
-                    news.setTitleKo(responses.getTitleKo());
-                    news.setTitleEn(responses.getTitleEn());
-                    news.setSummaryKo(responses.getSummaryKo());
-                    news.setSummaryEn(responses.getSummaryEn());
-
-                    log.info("AI 요약 및 번역 완료: {}", news.getTitleKo());
-
+                    if (responses != null) {
+                        news.setTitleKo(responses.getTitleKo());
+                        news.setTitleEn(responses.getTitleEn());
+                        news.setSummaryKo(responses.getSummaryKo());
+                        news.setSummaryEn(responses.getSummaryEn());
+                        log.info("AI 요약 및 번역 성공: {}", news.getTitleKo());
+                    } else {
+                        log.warn("AI 요약/번역 최종 실패로 해당 기사 건너뜀: {}", originalTitle);
+                    }
                 } catch (Exception e) {
                     log.error("AI 요약/번역 중 오류 (기사: {}): {}", news.getTitleKo(), e.getMessage());
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    log.error("크롤링 루프 중 대기 인터럽트 발생");
                 }
             }
             log.info("AI 요약 서비스 완료.");
