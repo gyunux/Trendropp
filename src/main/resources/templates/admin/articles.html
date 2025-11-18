@@ -28,10 +28,11 @@
                 </tr>
                 </thead>
                 <tbody id="article-table-body">
-                <tr th:each="article : ${articles}" th:attr="data-id=${article.id}">
+                <tr th:each="article : ${articlesPage}" th:attr="data-id=${article.id}">
                     <td class="article-date" th:text="${#temporals.format(article.articleDate, 'yyyy-MM-dd')}"></td>
                     <td>
-                        <img th:if="${article.thumbnailImageUrl != null}" th:src="${article.thumbnailImageUrl}" alt="Thumbnail" class="thumbnail-img">
+                        <img th:if="${article.thumbnailImageUrl != null}" th:src="${article.thumbnailImageUrl}"
+                             alt="Thumbnail" class="thumbnail-img">
                     </td>
                     <td class="article-title" th:text="${article.title}"></td>
                     <td>
@@ -45,12 +46,42 @@
                     </td>
 
                     <td class="action-buttons">
-                        <a th:href="@{/admin/contents/new(articleId=${article.id})}" class="btn btn-primary btn-sm">콘텐츠 만들기</a>
+                        <a th:href="@{/admin/contents/new(articleId=${article.id})}" class="btn btn-primary btn-sm">콘텐츠
+                            만들기</a>
                         <button class="btn btn-danger btn-sm delete-article-btn">삭제</button>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <nav class="pagination-nav" th:if="${articlesPage.totalPages > 1}">
+                <ul class="pagination">
+                    <li th:class="${articlesPage.first} ? 'disabled' : ''">
+                        <a th:href="@{/admin/articles(page=0, size=${articlesPage.size})}"
+                           aria-label="First">&laquo;</a>
+                    </li>
+
+                    <li th:class="${articlesPage.first} ? 'disabled' : ''">
+                        <a th:href="@{/admin/articles(page=${articlesPage.number - 1}, size=${articlesPage.size})}"
+                           aria-label="Previous">&lt;</a>
+                    </li>
+
+                    <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+                        th:class="${pageNumber == articlesPage.number} ? 'active' : ''">
+                        <a th:href="@{/admin/articles(page=${pageNumber}, size=${articlesPage.size})}"
+                           th:text="${pageNumber + 1}">1</a>
+                    </li>
+
+                    <li th:class="${articlesPage.last} ? 'disabled' : ''">
+                        <a th:href="@{/admin/articles(page=${articlesPage.number + 1}, size=${articlesPage.size})}"
+                           aria-label="Next">&gt;</a>
+                    </li>
+
+                    <li th:class="${articlesPage.last} ? 'disabled' : ''">
+                        <a th:href="@{/admin/articles(page=${articlesPage.totalPages - 1}, size=${articlesPage.size})}"
+                           aria-label="Last">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </main>
 </div>

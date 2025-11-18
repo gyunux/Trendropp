@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +52,8 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ArticleAdminView> findAllForAdminView() {
-        return articleRepositoryCustom.findArticleAdminViews();
+    public Page<ArticleAdminView> findAllForAdminView(Pageable pageable) {
+        return articleRepositoryCustom.findArticleAdminViews(pageable);
     }
 
     @Transactional(readOnly = true)

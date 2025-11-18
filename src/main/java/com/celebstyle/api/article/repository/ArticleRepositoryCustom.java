@@ -2,10 +2,11 @@ package com.celebstyle.api.article.repository;
 
 import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.dto.ArticleAdminView;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ArticleRepositoryCustom {
-    List<ArticleAdminView> findArticleAdminViews();
+    Page<ArticleAdminView> findArticleAdminViews(Pageable pageable);
 
     Article findArticleCreateView(Long id);
 }
