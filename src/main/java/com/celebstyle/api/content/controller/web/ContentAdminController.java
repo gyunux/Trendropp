@@ -2,15 +2,17 @@ package com.celebstyle.api.content.controller.web;
 
 import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.service.ArticleService;
-import com.celebstyle.api.brand.service.BrandService;
 import com.celebstyle.api.brand.dto.BrandView;
-import com.celebstyle.api.celeb.service.CelebService;
+import com.celebstyle.api.brand.service.BrandService;
 import com.celebstyle.api.celeb.dto.CelebView;
+import com.celebstyle.api.celeb.service.CelebService;
 import com.celebstyle.api.content.SourceType;
 import com.celebstyle.api.content.dto.ContentAdminView;
 import com.celebstyle.api.content.service.ContentAdminService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +29,24 @@ public class ContentAdminController {
     private final BrandService brandService;
 
     @GetMapping
-    public String getBrandDashboard(Model model){
-        List<ContentAdminView> contents = contentService.findAll();
-        model.addAttribute("contents",contents);
+    public String getBrandDashboard(Model model, Pageable pageable) {
+        Page<ContentAdminView> contentsPage = contentService.findAll(pageable);
+        int totalPages = contentsPage.getTotalPages();
+        int currentPage = contentsPage.getNumber();
+
+        int navSize = 10;
+        int startPage = (currentPage / navSize) * navSize;
+        int endPage = Math.min(startPage + navSize - 1, totalPages - 1);
+
+        if (endPage < 0) {
+            endPage = 0;
+            startPage = 0;
+        } else if (totalPages > 0 && endPage == totalPages - 1) {
+            startPage = Math.max(0, endPage - navSize + 1);
+        }
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("contentsPage", contentsPage);
         model.addAttribute("currentPage", "contents");
 
         return "admin/contents";
