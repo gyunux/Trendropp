@@ -124,7 +124,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
                     log.error("AI 요약/번역 중 오류 (기사: {}): {}", news.getTitleKo(), e.getMessage());
                 }
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(6000);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     log.error("크롤링 루프 중 대기 인터럽트 발생");

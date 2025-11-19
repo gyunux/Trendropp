@@ -1,14 +1,20 @@
 package com.celebstyle.api.article.repository;
 
+import static org.springframework.data.jpa.repository.query.QueryUtils.applySorting;
+
 import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.QArticle;
 import com.celebstyle.api.article.QArticleImage;
 import com.celebstyle.api.article.dto.ArticleAdminView;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,31 +24,40 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ArticleAdminView> findArticleAdminViews() {
+    public Page<ArticleAdminView> findArticleAdminViews(Pageable pageable) {
         QArticle article = QArticle.article;
         QArticleImage articleImage = QArticleImage.articleImage;
 
         QArticleImage articleImageSub = new QArticleImage("articleImageSub");
 
-        return jpaQueryFactory
+        JPAQuery<ArticleAdminView> query = jpaQueryFactory
                 .select(Projections.constructor(ArticleAdminView.class,
                         article.id,
                         article.articleDate,
-                        // --- 썸네일 URL 서브쿼리 ---
                         JPAExpressions
-                                .select(articleImageSub.imageUrl.min()) // ID가 가장 낮은 이미지의 URL (혹은 max)
+                                .select(articleImageSub.imageUrl.min())
                                 .from(articleImageSub)
-                                .where(articleImageSub.article.eq(article)), // 메인 쿼리의 article과 조인
-                        // -------------------------
+                                .where(articleImageSub.article.eq(article)),
                         article.titleKo,
                         article.articleUrl,
                         article.processed
                 ))
+                .from(article);
+
+        applySorting(String.valueOf(query), pageable.getSort());
+
+        List<ArticleAdminView> content = query
+                .offset(pageable.getOffset()) // 시작 위치
+                .limit(pageable.getPageSize()) // 페이지 크기
+                .fetch(); // 쿼리 실행 및 데이터 가져오기
+
+        Long total = jpaQueryFactory
+                .select(article.count())
                 .from(article)
-                // .orderBy(...)
-                // .offset(...)
-                // .limit(...)
-                .fetch();
+                .fetchOne();
+
+        // 5. Page 객체로 반환
+        return new PageImpl<>(content, pageable, total);
     }
 
     @Override

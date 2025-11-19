@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,21 +43,15 @@ public class CelebService {
     }
 
     @Transactional(readOnly = true)
-    public List<CelebAdminView> findAllForAdminView() {
-        List<Celeb> celebList = celebRepository.findAll();
-        List<CelebAdminView> celebViewList = new ArrayList<>();
-        for (Celeb celeb : celebList) {
-            celebViewList.add(
-                    CelebAdminView.builder()
-                            .id(celeb.getId())
-                            .nameKo(celeb.getNameKo())
-                            .nameEn(celeb.getNameEn())
-                            .profileImageUrl(celeb.getProfileImageUrl())
-                            .instagramName(celeb.getInstagramName())
-                            .build()
-            );
-        }
-        return celebViewList;
+    public Page<CelebAdminView> findPaginatedForAdminView(Pageable pageable) {
+        return celebRepository.findAll(pageable)
+                .map(celeb -> new CelebAdminView(
+                        celeb.getId(),
+                        celeb.getProfileImageUrl(),
+                        celeb.getNameKo(),
+                        celeb.getNameEn(),
+                        celeb.getInstagramName()
+                ));
     }
 
     @Transactional(readOnly = true)

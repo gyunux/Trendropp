@@ -16,10 +16,10 @@ import com.celebstyle.api.item.dto.ItemRequest;
 import com.celebstyle.api.item.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,10 +64,9 @@ public class ContentAdminService {
     }
 
     @Transactional(readOnly = true)
-    public List<ContentAdminView> findAll() {
-        return contentRepository.findAll().stream()
-                .map(ContentAdminView::fromEntity)
-                .collect(Collectors.toList());
+    public Page<ContentAdminView> findAll(Pageable pageable) {
+        Page<Content> contentPage = contentRepository.findAll(pageable);
+        return contentPage.map(ContentAdminView::fromEntity);
     }
 
     @Transactional(readOnly = true)

@@ -34,7 +34,7 @@
                 </tr>
                 </thead>
                 <tbody id="content-table-body">
-                <tr th:each="content : ${contents}"
+                <tr th:each="content : ${contentsPage}"
                     th:attr="data-id=${content.id},
                              data-title-ko=${content.titleKo},
                              data-title-en=${content.titleEn},
@@ -55,12 +55,40 @@
                         <button class="btn btn-danger btn-sm delete-btn">삭제</button>
                     </td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(contents)}">
+                <tr th:if="${#lists.isEmpty(contentsPage)}">
                     <td colspan="9" class="no-data">등록된 콘텐츠가 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+        <nav class="pagination-nav" th:if="${contentsPage.totalPages > 1}">
+            <ul class="pagination">
+                <li th:class="${contentsPage.first} ? 'disabled' : ''">
+                    <a th:href="@{/admin/contents(page=0, size=${contentsPage.size})}" aria-label="First">&laquo;</a>
+                </li>
+
+                <li th:class="${contentsPage.first} ? 'disabled' : ''">
+                    <a th:href="@{/admin/contents(page=${contentsPage.number - 1}, size=${contentsPage.size})}"
+                       aria-label="Previous">&lt;</a>
+                </li>
+
+                <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+                    th:class="${pageNumber == contentsPage.number} ? 'active' : ''">
+                    <a th:href="@{/admin/contents(page=${pageNumber}, size=${contentsPage.size})}"
+                       th:text="${pageNumber + 1}">1</a>
+                </li>
+
+                <li th:class="${contentsPage.last} ? 'disabled' : ''">
+                    <a th:href="@{/admin/contents(page=${contentsPage.number + 1}, size=${contentsPage.size})}"
+                       aria-label="Next">&gt;</a>
+                </li>
+
+                <li th:class="${contentsPage.last} ? 'disabled' : ''">
+                    <a th:href="@{/admin/contents(page=${contentsPage.totalPages - 1}, size=${contentsPage.size})}"
+                       aria-label="Last">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
     </main>
 </div>
 <script th:src="@{/js/content-admin.js}"></script>

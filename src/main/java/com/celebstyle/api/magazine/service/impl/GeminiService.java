@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 public class GeminiService implements AiService {
 
     private static final String GEMINI_API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=";
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
     private final GeminiProperties geminiProperties;
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;

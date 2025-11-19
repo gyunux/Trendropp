@@ -563,3 +563,43 @@ input[type="search"] {
     color: #ccc;
     font-style: italic;
 }
+
+.pagination-nav {
+    display: flex;
+    justify-content: center; /* 페이지네이션 가운데 정렬 */
+    margin-top: 2rem;
+}
+
+.pagination {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pagination li a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+    color: #007bff; /* 링크 색상 */
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.pagination li a:hover {
+    background-color: #e9ecef;
+}
+
+.pagination li.active a {
+    background-color: #007bff; /* 활성 페이지 */
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination li.disabled a {
+    color: #6c757d; /* 비활성 링크 (처음/이전/다음/마지막) */
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
