@@ -62,7 +62,7 @@ public class CelebRepositoryTest {
     @Test
     @DisplayName("셀럽 조회 테스트")
     void celebFindTest() {
-        Celeb findedCeleb = celebRepository.findById(1L).orElse(null);
+        Celeb findedCeleb = celebRepository.findById(2L).orElse(null);
 
         assertThat(findedCeleb).isNotNull();
         assertThat(findedCeleb.getNameKo()).isEqualTo("테스트 셀럽2");
