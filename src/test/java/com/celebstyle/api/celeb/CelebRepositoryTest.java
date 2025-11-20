@@ -60,8 +60,8 @@ public class CelebRepositoryTest {
     }
 
     @Test
-    @DisplayName("셀럽 저장 테스트")
-    void celebSaveTest() {
+    @DisplayName("셀럽 조회 테스트")
+    void celebFindTest() {
         Celeb findedCeleb = celebRepository.findById(1L).orElse(null);
 
         assertThat(findedCeleb).isNotNull();
