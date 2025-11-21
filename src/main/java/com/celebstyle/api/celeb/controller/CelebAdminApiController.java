@@ -1,10 +1,10 @@
 package com.celebstyle.api.celeb.controller;
 
-import com.celebstyle.api.celeb.service.CelebService;
 import com.celebstyle.api.celeb.dto.CelebCreateRequest;
 import com.celebstyle.api.celeb.dto.CelebCreateResponse;
 import com.celebstyle.api.celeb.dto.CelebUpdateRequest;
 import com.celebstyle.api.celeb.dto.CelebView;
+import com.celebstyle.api.celeb.service.CelebService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
@@ -50,7 +50,7 @@ public class CelebAdminApiController {
     public ResponseEntity<Void> updateCeleb(@PathVariable Long id,
                                             @Valid @ModelAttribute CelebUpdateRequest request) throws IOException {
         celebService.update(id, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
