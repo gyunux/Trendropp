@@ -1,6 +1,7 @@
 package com.celebstyle.api.celeb;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import com.celebstyle.api.article.repository.ArticleRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ public class CelebRepositoryTest {
     @Test
     @DisplayName("셀럽 조회 테스트")
     void celebFindTest() {
-        Celeb findedCeleb = celebRepository.findById(2L).orElse(null);
+        Celeb findedCeleb = celebRepository.findById(3L).orElse(null);
 
         assertThat(findedCeleb).isNotNull();
         assertThat(findedCeleb.getNameKo()).isEqualTo("테스트 셀럽2");
@@ -103,5 +104,57 @@ public class CelebRepositoryTest {
         Celeb deletedCeleb = celebRepository.findById(2L).orElse(null);
 
         assertThat(deletedCeleb).isNull();
+    }
+
+    @Test
+    @DisplayName("한국 이름이 누락되면 셀럽 생성 시 예외가 발생")
+    void createCeleb_Exception_Test1() {
+        assertThatThrownBy(() -> Celeb.builder()
+                .nameKo(null)
+                .nameEn("IU")
+                .profileImageUrl("url")
+                .instagramName("insta")
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cannot be Empty");
+    }
+
+    @Test
+    @DisplayName("영어 이름이 누락되면 셀럽 생성 시 예외가 발생")
+    void createCeleb_Exception_Test2() {
+        assertThatThrownBy(() -> Celeb.builder()
+                .nameKo("아이유")
+                .nameEn(null)
+                .profileImageUrl("url")
+                .instagramName("insta")
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cannot be Empty");
+    }
+
+    @Test
+    @DisplayName("프로필 사진이 누락되면 셀럽 생성 시 예외가 발생")
+    void createCeleb_Exception_Test3() {
+        assertThatThrownBy(() -> Celeb.builder()
+                .nameKo("아이유")
+                .nameEn("IU")
+                .profileImageUrl(null)
+                .instagramName("insta")
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cannot be Empty");
+    }
+
+    @Test
+    @DisplayName("인스타그램이 누락되면 셀럽 생성 시 예외가 발생")
+    void createCeleb_Exception_Test4() {
+        assertThatThrownBy(() -> Celeb.builder()
+                .nameKo("아이유")
+                .nameEn("IU")
+                .profileImageUrl("url")
+                .instagramName(null)
+                .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cannot be Empty");
     }
 }
