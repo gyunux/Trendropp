@@ -34,7 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 셀럽 삭제 함수 (기존과 동일)
     const deleteCeleb = async (celebId) => {
-        // ...
+        try {
+            const response = await fetch(`${API_BASE_URL}/${celebId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('삭제에 실패했습니다. 상태 코드: ' + response.status);
+            }
+
+            alert('성공적으로 삭제되었습니다.');
+            window.location.reload(); // 리스트 갱신을 위해 새로고침
+        } catch (error) {
+            console.error(">>> 삭제 중 에러 발생:", error);
+            alert(error.message);
+        }
     };
 
 
