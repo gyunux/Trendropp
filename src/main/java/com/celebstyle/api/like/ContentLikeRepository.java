@@ -1,5 +1,6 @@
 package com.celebstyle.api.like;
 
+import com.celebstyle.api.member.Member;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,4 +24,6 @@ public interface ContentLikeRepository extends JpaRepository<ContentLike, Long> 
     Set<Long> findLikedContentIdsByMemberId(@Param("memberId") Long memberId);
 
     boolean existsByMemberIdAndContentId(Long memberId, Long contentId);
+
+    ContentLike findByMember(Member member);
 }
