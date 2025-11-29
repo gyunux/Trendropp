@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +27,10 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false,length = 2048)
+    @Column(nullable = false, length = 2048)
     private String imageUrl;
 
-    @Column(nullable = false,length = 2048)
+    @Column(nullable = false, length = 2048)
     private String productUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,7 +38,10 @@ public class Item {
     private Brand brand;
 
     @Builder
-    public Item(String name,String imageUrl,String productUrl,Brand brand){
+    public Item(String name, String imageUrl, String productUrl, Brand brand) {
+        if (name == null || imageUrl == null || productUrl == null) {
+            throw new IllegalArgumentException("필수 값이 누락되었습니다.");
+        }
         this.name = name;
         this.imageUrl = imageUrl;
         this.productUrl = productUrl;

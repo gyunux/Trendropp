@@ -57,37 +57,31 @@ public class MemberService {
 
     @Transactional
     public void changeEmail(Long memberId, EmailChangeRequest request) {
-        try {
-            Member member = memberRepository.findById(memberId).orElseThrow();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
-            if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
-                throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
-            }
-
-            if (memberRepository.existsByEmail(request.getNewEmail())) {
-                throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-            }
-
-            member.updateEmail(request.getNewEmail());
-
-        } catch (IllegalArgumentException e) {
-            log.error("이메일 변경 중 오류: {}", e.getMessage());
+        if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
+
+        if (memberRepository.existsByEmail(request.getNewEmail())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
+        // 4. 변경 실행
+        member.updateEmail(request.getNewEmail());
     }
 
     @Transactional
     public void changePassword(Long memberId, PasswordChangeRequest request) {
-        try {
-            Member member = memberRepository.findById(memberId).orElseThrow();
+        Member member = memberRepository.findById(memberId).orElseThrow();
 
-            if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
-                throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
-            }
-            String encodedPassword = passwordEncoder.encode(request.getNewPassword());
-            member.updatePassword(encodedPassword);
-        } catch (IllegalArgumentException e) {
-            log.error("비밀번호 변경 중 오류: {}", e.getMessage());
+        if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
+        
+        String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+        member.updatePassword(encodedPassword);
     }
 
     @Transactional

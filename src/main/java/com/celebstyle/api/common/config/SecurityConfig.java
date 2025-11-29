@@ -23,13 +23,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/api/admin/myCrawl/vivienne").permitAll()
+                                .requestMatchers("/api/x/search").permitAll()
                                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
-
-                                .requestMatchers(
-                                        "/mypage/**",
-                                        "/api/contents/*/like"
-                                ).authenticated()
-
                                 .requestMatchers(
                                         "/login", "/signup",
                                         "/api/members/login", "/api/members/signup",

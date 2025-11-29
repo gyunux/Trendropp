@@ -16,6 +16,7 @@ public class CelebCreateResponse {
     private CelebCreateResponse(Long id, String nameKo, String nameEn, String profileImageUrl, String instagramName) {
         this.id = id;
         this.nameKo = nameKo;
+        this.nameEn = nameEn;
         this.profileImageUrl = profileImageUrl;
         this.instagramName = instagramName;
     }

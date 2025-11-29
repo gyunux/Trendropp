@@ -5,9 +5,11 @@ import com.celebstyle.api.content.Content;
 import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ContentPublicView {
     private Long id;
     private String title;

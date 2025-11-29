@@ -8,6 +8,7 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+  forward-headers-strategy: framework
 
 spring:
   messages:
@@ -17,8 +18,13 @@ spring:
     encoding: UTF-8
 
 crawler:
-  repeat-count: 5
+  repeat-count: 20
 
 gemini:
   api:
     key: ${API_KEY}
+
+x-api:
+  bearer-token: AAAAAAAAAAAAAAAAAAAAAL155gEAAAAAK7gOn0AfgJcFEoGiBuVOaKtC8v0%3Dsl8OhIzJ7l31J952VunhNvMareqJYDu34ag2m4FgLqrw0ovyRU
+  base-url: "https://api.x.com/2"
+  max-result: 1
