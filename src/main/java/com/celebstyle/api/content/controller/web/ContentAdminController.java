@@ -8,6 +8,7 @@ import com.celebstyle.api.celeb.dto.CelebView;
 import com.celebstyle.api.celeb.service.CelebService;
 import com.celebstyle.api.content.SourceType;
 import com.celebstyle.api.content.dto.ContentAdminView;
+import com.celebstyle.api.content.dto.ContentViewForEdit;
 import com.celebstyle.api.content.service.ContentAdminService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -65,6 +67,14 @@ public class ContentAdminController {
     public String showContentCreateCustomForm(Model model) {
         addCommonAttributesToModel(model);
         return "admin/content-custom-creator";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editContentForm(@PathVariable Long id, Model model) {
+        ContentViewForEdit content = contentService.getContentForEdit(id);
+        model.addAttribute("content", content);
+        addCommonAttributesToModel(model);
+        return "admin/content-edit";
     }
 
     private void addCommonAttributesToModel(Model model) {

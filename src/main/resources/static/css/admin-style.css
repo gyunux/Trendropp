@@ -603,3 +603,78 @@ input[type="search"] {
     background-color: #fff;
     border-color: #dee2e6;
 }
+
+/* --- [추가] 콘텐츠 수정 페이지 전용 스타일 --- */
+
+/* 1. 대표 이미지 (크기 제한 및 스타일) */
+.current-image-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.preview-image-lg {
+    max-width: 300px; /* 너비 고정 */
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 그림자 진하게 */
+}
+
+/* 2. 아이템 리스트 (이미지 + 입력창 가로 배치) */
+.item-row-content {
+    display: flex; /* Flexbox 가로 배치 */
+    align-items: flex-start;
+    gap: 20px; /* 이미지와 입력창 사이 간격 */
+}
+
+.item-image-wrapper {
+    width: 120px; /* 썸네일 너비 고정 */
+    flex-shrink: 0; /* 공간 부족해도 줄어들지 않음 */
+}
+
+.item-image-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    color: #b3b3b3;
+}
+
+.item-image-thumb {
+    width: 100%;
+    height: 120px;
+    object-fit: cover; /* 비율 유지하며 꽉 채우기 */
+    border-radius: 6px;
+    border: 1px solid #444;
+}
+
+.item-image-placeholder {
+    width: 100%;
+    height: 120px;
+    background-color: #2a2a2e; /* 다크 모드 배경색 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #444;
+    color: #777;
+    font-size: 0.8rem;
+}
+
+.item-inputs-wrapper {
+    flex-grow: 1; /* 남은 공간 모두 차지 */
+}
+
+/* Form Row (한 줄에 브랜드/상품명 배치용) */
+.form-row-2col {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.col-brand {
+    flex: 1; /* 1 비율 */
+}
+
+.col-name {
+    flex: 2; /* 2 비율 (상품명을 더 길게) */
+}

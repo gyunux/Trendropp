@@ -4,18 +4,25 @@ import com.celebstyle.api.article.Article;
 import com.celebstyle.api.article.repository.ArticleRepository;
 import com.celebstyle.api.celeb.Celeb;
 import com.celebstyle.api.celeb.CelebRepository;
+import com.celebstyle.api.celeb.dto.CelebView;
 import com.celebstyle.api.content.Content;
 import com.celebstyle.api.content.ContentRepository;
 import com.celebstyle.api.content.dto.ContentAdminView;
 import com.celebstyle.api.content.dto.ContentDetailView;
+import com.celebstyle.api.content.dto.ContentViewForEdit;
 import com.celebstyle.api.content.dto.SaveContentRequest;
+import com.celebstyle.api.content.dto.UpdateContentRequest;
 import com.celebstyle.api.contentitem.ContentItem;
 import com.celebstyle.api.contentitem.ContentItemRepository;
 import com.celebstyle.api.item.Item;
+import com.celebstyle.api.item.ItemRepository;
+import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.item.dto.ItemRequest;
 import com.celebstyle.api.item.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +38,7 @@ public class ContentAdminService {
     private final ItemService itemService;
     private final ContentItemRepository contentItemRepository;
     private final ArticleRepository articleRepository; // ArticleRepository 주입
+    private final ItemRepository itemRepository;
 
     @Transactional
     public ContentAdminView createContent(SaveContentRequest request) throws IOException {
@@ -76,7 +84,7 @@ public class ContentAdminService {
     }
 
     @Transactional
-    public void updateContent(Long contentId, SaveContentRequest request) throws IOException {
+    public void updateContent(Long contentId, UpdateContentRequest request) throws IOException {
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new EntityNotFoundException("착장을 찾을 수 없습니다."));
 
@@ -85,7 +93,6 @@ public class ContentAdminService {
         content.setOriginImageUrl(request.getMainImageUrl());
         content.setSourceType(request.getSourceType());
         content.setSourceUrl(request.getSourceUrl());
-        content.setSourceDate(request.getSourceDate());
         content.updateTranslations(
                 request.getTitleKo(),
                 request.getTitleEn(),
@@ -104,11 +111,26 @@ public class ContentAdminService {
     @Transactional
     public void deleteContent(Long id) {
         if (!contentRepository.existsById(id)) {
-            throw new EntityNotFoundException("착장정보를 찾을 수 없습니다: " + id);
+            throw new EntityNotFoundException("콘텐츠를 찾을 수 없습니다: " + id);
         }
         contentRepository.deleteById(id);
 //        Content content = contentRepository.findById(id).orElseThrow();
 //        content.setDeleted(true);
+    }
+
+    @Transactional(readOnly = true)
+    public ContentViewForEdit getContentForEdit(Long id) {
+        Content content = contentRepository.findById(id).orElseThrow();
+        List<Item> items = itemRepository.findItemsByContentId(id);
+        List<ItemDetailView> itemDetailViews = new ArrayList<>();
+
+        for (Item item : items) {
+            itemDetailViews.add(ItemDetailView.fromEntity(item));
+        }
+        Celeb celeb = content.getCeleb();
+        CelebView celebView = new CelebView(celeb);
+
+        return ContentViewForEdit.fromEntity(content, celebView, itemDetailViews);
     }
 
 }

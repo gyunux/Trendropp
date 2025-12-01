@@ -3,6 +3,7 @@ package com.celebstyle.api.content.controller.api;
 import com.celebstyle.api.content.dto.ContentAdminView;
 import com.celebstyle.api.content.dto.ContentDetailView;
 import com.celebstyle.api.content.dto.SaveContentRequest;
+import com.celebstyle.api.content.dto.UpdateContentRequest;
 import com.celebstyle.api.content.service.ContentAdminService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,7 +45,8 @@ public class ContentAdminApiController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateContent(@PathVariable Long id, @Valid @RequestBody SaveContentRequest request)
+    public ResponseEntity<Void> updateContent(@PathVariable Long id,
+                                              @Valid @ModelAttribute UpdateContentRequest request)
             throws IOException {
         contentService.updateContent(id, request);
         return ResponseEntity.ok().build(); // 성공 시 200 OK 응답
