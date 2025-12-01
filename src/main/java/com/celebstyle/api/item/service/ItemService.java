@@ -3,11 +3,11 @@ package com.celebstyle.api.item.service;
 import com.celebstyle.api.brand.Brand;
 import com.celebstyle.api.brand.BrandRepository;
 import com.celebstyle.api.common.S3UploadService;
+import com.celebstyle.api.contentitem.ContentItemRepository;
 import com.celebstyle.api.item.Item;
 import com.celebstyle.api.item.ItemRepository;
 import com.celebstyle.api.item.dto.ItemDetailView;
 import com.celebstyle.api.item.dto.ItemRequest;
-import com.celebstyle.api.contentitem.ContentItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +25,7 @@ public class ItemService {
     private final BrandRepository brandRepository;
     private final ContentItemRepository contentItemRepository;
     private final S3UploadService s3UploadService;
+
     //내부 사용
     @Transactional
     public Item createItem(ItemRequest request) throws IOException {
@@ -38,9 +39,9 @@ public class ItemService {
         }
         Brand brand = brandRepository.findById(request.getBrandId())
                 .orElseThrow(() -> new EntityNotFoundException("브랜드(ID: " + request.getBrandId() + ")를 찾을 수 없습니다."));
-        String imageUrl = s3UploadService.upload(request.getItemImageFile(),"items");
+        String imageUrl = s3UploadService.upload(request.getItemImageFile(), "items");
 
-        log.info("Create Item Brand Name : {}",brand.getEnglishName());
+        log.info("Create Item Brand Name : {}", brand.getEnglishName());
         Item newItem = Item.builder()
                 .brand(brand)
                 .name(request.getItemName())
@@ -63,12 +64,12 @@ public class ItemService {
                 request.getBrandId(),
                 request.getItemName()
         );
-        if(existingItem.isPresent()){
+        if (existingItem.isPresent()) {
             Item item = existingItem.get();
 
             //save를 호출할 필요는 없음 더티 체킹에 의해 자동 업데이트
             item.setProductUrl(request.getProductUrl());
-            item.setImageUrl(request.getProductUrl());
+            item.setImageUrl(request.getOriginalImageUrl());
 
             return item;
         }
@@ -76,18 +77,18 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemDetailView> findAllItems(){
+    public List<ItemDetailView> findAllItems() {
         return itemRepository.findAll().stream()
                 .map(ItemDetailView::fromEntity)
                 .toList();
     }
 
     @Transactional
-    public void updateItem(Long id,ItemRequest request){
+    public void updateItem(Long id, ItemRequest request) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("아이템을 찾을 수 없습니다."));
         Brand brand = brandRepository.findById(request.getBrandId())
-                        .orElseThrow(() -> new EntityNotFoundException("브랜드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("브랜드를 찾을 수 없습니다."));
 
         item.setBrand(brand);
         item.setName(request.getItemName());
