@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>콘텐츠 수정 - TrenDropp</title>
+    <link rel="stylesheet" th:href="@{/css/admin-style.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div th:replace="~{admin/fragments :: sidebar}"></div>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>콘텐츠 정보 수정</h1>
+            <p class="text-muted">콘텐츠 ID: <span th:text="${content.id}"></span></p>
+        </header>
+
+        <div class="form-grid-2col" th:object="${content}">
+            <div class="article-summary form-group">
+                <label for="summaryKo">AI 요약 (KO)</label>
+                <textarea id="summaryKo" rows="8" th:field="*{summaryKo}"></textarea>
+            </div>
+            <div class="article-summary form-group">
+                <label for="summaryEn">AI 요약 (EN)</label>
+                <textarea id="summaryEn" rows="8" th:field="*{summaryEn}"
+                          placeholder="Enter English summary..."></textarea>
+            </div>
+        </div>
+
+        <div class="creator-layout">
+            <div class="image-picker-panel">
+                <h3>대표 이미지</h3>
+                <div class="current-image-wrapper">
+                    <img th:src="${content.contentImage}"
+                         alt="현재 콘텐츠 이미지"
+                         class="preview-image-lg">
+                </div>
+            </div>
+
+            <div id="form-panel" class="form-panel">
+                <h3>콘텐츠 정보 수정</h3>
+                <form id="content-edit-form">
+                    <input type="hidden" id="contentId" th:value="${content.id}">
+                    <input type="hidden" id="mainImageUrl" th:value="${content.contentImage}">
+
+                    <div class="form-group">
+                        <label for="contentTitleKo">콘텐츠 제목 (KO)</label>
+                        <input type="text" id="contentTitleKo" th:value="${content.titleKo}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentTitleEn">콘텐츠 제목 (EN)</label>
+                        <input type="text" id="contentTitleEn" th:value="${content.titleEn}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>셀럽</label>
+                        <select id="celebId" required>
+                            <option value="">-- 셀럽 선택 --</option>
+                            <option th:each="celeb : ${celebs}"
+                                    th:value="${celeb.id}"
+                                    th:text="${celeb.name}"
+                                    th:selected="${celeb.id == content.celeb.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>출처 종류</label>
+                        <select id="sourceType" required>
+                            <option th:each="type : ${sourceTypes}"
+                                    th:value="${type.name()}"
+                                    th:text="${type.description}"
+                                    th:selected="${type == content.sourceType}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sourceUrl">출처 URL</label>
+                        <input type="url" id="sourceUrl" th:value="${content.sourceUrl}"
+                               placeholder="https://vogue.co.kr/...">
+                    </div>
+
+                    <hr>
+
+                    <h4>아이템 정보</h4>
+                    <div id="items-container">
+                        <div th:each="item, stat : ${content.items}" class="item-row card mb-3 p-3 item-form-group">
+                            <div class="item-row-content">
+
+                                <div class="item-image-wrapper">
+                                    <span class="item-image-label">아이템 이미지</span>
+
+                                    <img th:if="${item.imageUrl != null}"
+                                         th:src="${item.imageUrl}"
+                                         alt="Item Image"
+                                         class="item-image-thumb">
+
+                                    <div th:unless="${item.imageUrl != null}"
+                                         class="item-image-placeholder">
+                                        <span>이미지 없음</span>
+                                    </div>
+
+                                    <input type="hidden" class="item-image-url" th:value="${item.imageUrl}">
+                                </div>
+
+                                <div class="item-inputs-wrapper">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <h5 class="m-0" th:text="'아이템 #' + ${stat.count}"></h5>
+                                        <button type="button" class="btn btn-danger btn-sm remove-item-btn">삭제</button>
+                                    </div>
+
+                                    <div class="form-row-2col">
+                                        <div class="form-group col-brand">
+                                            <label>브랜드</label>
+                                            <select class="item-brand form-control" required>
+                                                <option value="">브랜드 선택</option>
+                                                <option th:each="brand : ${brands}"
+                                                        th:value="${brand.id}"
+                                                        th:text="${brand.koreanName}"
+                                                        th:selected="${brand.id == item.brand.id}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-name">
+                                            <label>상품명</label>
+                                            <input type="text" class="item-name form-control" th:value="${item.name}"
+                                                   required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>구매 링크</label>
+                                        <input type="url" class="item-url form-control" th:value="${item.productUrl}"
+                                               placeholder="https://...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-item-btn" class="btn btn-secondary btn-sm">+ 아이템 추가</button>
+
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">수정 완료</button>
+                        <a href="/admin/contents" class="btn btn-outline">취소</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    const allBrands = /*[[${brands}]]*/ [];
+    const existingItems = /*[[${content.items}]]*/ [];
+    // ^ JS에서 초기 아이템 상태를 관리해야 한다면 이 변수를 활용하세요.
+    /* ]]> */
+</script>
+
+<script th:src="@{/js/content-edit.js}"></script>
+</body>
+</html>
