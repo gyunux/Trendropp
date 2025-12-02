@@ -43,7 +43,7 @@ public class Article {
     @Lob
     private String summaryEn;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleImage> articleImages = new ArrayList<>();
 
     public Article(CrawlerDto dto) {
