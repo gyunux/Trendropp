@@ -5,6 +5,7 @@ import com.celebstyle.api.article.ArticleImage;
 import com.celebstyle.api.article.dto.ArticleAdminView;
 import com.celebstyle.api.article.repository.ArticleRepository;
 import com.celebstyle.api.article.repository.ArticleRepositoryCustom;
+import com.celebstyle.api.common.S3UploadService;
 import com.celebstyle.api.magazine.MagazineCrawler;
 import com.celebstyle.api.magazine.dto.CrawlerDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleService {
     private final MagazineCrawler magazineCrawler;
     private final ArticleRepository articleRepository;
-
     private final ArticleRepositoryCustom articleRepositoryCustom;
+    private final S3UploadService s3UploadService;
 
     //크롤링해온 데이터를 기사 엔티티에 저장
     @Transactional
@@ -68,10 +69,20 @@ public class ArticleService {
 
     @Transactional
     public void delete(Long id) {
-        if (!articleRepository.existsById(id)) {
-            throw new EntityNotFoundException("해당 ID의 셀럽을 찾을 수 없습니다: " + id);
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 아티클이 없습니다"));
+
+        List<String> imageUrls = article.getArticleImages().stream()
+                .map(ArticleImage::getImageUrl)
+                .toList();
+
+        articleRepository.delete(article);
+
+        if (!imageUrls.isEmpty()) {
+            for (String url : imageUrls) {
+                s3UploadService.deleteImage(url);
+            }
         }
-        articleRepository.deleteById(id);
     }
 
 }
