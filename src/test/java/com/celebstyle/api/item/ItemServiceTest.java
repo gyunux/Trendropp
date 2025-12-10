@@ -161,6 +161,7 @@ class ItemServiceTest {
         request.setBrandId(1L);
         request.setItemName("Old Item");
         request.setProductUrl("http://new.url");
+        request.setOriginalImageUrl("http://newImage.url");
 
         Brand brand = createValidBrand();
         Item existingItem = createValidItem("Old Item", brand);
@@ -170,7 +171,7 @@ class ItemServiceTest {
         Item result = itemService.updateOrCreateItem(request);
 
         assertThat(result.getProductUrl()).isEqualTo("http://new.url");
-        assertThat(result.getImageUrl()).isEqualTo("http://new.url");
+        assertThat(result.getImageUrl()).isEqualTo("http://newImage.url");
         verify(itemRepository, never()).save(any());
     }
 
