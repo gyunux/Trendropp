@@ -71,7 +71,6 @@ public class CelebService {
 
         MultipartFile newProfileImage = request.getProfileImage();
 
-        // [핵심] 2. 새로운 이미지 파일이 들어왔는지 확인합니다.
         if (newProfileImage != null && !newProfileImage.isEmpty()) {
 
             String newImageUrl = s3UploadService.upload(newProfileImage, "celebs");
