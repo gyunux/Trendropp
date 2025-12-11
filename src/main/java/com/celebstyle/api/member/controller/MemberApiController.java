@@ -56,7 +56,7 @@ public class MemberApiController {
         Long currentMemberId = userDetails.getMember().getId();
         memberService.changeEmail(currentMemberId, request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/password")
@@ -67,7 +67,7 @@ public class MemberApiController {
         Long currentMemberId = userDetails.getMember().getId();
         memberService.changePassword(currentMemberId, request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
@@ -86,6 +86,6 @@ public class MemberApiController {
 
         SecurityContextHolder.clearContext();
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
