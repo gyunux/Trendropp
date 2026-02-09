@@ -1,3 +1,1 @@
 # Trendropp
-
-https://trendropp.com
