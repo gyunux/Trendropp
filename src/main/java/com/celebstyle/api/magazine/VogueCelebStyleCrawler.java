@@ -25,6 +25,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -55,6 +56,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
+        options.setBinary("/usr/bin/chromium-browser");
         options.addArguments("--headless");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
@@ -63,8 +65,11 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         options.addArguments("--disable-extensions");
         options.addArguments("--window-size=1920,1200");
         options.addArguments("--ignore-certificate-errors");
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
         WebDriver driver = new ChromeDriver(options);
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
+
         List<CrawlerDto> newsList = new ArrayList<>();
 
         try {
@@ -97,7 +102,11 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
 
                         newsList.add(news);
                     }
-                } catch (Exception e) {
+                } catch(org.openqa.selenium.TimeoutException e){
+                    log.warn("로딩 시간이 60초를 초과하여 기사 스킵 (URL: {}",url);
+                }
+
+                catch (Exception e) {
                     log.error("Error Crawling detail page: {}, {}", url, e.getMessage());
                 }
             }
@@ -188,7 +197,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
     private CrawlerDto scrapeDetailPage(WebDriver driver, String url, List<String> koreanCelebNames)
             throws IOException {
         driver.get(url);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
         JavascriptExecutor js = (JavascriptExecutor) driver; // JavascriptExecutor 추가
 
         try {

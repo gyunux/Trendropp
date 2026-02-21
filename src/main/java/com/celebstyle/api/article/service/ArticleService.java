@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +29,10 @@ public class ArticleService {
     private final S3UploadService s3UploadService;
 
     //크롤링해온 데이터를 기사 엔티티에 저장
+    @Async
     @Transactional
     public void saveCrawledArticles() {
+        log.info("[비동기] 크롤링 백그라운드 작업 시작.");
         try {
             List<CrawlerDto> dtos = magazineCrawler.crawl();
 
@@ -47,6 +50,7 @@ public class ArticleService {
                 }
             }
             log.info("새로운 기사 {}개가 성공적으로 저장되었습니다.", newArticleCount);
+            log.info("[비동기] 크롤링 백그라운드 작업 종료.");
         } catch (IOException e) {
             log.error("크롤링 중 에러 발생: {}", e.getMessage());
         }
