@@ -53,11 +53,12 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
     public List<CrawlerDto> crawl() throws IOException {
         log.info("크롤링 시작");
         //크롬 동적 크롤링 코드 시작
-        WebDriverManager.chromedriver().setup();
+
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
 
         ChromeOptions options = new ChromeOptions();
         options.setBinary("/usr/bin/chromium-browser");
-        options.addArguments("--headless");
+        options.addArguments("--headless=new");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
@@ -65,6 +66,7 @@ public class VogueCelebStyleCrawler implements MagazineCrawler {
         options.addArguments("--disable-extensions");
         options.addArguments("--window-size=1920,1200");
         options.addArguments("--ignore-certificate-errors");
+        options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36");
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
         WebDriver driver = new ChromeDriver(options);
