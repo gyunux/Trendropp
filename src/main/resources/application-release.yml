@@ -1,8 +1,8 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://my-app-database.cd4ocysaaoyu.ap-northeast-2.rds.amazonaws.com:3306/mydatabase?allowPublicKeyRetrieval=true&useSSL=false
-    username: admin
+    url: jdbc:mysql://localhost:3306/trendropp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: root
     password: ${DB_PASSWORD}
 
 

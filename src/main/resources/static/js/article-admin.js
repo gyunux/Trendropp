@@ -56,3 +56,40 @@ document.addEventListener('DOMContentLoaded', () => {
     setActiveSidebarLink();
 
 });
+async function triggerCrawling() {
+    const btn = document.getElementById('crawlBtn');
+    const originalText = btn.innerText;
+
+    if (!confirm("최신 기사를 크롤링하시겠습니까?")) {
+        return;
+    }
+
+    btn.innerText = "⏳ 크롤링 진행 중...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/admin/crawl', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert("✅ 크롤링이 백그라운드에서 시작되었습니다!\n이제 다른 페이지로 자유롭게 이동하셔도 됩니다.");
+            window.location.reload(); // 목록 갱신
+        } else if (response.status === 403) {
+            alert("❌ 권한 없음: 관리자 권한이 필요합니다.");
+        } else {
+            const errorText = await response.text();
+            alert("❌ 서버 오류: " + errorText);
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        alert("❌ 네트워크 오류: 서버와 연결할 수 없습니다.");
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}

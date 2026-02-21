@@ -22,8 +22,6 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(HttpMethod.POST, "/api/admin/myCrawl/vivienne").permitAll()
-                                .requestMatchers("/api/x/search").permitAll()
                                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers(
                                         "/login", "/signup",

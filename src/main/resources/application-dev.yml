@@ -4,10 +4,9 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:./data/celebdb
-    username: admin
-    password: 1234
-
+    url: jdbc:h2:file:./data/celebdb;AUTO_SERVER=TRUE
+    username: sa
+    password:
   h2:
     console:
       enabled: true
@@ -15,5 +14,5 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto:
     show-sql: true
