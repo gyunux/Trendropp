@@ -80,6 +80,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        if (e.target.classList.contains('brand-option')) {
+            const clickedOption = e.target;
+
+            const brandId = clickedOption.dataset.id;
+            const brandName = clickedOption.dataset.name;
+
+            const formGroup = clickedOption.closest('.form-group');
+            const searchInput = formGroup.querySelector('.item-brand-search');
+            const hiddenInput = formGroup.querySelector('.item-brand-id');
+            const resultsBox = formGroup.querySelector('.brand-search-results');
+
+            searchInput.value = brandName;
+            hiddenInput.value = brandId;
+
+            resultsBox.innerHTML = '';
+            resultsBox.style.display = 'none';
+                        }
+
         itemsContainer.addEventListener('change', (e) => {
             if (e.target.classList.contains('item-image-file')) {
                 const fileNameDisplay = e.target.closest('.file-upload-wrapper')
@@ -136,21 +154,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     div.classList.add('brand-option');
                     div.textContent = `${brand.koreanName} (${brand.englishName || ''})`;
                     div.dataset.id = brand.id;
+                    div.dataset.name = brand.koreanName;
 
-                    // ★ 클릭 이벤트
-                    div.addEventListener('click', () => {
-                        searchInput.value = brand.koreanName; // 고정해둔 변수에 텍스트 삽입!
-                        hiddenInput.value = brand.id;
-                        resultsBox.innerHTML = '';
-                        resultsBox.style.display = 'none';
-                    });
                     resultsBox.appendChild(div);
                 });
             }
         });
 
         // 입력창 클릭 외부를 클릭하면 자동완성창 닫기
-
+        document.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('item-brand-search') &&
+                        !e.target.classList.contains('brand-option')) {
+                        document.querySelectorAll('.brand-search-results').forEach(box => {
+                            box.style.display = 'none';
+                        });
+                    }
+                });
     }
 
     // --- 5. 콘텐츠 저장 로직 ---
