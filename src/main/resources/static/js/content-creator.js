@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.classList.contains('remove-item-btn')) {
                 e.target.closest('.item-form-group').remove();
             }
-        });
+
 
         if (e.target.classList.contains('brand-option')) {
             const clickedOption = e.target;
@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             resultsBox.innerHTML = '';
             resultsBox.style.display = 'none';
-                        }
+        }
+        });
 
         itemsContainer.addEventListener('change', (e) => {
             if (e.target.classList.contains('item-image-file')) {
