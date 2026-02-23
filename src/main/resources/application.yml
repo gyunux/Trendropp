@@ -18,7 +18,7 @@ spring:
     encoding: UTF-8
 
 crawler:
-  repeat-count: 5
+  repeat-count: 30
 
 gemini:
   api:
