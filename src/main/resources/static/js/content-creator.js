@@ -93,9 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 브랜드 검색 자동완성
         itemsContainer.addEventListener('input', (e) => {
             if (e.target.classList.contains('item-brand-search')) {
-                const searchTerm = e.target.value.toLowerCase();
-                const resultsBox = e.target.nextElementSibling;
-                const hiddenInput = e.target.parentElement.querySelector('.item-brand-id');
+
+                // ★ 핵심: 입력창 요소를 변수에 단단히 고정!
+                const searchInput = e.target;
+                const searchTerm = searchInput.value.toLowerCase();
+                const resultsBox = searchInput.nextElementSibling;
+                const hiddenInput = searchInput.parentElement.querySelector('.item-brand-id');
 
                 resultsBox.innerHTML = '';
 
@@ -104,10 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // allBrands는 Thymeleaf로 주입됨
+                // allBrands는 Thymeleaf로 주입됨 (null 방어 코드 추가)
                 const matches = allBrands.filter(b =>
                     b.koreanName.toLowerCase().includes(searchTerm) ||
-                    b.englishName?.toLowerCase().includes(searchTerm)
+                    (b.englishName && b.englishName.toLowerCase().includes(searchTerm))
                 );
 
                 if (matches.length === 0) {
@@ -117,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                const inputRect = e.target.getBoundingClientRect();
+                const inputRect = searchInput.getBoundingClientRect();
                 const spaceBelow = window.innerHeight - inputRect.bottom;
                 if (spaceBelow < 180) {
                     resultsBox.style.top = 'auto';
@@ -133,8 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     div.classList.add('brand-option');
                     div.textContent = `${brand.koreanName} (${brand.englishName || ''})`;
                     div.dataset.id = brand.id;
+
+                    // ★ 클릭 이벤트
                     div.addEventListener('click', () => {
-                        e.target.value = brand.koreanName;
+                        searchInput.value = brand.koreanName; // 고정해둔 변수에 텍스트 삽입!
                         hiddenInput.value = brand.id;
                         resultsBox.innerHTML = '';
                         resultsBox.style.display = 'none';
@@ -145,14 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 입력창 클릭 외부를 클릭하면 자동완성창 닫기
-        document.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('item-brand-search') &&
-                !e.target.classList.contains('brand-option')) {
-                document.querySelectorAll('.brand-search-results').forEach(box => {
-                    box.style.display = 'none';
-                });
-            }
-        });
+
     }
 
     // --- 5. 콘텐츠 저장 로직 ---
